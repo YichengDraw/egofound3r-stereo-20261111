@@ -9,7 +9,7 @@ const TYPES = {float32:Float32Array,float64:Float64Array,uint8:Uint8Array,uint16
 const state = {manifest:null,sequence:null,frame:0,playing:false,clock:0,last:0,panels:[],controller:null,loadId:0,updatingCamera:false};
 const assetCache = new Map();
 const settings = () => ({scene:$('scene').checked,hands:$('hands').checked,joints:$('joints').checked,trajectory:$('trajectory').checked,wireframe:$('wireframe').checked,color:$('color-mode').value,overlay:$('overlay').checked});
-const fmt = (v, digits=2) => Number.isFinite(Number(v)) ? Number(v).toFixed(digits) : '—';
+const fmt = (v, digits=2) => v != null && !(typeof v==='string' && v.trim()==='') && Number.isFinite(Number(v)) ? Number(v).toFixed(digits) : '—';
 const finite = (v) => Number.isFinite(v);
 const flatten = (v) => Array.isArray(v) ? v.flat(Infinity) : v;
 const typed = (raw,dtype='float32') => {const Type=TYPES[dtype]||Float32Array;const vals=flatten(raw);return new Type((Type===Float32Array||Type===Float64Array)?Array.from(vals,v=>v==null?NaN:v):vals);};
@@ -219,7 +219,7 @@ class MethodPanel {
     if(this.viewer){this.viewer.dispose();this.viewer=null;}
     const message=this.q('.scene-message');message.hidden=false;setText(message,m.status==='complete'||m.geometry?'正在加载几何结果…':m.missing_reason||'该方法尚无已完成的几何结果。');
     this.q('.frame-metrics').replaceChildren();this.q('.chart-container').classList.remove('has-data');
-    if(!m.geometry){setText(this.q('.rgb-title'),'输入 RGB · 待推理');this.q('.scene-legend').hidden=true;this.q('.fit-camera').hidden=true;this.update(state.frame);return;}
+    if(!m.geometry){setText(this.q('.rgb-title'),'输入 RGB · 待推理');this.q('.scene-legend').hidden=true;this.q('.fit-camera').hidden=true;this.update(state.frame);if(!(state.sequence.methods||[]).some(method=>method.geometry))setText($('load-status'),'RGB 输入就绪 · 待推理');return;}
     this.q('.scene-legend').hidden=false;this.q('.fit-camera').hidden=false;
     try{
       const geom=await loadGeometry(m.geometry,state.controller?.signal);
@@ -344,6 +344,7 @@ function wireUI(){
   $('sequence').addEventListener('change',()=>selectSequence($('sequence').value));$('columns').addEventListener('change',()=>{renderPanels();saveQuery();});
   $('play').addEventListener('click',()=>setPlaying(!state.playing));$('previous').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame-1);});$('next').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame+1);});
   $('scrubber').addEventListener('input',()=>{setPlaying(false);setFrame(Number($('scrubber').value));});$('frame-number').addEventListener('change',()=>{setPlaying(false);setFrame(Number($('frame-number').value));});
+  $('frame-number').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setPlaying(false);setFrame(Number(e.currentTarget.value));}});
   for(const id of ['overlay','scene','hands','joints','trajectory','wireframe','color-mode'])$(id).addEventListener('change',()=>state.panels.forEach(p=>p.update(state.frame)));
   $('linked').addEventListener('change',()=>{if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
   $('reset-camera').addEventListener('click',()=>{for(const p of state.panels)p.viewer?.fit();if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
