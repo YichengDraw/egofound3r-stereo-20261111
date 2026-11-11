@@ -1,0 +1,141 @@
+{
+  "status": "passed",
+  "rows": 4160,
+  "frames": 2080,
+  "runs": 13,
+  "aggregate_and_all_frame_curves_match": true,
+  "checks": [
+    {
+      "run_id": "dexycb_box__cam_a",
+      "rows": 148,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": null,
+        "root_relative_mpjpe_mm": null,
+        "pa_mpjpe_mm": null
+      }
+    },
+    {
+      "run_id": "dexycb_box__cam_b",
+      "rows": 148,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 360.9868299350966,
+        "root_relative_mpjpe_mm": 152.67223782248013,
+        "pa_mpjpe_mm": 41.10499963684405
+      }
+    },
+    {
+      "run_id": "dexycb_banana__cam_a",
+      "rows": 144,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": null,
+        "root_relative_mpjpe_mm": null,
+        "pa_mpjpe_mm": null
+      }
+    },
+    {
+      "run_id": "dexycb_banana__cam_b",
+      "rows": 144,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": null,
+        "root_relative_mpjpe_mm": null,
+        "pa_mpjpe_mm": null
+      }
+    },
+    {
+      "run_id": "aria_1976__rgb",
+      "rows": 300,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 20.064457020534004,
+        "root_relative_mpjpe_mm": 16.013099032736736,
+        "pa_mpjpe_mm": 10.591459103390813
+      }
+    },
+    {
+      "run_id": "aria_2022__rgb",
+      "rows": 280,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 31.438345198766978,
+        "root_relative_mpjpe_mm": 21.569530702373484,
+        "pa_mpjpe_mm": 9.956954894602665
+      }
+    },
+    {
+      "run_id": "aria_3070__rgb",
+      "rows": 300,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 33.61660955015667,
+        "root_relative_mpjpe_mm": 20.373165627913576,
+        "pa_mpjpe_mm": 10.88856209853777
+      }
+    },
+    {
+      "run_id": "aria_3209__rgb",
+      "rows": 300,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 33.31642313358534,
+        "root_relative_mpjpe_mm": 22.95790413452937,
+        "pa_mpjpe_mm": 10.029627358207355
+      }
+    },
+    {
+      "run_id": "aria_3302__rgb",
+      "rows": 300,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 31.940795835945224,
+        "root_relative_mpjpe_mm": 23.280622512909947,
+        "pa_mpjpe_mm": 11.088082830287862
+      }
+    },
+    {
+      "run_id": "aria_3353__rgb",
+      "rows": 300,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 19.137227436868322,
+        "root_relative_mpjpe_mm": 14.386138186445923,
+        "pa_mpjpe_mm": 6.687907310878127
+      }
+    },
+    {
+      "run_id": "ho3d_mc1__rgb",
+      "rows": 598,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 79.67069396459179,
+        "root_relative_mpjpe_mm": 68.45715837151101,
+        "pa_mpjpe_mm": 18.47627106330143
+      }
+    },
+    {
+      "run_id": "ho3d_smu1__rgb",
+      "rows": 598,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 115.93121836391074,
+        "root_relative_mpjpe_mm": 80.92049640865837,
+        "pa_mpjpe_mm": 20.870660880983653
+      }
+    },
+    {
+      "run_id": "ho3d_sm2__rgb",
+      "rows": 600,
+      "aggregate_and_curves_match": true,
+      "reproduced": {
+        "raw_mpjpe_mm": 71.594285026306,
+        "root_relative_mpjpe_mm": 56.92136429115928,
+        "pa_mpjpe_mm": 23.135076717671197
+      }
+    }
+  ],
+  "gpu_used": false,
+  "model_inference_run": false
+}

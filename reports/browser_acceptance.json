@@ -1,0 +1,1194 @@
+{
+  "tested_site": "https://yichengdraw.github.io/egofound3r-stereo-20261111/",
+  "tested_commit": "f2d414bc9e7da7070843cd410512b6f325e8e0d1",
+  "captured_utc": "2026-11-11T11:36:38.645Z",
+  "browser": "cloud Chrome",
+  "render_path": "software Canvas 2D fallback for Three.js geometry; WebGL2 path not verified in this browser",
+  "observations": [
+    {
+      "frame": 37,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 1.233333,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 1.233333,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_box"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a",
+          "state": "严格有效 0/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_banana"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_1976"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_2022"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3070"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3209"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3302"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3353"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_mc1"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_smu1"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_sm2"
+    },
+    {
+      "frame": 150,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 1,
+            "time": 15,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手 · 缺少接触概率",
+          "video": {
+            "height": 480,
+            "ready": 1,
+            "time": 15,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 1,
+            "time": 15,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_sm2",
+      "test": "three_columns_world_contact_seek"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_1976",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_2022",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3070",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3209",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3302",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_3353",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_mc1",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 1/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "ho3d_smu1",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_cam_a",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_box",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_cam_b",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_box",
+      "test": "gt_camera_b_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a_world",
+          "state": "严格有效 0/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_cam_a",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_banana",
+      "test": "world_geometry_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_a_world",
+          "state": "严格有效 0/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_cam_b_world",
+          "state": "严格有效 0/2 手 · 填补：已隐藏 · 软件视图：真实面片线框",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_cam_b",
+          "state": "GT 参考 · 非模型预测 · 严格有效 1/1 手",
+          "video": {
+            "height": 480,
+            "ready": 4,
+            "time": 0,
+            "width": 640
+          }
+        }
+      ],
+      "sequence": "dexycb_banana",
+      "test": "gt_camera_b_load"
+    },
+    {
+      "frame": 0,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 4,
+            "time": 0,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_1976",
+      "test": "playback_before"
+    },
+    {
+      "frame": 39,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.3,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.3,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.3,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_1976",
+      "test": "playback_running"
+    },
+    {
+      "frame": 47,
+      "panels": [
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.566666,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "gt_rgb",
+          "state": "GT 参考 · 非模型预测 · 严格有效 2/2 手",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.566666,
+            "width": 768
+          }
+        },
+        {
+          "canvas": true,
+          "message": "",
+          "method": "official_rgb_world",
+          "state": "严格有效 2/2 手 · 软件视图：真实面片线框",
+          "video": {
+            "height": 768,
+            "ready": 1,
+            "time": 1.566666,
+            "width": 768
+          }
+        }
+      ],
+      "sequence": "aria_1976",
+      "test": "playback_paused"
+    }
+  ],
+  "loaded_exports": [
+    "aria_1976/gt_rgb",
+    "aria_1976/official_rgb",
+    "aria_1976/official_rgb_world",
+    "aria_2022/gt_rgb",
+    "aria_2022/official_rgb",
+    "aria_2022/official_rgb_world",
+    "aria_3070/gt_rgb",
+    "aria_3070/official_rgb",
+    "aria_3070/official_rgb_world",
+    "aria_3209/gt_rgb",
+    "aria_3209/official_rgb",
+    "aria_3209/official_rgb_world",
+    "aria_3302/gt_rgb",
+    "aria_3302/official_rgb",
+    "aria_3302/official_rgb_world",
+    "aria_3353/gt_rgb",
+    "aria_3353/official_rgb",
+    "aria_3353/official_rgb_world",
+    "dexycb_banana/gt_cam_a",
+    "dexycb_banana/gt_cam_b",
+    "dexycb_banana/official_cam_a",
+    "dexycb_banana/official_cam_a_world",
+    "dexycb_banana/official_cam_b",
+    "dexycb_banana/official_cam_b_world",
+    "dexycb_box/gt_cam_a",
+    "dexycb_box/gt_cam_b",
+    "dexycb_box/official_cam_a",
+    "dexycb_box/official_cam_a_world",
+    "dexycb_box/official_cam_b",
+    "dexycb_box/official_cam_b_world",
+    "ho3d_mc1/gt_rgb",
+    "ho3d_mc1/official_rgb",
+    "ho3d_mc1/official_rgb_world",
+    "ho3d_sm2/gt_rgb",
+    "ho3d_sm2/official_rgb",
+    "ho3d_sm2/official_rgb_world",
+    "ho3d_smu1/gt_rgb",
+    "ho3d_smu1/official_rgb",
+    "ho3d_smu1/official_rgb_world"
+  ],
+  "application_console_errors": [],
+  "extension_console_error_count": 66,
+  "public_release_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/tag/reproduction-20261111",
+  "public_release_assets": [
+    {
+      "label": "aria_1976__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_1976__rgb.tar.gz"
+    },
+    {
+      "label": "aria_2022__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_2022__rgb.tar.gz"
+    },
+    {
+      "label": "aria_3070__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3070__rgb.tar.gz"
+    },
+    {
+      "label": "aria_3209__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3209__rgb.tar.gz"
+    },
+    {
+      "label": "aria_3302__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3302__rgb.tar.gz"
+    },
+    {
+      "label": "aria_3353__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3353__rgb.tar.gz"
+    },
+    {
+      "label": "dexycb_banana__cam_a.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_a.tar.gz"
+    },
+    {
+      "label": "dexycb_banana__cam_b.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_b.tar.gz"
+    },
+    {
+      "label": "dexycb_box__cam_a.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_a.tar.gz"
+    },
+    {
+      "label": "dexycb_box__cam_b.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_b.tar.gz"
+    },
+    {
+      "label": "ho3d_mc1__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_mc1__rgb.tar.gz"
+    },
+    {
+      "label": "ho3d_sm2__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_sm2__rgb.tar.gz"
+    },
+    {
+      "label": "ho3d_smu1__rgb.tar.gz",
+      "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_smu1__rgb.tar.gz"
+    }
+  ],
+  "drag_test": {
+    "sequence": "aria_1976",
+    "frame": 47,
+    "from_xy": [
+      480,
+      520
+    ],
+    "to_xy": [
+      570,
+      465
+    ],
+    "linked": true,
+    "screenshots": [
+      "egofound3r_drag_before.png",
+      "egofound3r_drag_after.png"
+    ],
+    "image_size_wh": [
+      1348,
+      926
+    ],
+    "pixel_comparison": {
+      "prediction_3d": {
+        "mean_absolute_channel_change_0_255": 14.837331256490135,
+        "fraction_pixels_changed": 0.2531931464174455
+      },
+      "GT_3d": {
+        "mean_absolute_channel_change_0_255": 4.482576769025367,
+        "fraction_pixels_changed": 0.1809190031152648
+      },
+      "prediction_rgb": {
+        "mean_absolute_channel_change_0_255": 0.0,
+        "fraction_pixels_changed": 0.0
+      },
+      "GT_rgb": {
+        "mean_absolute_channel_change_0_255": 0.0,
+        "fraction_pixels_changed": 0.0
+      }
+    }
+  },
+  "checks": {
+    "all_11_sequences_loaded": true,
+    "all_26_prediction_geometries_loaded": true,
+    "all_13_GT_references_loaded": true,
+    "all_video_initial_readyState": 4,
+    "play_pause_and_frame_seek": true,
+    "two_and_three_column_layout": true,
+    "contact_color_and_trajectory": true,
+    "fill_toggle_excludes_primary_metrics": true,
+    "drag_rotates_prediction_and_GT_while_RGB_unchanged": true,
+    "no_application_console_errors_observed": true,
+    "raw_public_release_13_archives": true
+  },
+  "status": "passed_with_render_path_limit",
+  "limitations": [
+    "Cloud browser lacks WebGL2; actual tests used software 3D fallback. No claim of WebGL rendering performance or mobile-device testing.",
+    "Browser extension metadata errors were present; these originated at chrome-extension URLs, not the application."
+  ],
+  "proof_files": [
+    {
+      "file": "egofound3r_drag_before.png",
+      "bytes": 149722,
+      "sha256": "967a6597f53a8269e5c27c5a3c3e2bc719faefddce71e466b2cb699200e962ff"
+    },
+    {
+      "file": "egofound3r_drag_after.png",
+      "bytes": 150439,
+      "sha256": "1c9a82cfc72f82d5b53de133da7cd6f3269da7c675ae4f99948239e3dd773a02"
+    }
+  ]
+}

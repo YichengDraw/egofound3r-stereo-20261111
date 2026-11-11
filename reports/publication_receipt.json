@@ -1,11 +1,47 @@
 {
-  "status": "awaiting_publication_of_completed_results",
+  "status": "completed_and_verified_online",
+  "updated_utc": "2026-11-11T11:40:55.601506+00:00",
   "repository": "https://github.com/YichengDraw/egofound3r-stereo-20261111",
   "url": "https://yichengdraw.github.io/egofound3r-stereo-20261111/",
+  "result_payload_commit": "f2d414bc9e7da7070843cd410512b6f325e8e0d1",
+  "acceptance_documentation_commit": "git revision containing this receipt; payload unchanged",
+  "pages_result_build": {
+    "status": "built",
+    "commit": "f2d414bc9e7da7070843cd410512b6f325e8e0d1",
+    "error": {
+      "message": null
+    },
+    "created_at": "2026-11-11T11:28:56Z",
+    "updated_at": "2026-11-11T11:29:46Z",
+    "duration": 50941
+  },
   "predictions": 13,
   "evaluations": 13,
   "GTreferences": 13,
   "prediction_geometry_exports": 26,
   "frames": 2080,
-  "updated_utc": "2026-11-11T11:25:24.075638+00:00"
+  "sequences": 11,
+  "per_frame_anatomical_hand_rows": 4160,
+  "official_source_commit": "264f4df9fd42536aae4dba982d18272cc3334077",
+  "raw_results": {
+    "phase": "pushed_and_raw_assets_published",
+    "commit": "f2d414bc9e7da7070843cd410512b6f325e8e0d1",
+    "repository": "https://github.com/YichengDraw/egofound3r-stereo-20261111",
+    "release_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/tag/reproduction-20261111",
+    "release_id": 441603426,
+    "archive_count": 13,
+    "asset_sizes_and_digests_verified": true,
+    "finished_utc": "2026-11-11T11:29:48.562013+00:00"
+  },
+  "browser_acceptance": "reports/browser_acceptance.json",
+  "asset_validation": "reports/site_asset_validation.json",
+  "resume_used_existing_predictions": true,
+  "inference_rerun_during_acceptance": false,
+  "H20_used": false,
+  "other_jobs_preempted_or_terminated": false,
+  "remaining_external_blockers": [],
+  "limitations": [
+    "Cloud browser lacks WebGL2; actual tests used software 3D fallback. No claim of WebGL rendering performance or mobile-device testing.",
+    "Browser extension metadata errors were present; these originated at chrome-extension URLs, not the application."
+  ]
 }

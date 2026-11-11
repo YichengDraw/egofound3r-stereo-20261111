@@ -2,7 +2,7 @@
   "schema_version": "egofound3r.viewer.v1",
   "title": "EgoFound3R · 官方实跑 / 已知 K",
   "subtitle": "11 段 · 13 路 RGB · 2,080 帧 · 双 RGB 独立推理 + 单目补充",
-  "status": "complete",
+  "status": "complete_verified_online",
   "generated_at": "2026-11-11T11:23:33.902172+00:00",
   "default_columns": 2,
   "notice": "已完成 13/13 路官方推理与独立评价。有效覆盖率必须与误差一起读；默认隐藏官方填补，勾选后半透明显示。DexYCB 是两相机独立运行，Aria/HO3D 是单 RGB 补充。",
@@ -143,6 +143,22 @@
     {
       "label": "左右手核验",
       "url": "downloads/anatomical_slot_audit.jpg"
+    },
+    {
+      "label": "逐帧左右手 CSV",
+      "url": "downloads/per_frame_hand_scores.csv"
+    },
+    {
+      "label": "逐帧左右手 JSON",
+      "url": "downloads/per_frame_hand_scores.json"
+    },
+    {
+      "label": "在线交互验收",
+      "url": "downloads/browser_acceptance.json"
+    },
+    {
+      "label": "发布验收凭据",
+      "url": "downloads/publication_receipt.json"
     }
   ],
   "sequences": [
@@ -308,6 +324,8 @@
       "description": "dataset 30 FPS; identical source frame IDs across two RGB cameras",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：cam_b 平移 RMSE 6.54 mm，平均旋转误差 0.49°。只对齐首个有效相机坐标，不拟合尺度。",
+        "相机轨迹诊断：cam_a 平移 RMSE 6.06 mm，平均旋转误差 0.31°。只对齐首个有效相机坐标，不拟合尺度。",
         "dataset 30 FPS; identical source frame IDs across two RGB cameras",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -685,6 +703,8 @@
       "description": "dataset 30 FPS; identical source frame IDs across two RGB cameras",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：cam_b 平移 RMSE 2.11 mm，平均旋转误差 0.11°。只对齐首个有效相机坐标，不拟合尺度。",
+        "相机轨迹诊断：cam_a 平移 RMSE 2.38 mm，平均旋转误差 0.30°。只对齐首个有效相机坐标，不拟合尺度。",
         "dataset 30 FPS; identical source frame IDs across two RGB cameras",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -1218,6 +1238,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 42.52 mm，平均旋转误差 3.66°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -1627,6 +1648,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 45.76 mm，平均旋转误差 4.17°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -2056,6 +2078,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 30.12 mm，平均旋转误差 4.36°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -2485,6 +2508,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 39.12 mm，平均旋转误差 3.94°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -2914,6 +2938,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 320.30 mm，平均旋转误差 22.56°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
@@ -3027,7 +3052,8 @@
           "label": "RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3302__rgb.tar.gz"
         }
-      ]
+      ],
+      "notice": "轨迹失败项：Aria 3302 相机平移 RMSE 320.30 mm、平均旋转误差 22.56°。手部相机系误差不代表世界轨迹可靠；仍完整展示该段。默认排除官方填补。"
     },
     {
       "id": "aria_3353",
@@ -3343,6 +3369,7 @@
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
       "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
+        "相机轨迹诊断：rgb 平移 RMSE 5.09 mm，平均旋转误差 0.68°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
         "场景点云取最近的真实 G 锚帧；不代表逐帧深度，也未声称通过深度 GT 验证。"
