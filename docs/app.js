@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
+import { frameMatrix, projectPoint, geometryFrame, jointPixels, frameFromMediaTime } from './projection.js';
 
 const $ = (id) => document.getElementById(id);
 const COLORS = ['#64b6ff', '#f5b54f'];
@@ -58,7 +59,7 @@ function resolveHandLayout(g) {
 async function loadGeometry(path,signal) {
   const u=urlFor(path), g=await fetchJSON(u,signal);
   const out={...g,_base:u,_warnings:[]};
-    const fields=['vertices','joints','valid','display_valid','official_valid','contact','visibility','joints2d','observed','network_anchor','fill_mask','timestamps'];
+    const fields=['vertices','joints','valid','display_valid','official_valid','contact','visibility','joints2d','observed','network_anchor','fill_mask','timestamps','projection_K','joint_valid'];
   const jobs=fields.map(async k=>{if(g[k]!=null) out[k]=await loadArray(g[k],u,signal);});
   if(g.faces) jobs.push((async()=>{
     if(g.faces.left || g.faces.right) out.faces={left:await loadArray(g.faces.left,u,signal),right:await loadArray(g.faces.right,u,signal)};
@@ -74,6 +75,14 @@ async function loadGeometry(path,signal) {
   out._handLayout=resolveHandLayout(out);
   if(!out.vertices && !out.joints && !out.scene?.points) throw new Error('该结果没有可显示的网格、关节或场景点云。');
   return out;
+}
+
+async function loadProjectionGeometry(path,signal){
+  const u=urlFor(path),g=await fetchJSON(u,signal),out={...g,_base:u};
+  const fields=['vertices','joints','valid','display_valid','fill_mask','joints2d','projection_K','joint_valid'];
+  await Promise.all(fields.map(async k=>{if(g[k]!=null)out[k]=await loadArray(g[k],u,signal);}));
+  if(g.faces)out.faces=g.faces.left||g.faces.right?{left:await loadArray(g.faces.left,u,signal),right:await loadArray(g.faces.right,u,signal)}:await loadArray(g.faces,u,signal);
+  out._handLayout=resolveHandLayout(out);return out;
 }
 
 class SoftwareRenderer {
@@ -213,7 +222,7 @@ class SceneViewer {
           colors[v*3]=c.r;colors[v*3+1]=c.g;colors[v*3+2]=c.b;
         }
         mesh.geometry.attributes.position.needsUpdate=true;mesh.geometry.attributes.color.needsUpdate=true;
-        if(mesh.isMesh)mesh.geometry.computeVertexNormals();
+        if(mesh.isMesh&&!this.isSoftware)mesh.geometry.computeVertexNormals();
       }
       if(this.skeletons[h]){
         const line=this.skeletons[h],jp=this.jointPoints[h];line.visible=jp.visible=opts.joints&&valid;line.material.opacity=filled?.42:.95;
@@ -228,12 +237,14 @@ class SceneViewer {
       const s=g.scene,frames=s.frame_count||s.frame_indices?.length||Math.max(1,s.points.length/(3*this.sceneCount));
       let sf=Math.min(frames-1,f);
       if(s.frame_indices?.length){sf=0;while(sf+1<s.frame_indices.length&&Math.abs(s.frame_indices[sf+1]-frame)<Math.abs(s.frame_indices[sf]-frame))sf++;}
+      this.cloud.visible=opts.scene;
+      if(this.lastSceneFrame!==sf){this.lastSceneFrame=sf;
       const positions=this.cloud.geometry.attributes.position.array,colors=this.cloud.geometry.attributes.color.array,base=sf*this.sceneCount*3;
       for(let i=0;i<this.sceneCount*3;i++){const isValid=!s.valid||s.valid[sf*this.sceneCount+Math.floor(i/3)]>.5;positions[i]=isValid?s.points[base+i]*this.scale:NaN;}
       const col=s.colors,colBase=col?.length===this.sceneCount*3?0:base;
       const div=col instanceof Uint8Array||s.colors_range==='0-255'?255:1;
       for(let i=0;i<this.sceneCount*3;i++)colors[i]=col?(col[colBase+i]/div):.5;
-      this.cloud.visible=opts.scene;this.cloud.geometry.attributes.position.needsUpdate=true;this.cloud.geometry.attributes.color.needsUpdate=true;
+      this.cloud.visible=opts.scene;this.cloud.geometry.attributes.position.needsUpdate=true;this.cloud.geometry.attributes.color.needsUpdate=true;}
     }
     this.render();
   }
@@ -267,13 +278,18 @@ class MethodPanel {
     const select=this.q('.method-select');for(const m of state.sequence.methods||[]){const op=node('option','',m.label||m.id);op.value=m.id;select.append(op);}select.value=methodId;
     select.addEventListener('change',()=>{this.load(select.value);saveQuery();});
     this.q('.fit-camera').addEventListener('click',()=>{this.viewer?.fit();if($('linked').checked&&this.viewer)syncCameras(this.viewer);});
-    this.video.addEventListener('seeked',()=>this.drawOverlay());this.video.addEventListener('loadedmetadata',()=>{this.update(state.frame);this.drawOverlay();});
+    this.video.addEventListener('seeked',()=>{if(!this.video.seeking)this.present(this.mediaFrame());});
+    this.video.addEventListener('loadeddata',()=>{if(!state.playing){this.seek(state.frame);this.present(state.frame);}});
+    this.video.addEventListener('ended',()=>{if(state.playing&&state.panels[0]===this){setPlaying(false);if($('loop').checked){setFrame(0);setPlaying(true);}else setFrame(state.sequence.frames-1);}});
+    this.video.addEventListener('seeking',()=>{this.seekCount=(this.seekCount||0)+1;this.el.dataset.seekCount=this.seekCount;});
+    this.resizeObserver=new ResizeObserver(()=>{this.drawOverlay();this.drawProjections();});this.resizeObserver.observe(this.el);
+    this.startVideoFrames();
     this.video.addEventListener('error',()=>{const m=this.q('.video-missing');m.hidden=false;setText(m,'视频读取失败。请检查资源路径或在下载区打开原文件。');});
     $('comparison').append(this.el);
     this.load(methodId);
   }
   async load(id){
-    const token=++this.loadId;this.method=(state.sequence.methods||[]).find(x=>x.id===id);this.geometry=null;
+    setPlaying(false);const token=++this.loadId;this.projectionGeometry=null;this.referenceGeometry=null;this.meshPaths=null;this.method=(state.sequence.methods||[]).find(x=>x.id===id);this.geometry=null;
     const m=this.method;if(!m)return;
     this.q('.method-select').value=id;const kind=this.q('.method-kind');kind.className='method-kind '+(m.kind||'');setText(kind,({official:'官方流程',adapted:'双目适配',reference:'参考真值',baseline:'已有基线'})[m.kind]||m.kind||'推理结果');
     setText(this.q('.method-description'),m.summary||m.notes?.[0]||'');
@@ -300,17 +316,65 @@ class MethodPanel {
       try{this.viewer=new SceneViewer(this.q('.webgl-host'),this);this.viewer.setData(geom);message.hidden=true;if(this.viewer.isSoftware)setText(this.q('.scene-panel .pane-label>span:first-child'),m.kind==='reference'?'GT 标注骨架 · 软件 3D':'软件 3D · 网格线框');}catch(e){this.webglError=true;setText(message,`此浏览器暂时无法创建三维视图。\n${e.message}`);}
       if(!this.bakedOverlay&&!geom.joints2d&&geom.projection_space!=='camera')setText(this.q('.rgb-title'),'输入 RGB · 未导出 2D 投影');
       setText(this.q('.coordinate-label'),m.coordinate_system||geom.coordinate_system||state.sequence.coordinate_system||`${geom.coordinate_convention==='opencv'?'相机坐标':'三维坐标'} · ${geom.units||'m'}`);
+      let projectionGeometry=geom;
+      // World vertices must never be fed directly into the RGB camera K.
+      if(geom.coordinate_space==='world'){
+        const cameraMethod=state.sequence.methods.find(x=>x.kind!=='reference'&&x.view===m.view&&!x.id.endsWith('_world'));
+        if(cameraMethod)projectionGeometry=await loadProjectionGeometry(cameraMethod.geometry,state.controller?.signal);
+      }
+      const reference=state.sequence.methods.find(x=>x.kind==='reference'&&x.view===m.view);
+      const referenceGeometry=reference?(m.kind==='reference'?geom:await loadProjectionGeometry(reference.geometry,state.controller?.signal)):null;
+      if(this.disposed||token!==this.loadId)return;
+      this.projectionGeometry=projectionGeometry;this.referenceGeometry=referenceGeometry;
+      this.q('.projection-gt').hidden=m.kind==='reference';
+      this.q('.projection-row').classList.toggle('reference-only',m.kind==='reference');
+      setText(this.q('.projection-pred .projection-title'),m.kind==='reference'?'GT 骨架投影 · 真实标注':'预测手网格投影 · 原始几何');
       this.update(state.frame);
       const first=state.panels.find(p=>p.viewer?.data)?.viewer;if($('linked').checked&&first)syncCameras(first);
       setText($('load-status'),'几何与视频按同一帧同步');
     }catch(e){if(e.name==='AbortError'||token!==this.loadId)return;setText(message,`几何结果读取失败：${e.message}`);this.el.dataset.error='true';setText($('load-status'),'部分资源读取失败，请查看对应面板');$('load-status').classList.add('error');}
   }
+  mediaFrame(time=this.video.currentTime){return frameFromMediaTime(time,state.sequence.fps||30,state.sequence.frames,this.method?.video_offset_s||0);}
+  startVideoFrames(){
+    if(!this.video.requestVideoFrameCallback)return;
+    const callback=(now,metadata)=>{
+      if(this.disposed)return;
+      this.presentedMediaTime=metadata.mediaTime;
+      const frame=this.mediaFrame(metadata.mediaTime);
+      this.el.dataset.mediaFrame=frame;
+      if(state.playing){
+        if(state.panels[0]===this)updateTimeline(frame);
+        this.present(frame);
+      }else if(!this.video.seeking)this.present(frame);
+      this.videoCallback=this.video.requestVideoFrameCallback(callback);
+    };
+    this.videoCallback=this.video.requestVideoFrameCallback(callback);
+  }
+  seek(frame){
+    if(!this.method||!this.video.src||this.video.readyState<1)return;
+    const t=(frame+.05)/(state.sequence.fps||30)+(this.method.video_offset_s||0);
+    const target=Math.max(0,Math.min(this.video.duration-.001,t));
+    if(Math.abs(this.video.currentTime-target)>.1/(state.sequence.fps||30))this.video.currentTime=target;
+  }
+  present(frame){
+    if(!this.method)return;
+    this.displayFrame=frame;this.el.dataset.frame=frame;
+    // Use the actual presented video frame, not a free-running wall clock.
+    const now=performance.now();
+    const visible=this.q('.scene-panel').getBoundingClientRect();
+    const onScreen=visible.bottom>0&&visible.top<innerHeight;
+    if(!state.playing||(onScreen&&(!this.viewer?.isSoftware||now-(this.lastSceneDraw||0)>=100))){this.viewer?.update(frame);this.lastSceneDraw=now;}
+    this.drawOverlay();this.drawProjections();
+    if(!state.playing||now-(this.lastMetricDraw||0)>=150){this.drawMetrics(frame);this.drawChart();this.updateLabels(frame);this.lastMetricDraw=now;}
+  }
   update(frame){
     if(!this.method)return;
-    const t=frame/(state.sequence.fps||30),off=this.method.video_offset_s||0;
-    if(this.video.src&&this.video.readyState>=1){const target=Math.max(0,Math.min(Number.isFinite(this.video.duration)?Math.max(0,this.video.duration-.001):t,t+off));if(Math.abs(this.video.currentTime-target)>.5/(state.sequence.fps||30))this.video.currentTime=target;}
-    this.viewer?.update(frame);this.drawOverlay();this.drawMetrics(frame);this.drawChart();
-    const g=this.geometry,f=this.viewer?.geometryFrame(frame)??frame,opts=settings();
+    if(!state.playing)this.seek(frame);
+    this.present(frame);
+    this.updateLabels(frame);
+  }
+  updateLabels(frame){
+    const g=this.geometry,f=this.geometry?geometryFrame(this.geometry,frame):frame,opts=settings();
     let text=this.method.kind==='reference'?['GT 参考 · 非模型预测']:[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`严格有效 ${count}/${g.hand_count} 手`);if(g.fill_mask?.[f*g.hand_count]||g.fill_mask?.[f*g.hand_count+1])text.push(opts.filled?'填补：半透明显示':'填补：已隐藏');if(!g.scene?.points&&this.method.kind!=='reference')text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
     if(g?.vertices&&g._handLayout?.missingFaceSlots.length)text.push(`手槽 ${g._handLayout.missingFaceSlots.join('/')} 未提供明确面片拓扑，显示顶点`);
     if(this.viewer?.isSoftware&&g?.vertices)text.push('软件视图：真实面片线框');
@@ -321,29 +385,86 @@ class MethodPanel {
     if(!heat.hidden)setText(heat.querySelector('span'),opts.color==='contact'?'接触概率 0 → 1':'可见概率 0 → 1');
     let caption=[];if(g?.observed){const n=Array.from({length:g.hand_count},(_,h)=>g.observed[f*g.hand_count+h]>.5).filter(Boolean).length;caption.push(n?`${n} 只手：网络输出帧`:'插值 / 填补帧');}else if(g?.network_anchor){caption.push(g.network_anchor[f]>.5?'网络采样帧':'时间插值帧');}if(g?.scene?.frame_indices?.length){const a=g.scene.frame_indices.reduce((x,y)=>Math.abs(y-frame)<Math.abs(x-frame)?y:x);caption.push(`场景 G 锚帧 ${a}`);}if(g?.fill_mask){const n=Array.from({length:g.hand_count},(_,h)=>g.fill_mask[f*g.hand_count+h]>.5).filter(Boolean).length;if(n)caption.push(`${n} 只手：官方填补结果`);}setText(this.q('.video-caption'),caption.join(' · '));
   }
+  drawProjections(){
+    if(!this.method)return;
+    const frame=this.displayFrame??state.frame;
+    this.drawProjectionPane(this.q('.projection-pred'),this.projectionGeometry,frame,this.method.kind==='reference');
+    if(this.method.kind!=='reference')this.drawProjectionPane(this.q('.projection-gt'),this.referenceGeometry,frame,true);
+  }
+  drawProjectionPane(pane,g,frame,isGT){
+    const canvas=pane.querySelector('canvas'),w=pane.clientWidth,h=pane.clientHeight;
+    if(!w||!h)return;
+    const dpr=Math.min(devicePixelRatio,1.5),W=Math.round(w*dpr),H=Math.round(h*dpr);
+    if(canvas.width!==W||canvas.height!==H){canvas.width=W;canvas.height=H;}
+    const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=1;ctx.setLineDash([]);ctx.fillStyle='#101b29';ctx.fillRect(0,0,w,h);
+    const vw=this.video.videoWidth||this.rgb?.width||640,vh=this.video.videoHeight||this.rgb?.height||480;
+    const scale=Math.min(w/vw,h/vh),ox=(w-vw*scale)/2,oy=(h-vh*scale)/2;
+    if(this.video.readyState>=2&&!this.video.seeking)ctx.drawImage(this.video,ox,oy,vw*scale,vh*scale);
+    // During an explicit seek do not paint mismatched geometry over the old video.
+    if(this.video.seeking){setText(pane.querySelector('.projection-status'),'正在定位视频帧…');return;}
+    setText(pane.querySelector('.projection-frame'),`帧 ${frame}`);pane.dataset.frame=frame;
+    if(!g){setText(pane.querySelector('.projection-status'),isGT?'GT 正在加载，或该视角没有 GT':'正在加载投影几何…');return;}
+    const f=geometryFrame(g,frame),opts=settings(),mask=!isGT&&opts.filled&&g.display_valid?g.display_valid:g.valid,K=frameMatrix(g.projection_K,f);
+    const iw=g.projection_image_size_hw?.[1]||vw,ih=g.projection_image_size_hw?.[0]||vh,sx=vw/iw,sy=vh/ih;
+    let visibleHands=0,filledHands=0,projected=0;
+    ctx.save();ctx.beginPath();ctx.rect(ox,oy,vw*scale,vh*scale);ctx.clip();ctx.translate(ox,oy);ctx.scale(scale*sx,scale*sy);
+    for(let hand=0;hand<g.hand_count;hand++){
+      if(mask&&!mask[f*g.hand_count+hand])continue;
+      visibleHands++;const filled=!isGT&&!!g.fill_mask?.[f*g.hand_count+hand];if(filled)filledHands++;
+      const color=COLORS[g._handLayout?.colorIndices[hand]??hand%2];ctx.fillStyle=color;ctx.strokeStyle=color;
+      const faces=g._handLayout?.faces[hand];
+      if(!isGT&&opts.hands&&g.vertices&&faces&&K&&g.coordinate_space!=='world'){
+        const cacheKey=`${g._base}|${f}|${hand}`;
+        this.meshPaths=this.meshPaths||new Map();let cached=this.meshPaths.get(cacheKey);
+        if(!cached){
+          const path=new Path2D(),base=(f*g.hand_count+hand)*g.vertex_count*3,points=[];
+          for(let v=0;v<g.vertex_count;v++){const i=base+v*3;points.push(projectPoint(g.vertices[i],g.vertices[i+1],g.vertices[i+2],K));}
+          let triangles=0;
+          for(let i=0;i<faces.length;i+=3){let a=points[faces[i]],b=points[faces[i+1]],c=points[faces[i+2]];if(!a||!b||!c)continue;
+            // Give every triangle the same screen winding: one union fill avoids
+            // thousands of alpha-overdraw calls and preserves the true silhouette.
+            if((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<0)[b,c]=[c,b];
+            path.moveTo(...a);path.lineTo(...b);path.lineTo(...c);path.closePath();triangles++;
+          }
+          cached={path,triangles};this.meshPaths.set(cacheKey,cached);if(this.meshPaths.size>16)this.meshPaths.delete(this.meshPaths.keys().next().value);
+        }
+        ctx.globalAlpha=filled?.18:.40;ctx.fill(cached.path);projected+=cached.triangles;
+        if(opts.wireframe){ctx.lineWidth=.45;ctx.globalAlpha=filled?.15:.30;ctx.stroke(cached.path);}
+      }
+      const coords=jointPixels(g,f,hand,iw,ih);
+      if(isGT||opts.overlay){
+        ctx.globalAlpha=filled?.45:1;ctx.lineWidth=2/Math.max(.5,scale);ctx.lineCap='round';ctx.setLineDash(filled?[6,4]:[]);
+        ctx.beginPath();for(const [a,b] of (g.joint_edges||EDGES)){if(!coords[a]||!coords[b])continue;ctx.moveTo(...coords[a]);ctx.lineTo(...coords[b]);projected++;}ctx.stroke();
+        ctx.setLineDash([]);for(const p of coords){if(!p)continue;ctx.beginPath();ctx.arc(...p,2.4/Math.max(.5,scale),0,Math.PI*2);ctx.fill();}
+      }
+    }
+    ctx.restore();ctx.globalAlpha=1;
+    let label=isGT?'GT：真实关节标注；未提供 GT 网格':'预测：真实网格 + 相机 K；不对齐 GT';
+    if(!visibleHands)label=isGT?'本帧无有效 GT 标注':'本帧无严格有效预测'+(g.fill_mask?.slice(f*g.hand_count,(f+1)*g.hand_count).some(Boolean)?' · 填补已隐藏':'');
+    else if(!projected)label='手部未投影到画面内，或投影显示已关闭';
+    else if(filledHands)label+=` · ${filledHands} 只填补手半透明`;
+    pane.dataset.validHands=visibleHands;pane.dataset.projected=projected;pane.dataset.filledHands=filledHands;
+    setText(pane.querySelector('.projection-status'),label);
+  }
   qAll(s){return this.el.querySelectorAll(s);}
   drawOverlay(){
-    const canvas=this.canvas,box=this.q('.video-panel'),w=box.clientWidth,h=box.clientHeight,dpr=Math.min(devicePixelRatio,2);canvas.width=w*dpr;canvas.height=h*dpr;
+    const canvas=this.canvas,box=this.q('.video-panel'),w=box.clientWidth,h=box.clientHeight,dpr=Math.min(devicePixelRatio,2);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
     const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
     const g=this.geometry;if(!g||!$('overlay').checked||this.bakedOverlay||!w)return;
     const vw=this.video.videoWidth||this.rgb?.width||g.image_size_hw?.[1]||640,vh=this.video.videoHeight||this.rgb?.height||g.image_size_hw?.[0]||480,scale=Math.min(w/vw,h/vh),ox=(w-vw*scale)/2,oy=(h-vh*scale)/2;
-    const f=this.viewer?.geometryFrame(state.frame)??state.frame,H=g.hand_count,J=g.joint_count,K=flatten(g.projection_K||this.rgb?.K||[]),projectable=g.joints2d||(g.joints&&g.projection_space==='camera'&&K.length===9);
+    const f=geometryFrame(g,this.displayFrame??state.frame),H=g.hand_count,J=g.joint_count,K=flatten(g.projection_K||this.rgb?.K||[]),projectable=g.joints2d||(g.joints&&g.projection_space==='camera'&&K.length===9);
     if(!projectable)return;
     ctx.lineWidth=1.6;ctx.lineCap='round';
     for(let hand=0;hand<H;hand++){
       const mask=settings().filled&&g.display_valid?g.display_valid:g.valid;if(mask&&mask[f*H+hand]<.5)continue;ctx.globalAlpha=g.fill_mask?.[f*H+hand]?.42:1;ctx.setLineDash(g.fill_mask?.[f*H+hand]?[4,3]:[]);const coords=[];
-      for(let j=0;j<J;j++){
-        let x,y;if(g.joints2d){const i=((f*H+hand)*J+j)*2;x=g.joints2d[i];y=g.joints2d[i+1];if(g.joints2d_normalized){x*=vw;y*=vh;}}
-        else{const i=((f*H+hand)*J+j)*3,X=g.joints[i],Y=g.joints[i+1],Z=g.joints[i+2];if(Z<=0){coords.push(null);continue;}x=K[0]*X/Z+K[2];y=K[4]*Y/Z+K[5];}
-        coords.push(finite(x)&&finite(y)?[x*scale+ox,y*scale+oy]:null);
-      }
+      for(const p of jointPixels(g,f,hand,vw,vh))coords.push(p?[p[0]*scale+ox,p[1]*scale+oy]:null);
       const color=COLORS[g._handLayout?.colorIndices[hand]??hand%2];ctx.strokeStyle=color;ctx.fillStyle=color;ctx.shadowColor='#000';ctx.shadowBlur=2;
       for(const [a,b] of (g.joint_edges||EDGES)){if(!coords[a]||!coords[b])continue;ctx.beginPath();ctx.moveTo(...coords[a]);ctx.lineTo(...coords[b]);ctx.stroke();}
       for(const p of coords){if(!p)continue;ctx.beginPath();ctx.arc(...p,2,0,Math.PI*2);ctx.fill();}
     }
   }
   drawMetrics(frame){
-    const target=this.q('.frame-metrics');target.replaceChildren();const g=this.geometry,f=this.viewer?.geometryFrame(frame)??frame;
+    const target=this.q('.frame-metrics');target.replaceChildren();const g=this.geometry,f=this.geometry?geometryFrame(this.geometry,frame):frame;
     const add=(label,value,unit='')=>{const d=node('div','frame-metric'),l=node('span','',label),v=node('strong','',value);if(unit)v.append(node('small','',unit));d.append(l,v);target.append(d);};
     if(!g){add('几何状态',this.method.status==='complete'?'未提供':this.method.status==='blocked'?'待权重授权':'等待结果');return;}
     if(g.series?.length){for(const s of g.series.slice(0,3))add(s.label,fmt(s.values[f],s.digits??2),s.unit||'');}
@@ -353,32 +474,48 @@ class MethodPanel {
   }
   drawChart(){
     const g=this.geometry,chart=g?.series?.find(s=>s.values?.length>1),holder=this.q('.chart-container');holder.classList.toggle('has-data',!!chart);if(!chart)return;
-    const canvas=this.q('.series-chart'),rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio,2),w=rect.width,h=rect.height;if(!w||!h)return;canvas.width=w*dpr;canvas.height=h*dpr;
-    const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);const vals=chart.values,good=Array.from(vals).filter(finite);if(!good.length)return;
+    const canvas=this.q('.series-chart'),rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio,2),w=rect.width,h=rect.height;if(!w||!h)return;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
+    const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);const vals=chart.values,good=Array.from(vals).filter(finite);if(!good.length)return;
     let lo=Math.min(...good),hi=Math.max(...good);if(hi-lo<1e-8){lo-=.5;hi+=.5;}const x=i=>4+i/(vals.length-1)*(w-8),y=v=>h-5-(v-lo)/(hi-lo)*(h-10);
     ctx.strokeStyle='#e5eaf1';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,h-4);ctx.lineTo(w,h-4);ctx.stroke();
     ctx.strokeStyle=ACCENTS[this.index%3];ctx.lineWidth=1.5;ctx.beginPath();let pen=false;for(let i=0;i<vals.length;i++){if(!finite(vals[i])){pen=false;continue;}if(!pen)ctx.moveTo(x(i),y(vals[i]));else ctx.lineTo(x(i),y(vals[i]));pen=true;}ctx.stroke();
-    const f=this.viewer?.geometryFrame(state.frame)??state.frame;ctx.strokeStyle='#283e5b';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x(f),1);ctx.lineTo(x(f),h);ctx.stroke();if(finite(vals[f])){ctx.fillStyle=ACCENTS[this.index%3];ctx.beginPath();ctx.arc(x(f),y(vals[f]),3,0,Math.PI*2);ctx.fill();}
+    const f=geometryFrame(g,this.displayFrame??state.frame);ctx.strokeStyle='#283e5b';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x(f),1);ctx.lineTo(x(f),h);ctx.stroke();if(finite(vals[f])){ctx.fillStyle=ACCENTS[this.index%3];ctx.beginPath();ctx.arc(x(f),y(vals[f]),3,0,Math.PI*2);ctx.fill();}
     setText(this.q('.chart-label'),`${chart.label}${chart.unit?' · '+chart.unit:''} · 全片段变化`);
   }
-  dispose(){this.disposed=true;this.loadId++;this.video.pause();this.video.removeAttribute('src');this.video.load();this.viewer?.dispose();this.el.remove();}
+  dispose(){this.disposed=true;this.loadId++;this.resizeObserver.disconnect();if(this.videoCallback)this.video.cancelVideoFrameCallback(this.videoCallback);this.video.pause();this.video.removeAttribute('src');this.video.load();this.viewer?.dispose();this.el.remove();}
 }
 
 function frameTime(f){const times=state.sequence?.timestamps||state.sequence?.timestamps_s;if(times?.length)return times[f]-times[0];return f/(state.sequence?.fps||30);}
-function setFrame(f){
+function updateTimeline(f){
   if(!state.sequence)return;state.frame=Math.max(0,Math.min(state.sequence.frames-1,Math.round(f)));state.clock=frameTime(state.frame);
   $('scrubber').value=state.frame;$('frame-number').value=state.frame;setText($('time-label'),`${fmt(state.clock)} s`);
   setText($('source-frame-label'),state.sequence.frame_ids?.length?`源帧 ${state.sequence.frame_ids[state.frame]}`:`第 ${state.frame+1} / ${state.sequence.frames} 帧`);
-  for(const p of state.panels)p.update(state.frame);
 }
-function setPlaying(value){state.playing=value;state.last=performance.now();setText($('play-icon'),value?'Ⅱ':'▶');setText($('play-text'),value?'暂停':'播放');$('play').setAttribute('aria-label',value?'暂停':'播放');}
+function setFrame(f){updateTimeline(f);for(const p of state.panels)p.update(state.frame);}
+function setPlaying(value){
+  const token=state.playToken=(state.playToken||0)+1,wasPlaying=state.playing;
+  state.playing=value;setText($('play-icon'),value?'Ⅱ':'▶');setText($('play-text'),value?'暂停':'播放');$('play').setAttribute('aria-label',value?'暂停':'播放');
+  if(!value){for(const p of state.panels)p.video.pause();if(wasPlaying&&state.panels[0]){updateTimeline(state.panels[0].mediaFrame(state.panels[0].presentedMediaTime??state.panels[0].video.currentTime));for(const p of state.panels)p.update(state.frame);}return;}
+  if(!state.panels.length)return;
+  if(state.frame>=state.sequence.frames-1)setFrame(0);
+  const videos=state.panels.filter(p=>p.video.src);
+  for(const p of videos){p.seek(state.frame);p.video.playbackRate=Number($('speed').value);}
+  Promise.all(videos.map(p=>p.video.play())).catch(e=>{if(state.playToken===token){setPlaying(false);setText($('load-status'),'视频未能开始播放，请等待加载后重试。');}});
+}
 function tick(now){
-  if(state.playing&&state.sequence){const dt=Math.min(.25,(now-state.last)/1000)*Number($('speed').value);const nextTime=state.clock+dt;let f;
-    if(state.sequence.timestamps?.length||state.sequence.timestamps_s?.length){const times=state.sequence.timestamps||state.sequence.timestamps_s;f=state.frame;while(f+1<times.length&&times[f+1]-times[0]<=nextTime)f++;if(nextTime>frameTime(state.sequence.frames-1)+1/(state.sequence.fps||30))f=state.sequence.frames;}
-    else f=Math.floor(nextTime*(state.sequence.fps||30));
-    if(f>=state.sequence.frames){if($('loop').checked){setFrame(0);}else{setFrame(state.sequence.frames-1);setPlaying(false);}}
-    else{if(f!==state.frame)setFrame(f);state.clock=nextTime;}
-  }state.last=now;requestAnimationFrame(tick);
+  if(state.playing&&state.panels.length){
+    const master=state.panels[0],time=master.video.currentTime;
+    // Older browsers without rVFC still use the media clock, never repeated seeking.
+    for(const p of state.panels)if(!p.video.requestVideoFrameCallback&&!p.video.seeking){const f=p.mediaFrame();if(p===master)updateTimeline(f);if(f!==p.displayFrame)p.present(f);}
+    if(now-(state.lastSync||0)>300){
+      state.lastSync=now;
+      for(const p of state.panels.slice(1)){
+        const delta=(p.video.currentTime-(p.method.video_offset_s||0))-(time-(master.method.video_offset_s||0));
+        if(!p.video.seeking&&p.video.readyState>=2&&Math.abs(delta)>.12){p.video.currentTime=Math.max(0,time+(p.method.video_offset_s||0)-(master.method.video_offset_s||0));}
+      }
+    }
+  }
+  requestAnimationFrame(tick);
 }
 
 function renderMetrics(){
@@ -406,6 +543,7 @@ async function selectSequence(id){
   renderPanels();setFrame(0);saveQuery();
 }
 function renderPanels(){
+  setPlaying(false);
   const selected=state.panels.map(p=>p.method?.id);for(const p of state.panels)p.dispose();state.panels=[];
   const methods=state.sequence?.methods||[],n=Math.min(Number($('columns').value),Math.max(1,methods.length));$('comparison').classList.toggle('three-columns',n===3);
   if(!methods.length){$('comparison').append(node('p','empty-inline','这个片段尚无可显示的方法结果。'));return;}
@@ -416,6 +554,7 @@ function saveQuery(){if(!state.sequence)return;const q=new URLSearchParams();q.s
 
 function wireUI(){
   setText($('color-mode').querySelector('option[value="hand"]'),'左右手');
+  $('speed').addEventListener('change',()=>{for(const p of state.panels)p.video.playbackRate=Number($('speed').value);});
   $('sequence').addEventListener('change',()=>selectSequence($('sequence').value));$('columns').addEventListener('change',()=>{renderPanels();saveQuery();});
   $('play').addEventListener('click',()=>setPlaying(!state.playing));$('previous').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame-1);});$('next').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame+1);});
   $('scrubber').addEventListener('input',()=>{setPlaying(false);setFrame(Number($('scrubber').value));});$('frame-number').addEventListener('change',()=>{setPlaying(false);setFrame(Number($('frame-number').value));});

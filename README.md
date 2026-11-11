@@ -105,3 +105,11 @@ GT 3D 评分使用全部有效标注；网页 2D 投影只显示正深度的关�
 
 详见 `reports/browser_acceptance.json`；拖动前后原始截图在 `reports/qa/`。GitHub Pages 已构建，13 份原始预测 release 归档均核对了大小及 SHA256；此后验收说明提交不改变预测、评价数值或归档。
 <!-- acceptance-end -->
+
+## 同相机预测 / GT 投影与原生播放（2026-11-11）
+
+每列下方增加预测真实网格投影（左）和同相机 GT 骨架投影（右）。GT 只有关节标注，不补造网格。世界系列使用同一路相机空间顶点做 RGB 投影；已知逐帧 K、帧号及严格有效 / 官方填补规则保持不变。投影是半透明几何轮廓，不做 RGB 遮挡重建或 GT 拟合。26 份相机预测 / GT 投影核验最大差异 0.0044 像素。
+
+播放改为浏览器原生连续解码，以 requestVideoFrameCallback 的实际呈现帧驱动骨架、投影和时间轴；不再在每一帧反复写 currentTime。新增四个投影画面复用现有视频帧，不增加 MP4 解码流。软件 3D 播放时最多更新 10 FPS，暂停 / 逐帧仍准确更新；不可见的 3D 不持续绘制。场景仅在 G 锚帧改变时更新，文本指标限频，投影路径小容量缓存。
+
+验证命令：node tests/test_projection.mjs；python scripts/validate_projection.py。没有重新推理，也未改动预测张量、GT、指标或原始视频。

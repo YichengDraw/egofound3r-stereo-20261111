@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const source=readFileSync(new URL('../docs/projection.js',import.meta.url),'utf8');
+const {projectPoint,frameMatrix,frameFromMediaTime,jointPixels,geometryFrame}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+assert.deepEqual(projectPoint(1,2,4,[100,3,20,0,120,30,0,0,1]),[46.5,90]);
+assert.equal(projectPoint(0,0,0,[1,0,0,0,1,0,0,0,1]),null);
+assert.equal(projectPoint(NaN,1,1,[1,0,0,0,1,0,0,0,1]),null);
+assert.deepEqual(frameMatrix(new Float32Array(Array.from({length:18},(_,i)=>i)),1),new Float32Array([9,10,11,12,13,14,15,16,17]));
+assert.equal(frameMatrix([1,2,3],2),null);
+for(let f=0;f<300;f++)assert.equal(frameFromMediaTime(f/30,30,300),f);
+assert.equal(frameFromMediaTime(10,30,300),299);
+assert.equal(geometryFrame({frame_count:3,frame_indices:[0,5,10]},7),1);
+assert.deepEqual(jointPixels({hand_count:1,joint_count:2,joint_valid:[1,0],joints2d:[12,34,5,6]},0,0,640,480),[[12,34],null]);
+console.log('Projection helpers: 309 assertions passed');

@@ -1,0 +1,164 @@
+{
+  "status": "passed",
+  "exports_checked": 26,
+  "max_reprojection_error_px": 0.0043879288613550916,
+  "checks": [
+    {
+      "sequence": "dexycb_box",
+      "method": "official_cam_a",
+      "valid_projected_joints": 21,
+      "max_reprojection_error_px": 3.814697265625e-05
+    },
+    {
+      "sequence": "dexycb_box",
+      "method": "official_cam_b",
+      "valid_projected_joints": 168,
+      "max_reprojection_error_px": 3.4119690099032596e-05
+    },
+    {
+      "sequence": "dexycb_box",
+      "method": "gt_cam_a",
+      "valid_projected_joints": 1554,
+      "max_reprojection_error_px": 4.4261030399661306e-05
+    },
+    {
+      "sequence": "dexycb_box",
+      "method": "gt_cam_b",
+      "valid_projected_joints": 1554,
+      "max_reprojection_error_px": 3.4359785758963376e-05
+    },
+    {
+      "sequence": "dexycb_banana",
+      "method": "official_cam_a",
+      "valid_projected_joints": 0,
+      "max_reprojection_error_px": null
+    },
+    {
+      "sequence": "dexycb_banana",
+      "method": "official_cam_b",
+      "valid_projected_joints": 1155,
+      "max_reprojection_error_px": 6.291359750321135e-05
+    },
+    {
+      "sequence": "dexycb_banana",
+      "method": "gt_cam_a",
+      "valid_projected_joints": 1512,
+      "max_reprojection_error_px": 4.3962564455318725e-05
+    },
+    {
+      "sequence": "dexycb_banana",
+      "method": "gt_cam_b",
+      "valid_projected_joints": 1512,
+      "max_reprojection_error_px": 3.446552533693085e-05
+    },
+    {
+      "sequence": "aria_1976",
+      "method": "official_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 8.63167442730628e-05
+    },
+    {
+      "sequence": "aria_1976",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 3.7620747559239936e-05
+    },
+    {
+      "sequence": "aria_2022",
+      "method": "official_rgb",
+      "valid_projected_joints": 5544,
+      "max_reprojection_error_px": 0.0001258271950064227
+    },
+    {
+      "sequence": "aria_2022",
+      "method": "gt_rgb",
+      "valid_projected_joints": 5880,
+      "max_reprojection_error_px": 4.088907503432086e-05
+    },
+    {
+      "sequence": "aria_3070",
+      "method": "official_rgb",
+      "valid_projected_joints": 6216,
+      "max_reprojection_error_px": 0.00013647876039613038
+    },
+    {
+      "sequence": "aria_3070",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 4.2718890406446925e-05
+    },
+    {
+      "sequence": "aria_3209",
+      "method": "official_rgb",
+      "valid_projected_joints": 5565,
+      "max_reprojection_error_px": 0.00013647876039613038
+    },
+    {
+      "sequence": "aria_3209",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 6.0988340528156264e-05
+    },
+    {
+      "sequence": "aria_3302",
+      "method": "official_rgb",
+      "valid_projected_joints": 5355,
+      "max_reprojection_error_px": 8.63167442730628e-05
+    },
+    {
+      "sequence": "aria_3302",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6247,
+      "max_reprojection_error_px": 0.0043879288613550916
+    },
+    {
+      "sequence": "aria_3353",
+      "method": "official_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 0.0001258271950064227
+    },
+    {
+      "sequence": "aria_3353",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 4.239202316620877e-05
+    },
+    {
+      "sequence": "ho3d_mc1",
+      "method": "official_rgb",
+      "valid_projected_joints": 7665,
+      "max_reprojection_error_px": 6.823938019806519e-05
+    },
+    {
+      "sequence": "ho3d_mc1",
+      "method": "gt_rgb",
+      "valid_projected_joints": 5691,
+      "max_reprojection_error_px": 2.6606640755454337e-05
+    },
+    {
+      "sequence": "ho3d_smu1",
+      "method": "official_rgb",
+      "valid_projected_joints": 7728,
+      "max_reprojection_error_px": 6.823938019806519e-05
+    },
+    {
+      "sequence": "ho3d_smu1",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6237,
+      "max_reprojection_error_px": 2.1292455373366116e-05
+    },
+    {
+      "sequence": "ho3d_sm2",
+      "method": "official_rgb",
+      "valid_projected_joints": 7833,
+      "max_reprojection_error_px": 6.823938019806519e-05
+    },
+    {
+      "sequence": "ho3d_sm2",
+      "method": "gt_rgb",
+      "valid_projected_joints": 6300,
+      "max_reprojection_error_px": 2.122504167217807e-05
+    }
+  ],
+  "scope": "Known camera K applied to real camera-space geometry; world views load the corresponding camera-space projection payload. GT is real joints only, no invented mesh."
+}

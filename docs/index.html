@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a25">
   <meta name="description" content="EgoFound3R 复现实验：同步 RGB、手部重建、场景点云与可交互三维对比。">
   <title>EgoFound3R · 复现对比</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=projection-native-1">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -53,12 +53,16 @@
       <div class="method-description"></div>
       <div class="video-panel"><video muted playsinline preload="auto"></video><canvas class="overlay-canvas"></canvas><div class="video-missing" hidden></div><div class="pane-label"><span class="rgb-title">RGB + 2D 投影</span><span class="video-view"></span></div><div class="video-caption"></div></div>
       <div class="scene-panel"><div class="webgl-host"></div><div class="pane-label"><span>可交互 3D</span><span class="coordinate-label"></span></div><div class="scene-message">正在加载几何结果…</div><div class="scene-legend"><span><i class="dot left"></i>左手</span><span><i class="dot right"></i>右手</span><span class="heat-legend" hidden><i></i><span>低 → 高</span></span></div><button class="fit-camera" title="将手部居中" aria-label="将手部居中">⌖</button><div class="frame-state"></div></div>
+      <div class="projection-row">
+        <div class="projection-pane projection-pred"><canvas aria-label="预测手投影到同帧 RGB"></canvas><div class="pane-label"><span class="projection-title">预测手网格投影 · 原始几何</span><span class="projection-frame"></span></div><div class="projection-status"></div></div>
+        <div class="projection-pane projection-gt"><canvas aria-label="同相机 GT 投影到同帧 RGB"></canvas><div class="pane-label"><span>GT 骨架投影 · 同相机</span><span class="projection-frame"></span></div><div class="projection-status"></div></div>
+      </div>
       <div class="frame-metrics"></div>
       <div class="chart-container"><canvas class="series-chart" aria-label="逐帧指标曲线"></canvas><div class="chart-label"></div></div>
     </article>
   </template>
   <noscript><p class="notice">请启用 JavaScript，以查看同步视频和可拖动的三维结果。</p></noscript>
-  <script type="module" src="app.js?v=7f7911310555"></script>
+  <script type="module" src="app.js?v=projection-native-1"></script>
 </body>
 </html>
 
