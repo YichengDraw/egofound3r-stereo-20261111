@@ -2,10 +2,10 @@
   "schema_version": "egofound3r.viewer.v1",
   "title": "EgoFound3R · 双 RGB / 已知内参",
   "subtitle": "DexYCB 箱子与香蕉 · 146 个同步时刻 · 292 幅真实 RGB",
-  "generated_at": "2026-11-11T07:43:58.366428+00:00",
+  "generated_at": "2026-11-11T07:58:27.925314+00:00",
   "status": "blocked",
   "status_label": "待权重授权 · 未完成推理",
-  "notice": "两套官方权重均返回 HTTP 401，需要账户获得访问权限并登录。当前展示真实双 RGB 输入；模型预测、3D 重建和指标尚未生成。",
+  "notice": "两套官方权重均返回 HTTP 401，需要账户获得访问权限并登录。当前展示真实双 RGB 输入；模型预测、3D 重建和指标尚未生成。 可拖动的 GT 参考来自 4 路真实标注，不是模型预测。",
   "provenance": "官方代码 264f4df · 原始 RGB 与 K 已核对 · 预测状态逐项标明",
   "protocol": [
     {
@@ -231,7 +231,8 @@
       "notes": [
         "两列视频来自同一动作的两台真实 RGB 相机。",
         "已核对帧数、图像尺寸、RGB 通道和标定对应；这些检查属于数据验证。",
-        "原版模型不联合读取左右图像。本页保留两路独立结果，便于比较视角影响。"
+        "原版模型不联合读取左右图像。本页保留两路独立结果，便于比较视角影响。",
+        "GT 参考列仅展示真实标注的骨架、腕部轨迹和投影；不输入模型，也不计入预测完成数。"
       ],
       "rgb": {
         "A": {
@@ -304,6 +305,30 @@
           "coordinate_system": "相机 B 坐标 · m",
           "summary": "RGB 932122062010 + 真实 K · 独立官方推理",
           "missing_reason": "待官方权重授权\n尚未运行 EgoFound3R，没有生成 3D 预测。",
+          "metrics": []
+        },
+        {
+          "id": "gt_a",
+          "label": "GT 参考 · 相机 A · 仅评价",
+          "kind": "reference",
+          "view": "A",
+          "view_label": "相机 A",
+          "status": "complete",
+          "geometry": "data/dexycb_box/cam_a/reference/geometry.json",
+          "coordinate_system": "相机 A 坐标 · m",
+          "summary": "真实 DexYCB 标注：21 关节、腕部轨迹及 RGB 投影；不是模型预测。",
+          "metrics": []
+        },
+        {
+          "id": "gt_b",
+          "label": "GT 参考 · 相机 B · 仅评价",
+          "kind": "reference",
+          "view": "B",
+          "view_label": "相机 B",
+          "status": "complete",
+          "geometry": "data/dexycb_box/cam_b/reference/geometry.json",
+          "coordinate_system": "相机 B 坐标 · m",
+          "summary": "真实 DexYCB 标注：21 关节、腕部轨迹及 RGB 投影；不是模型预测。",
           "metrics": []
         }
       ]
@@ -469,7 +494,8 @@
       "notes": [
         "两列视频来自同一动作的两台真实 RGB 相机。",
         "已核对帧数、图像尺寸、RGB 通道和标定对应；这些检查属于数据验证。",
-        "原版模型不联合读取左右图像。本页保留两路独立结果，便于比较视角影响。"
+        "原版模型不联合读取左右图像。本页保留两路独立结果，便于比较视角影响。",
+        "GT 参考列仅展示真实标注的骨架、腕部轨迹和投影；不输入模型，也不计入预测完成数。"
       ],
       "rgb": {
         "A": {
@@ -543,8 +569,33 @@
           "summary": "RGB 932122062010 + 真实 K · 独立官方推理",
           "missing_reason": "待官方权重授权\n尚未运行 EgoFound3R，没有生成 3D 预测。",
           "metrics": []
+        },
+        {
+          "id": "gt_a",
+          "label": "GT 参考 · 相机 A · 仅评价",
+          "kind": "reference",
+          "view": "A",
+          "view_label": "相机 A",
+          "status": "complete",
+          "geometry": "data/dexycb_banana/cam_a/reference/geometry.json",
+          "coordinate_system": "相机 A 坐标 · m",
+          "summary": "真实 DexYCB 标注：21 关节、腕部轨迹及 RGB 投影；不是模型预测。",
+          "metrics": []
+        },
+        {
+          "id": "gt_b",
+          "label": "GT 参考 · 相机 B · 仅评价",
+          "kind": "reference",
+          "view": "B",
+          "view_label": "相机 B",
+          "status": "complete",
+          "geometry": "data/dexycb_banana/cam_b/reference/geometry.json",
+          "coordinate_system": "相机 B 坐标 · m",
+          "summary": "真实 DexYCB 标注：21 关节、腕部轨迹及 RGB 投影；不是模型预测。",
+          "metrics": []
         }
       ]
     }
-  ]
+  ],
+  "default_columns": 3
 }

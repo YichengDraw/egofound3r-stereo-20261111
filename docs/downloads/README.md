@@ -37,6 +37,8 @@ python scripts/run_official.py --root RUN_ROOT
 
 **准备脚本和界面通过检查，不等于模型已成功运行。** 完成推理后需实际检查官方输出、手侧/关节对应、评价数值和 3D 内容，再更新页面状态。
 
+网页另提供明确标注为 **GT 参考 · 仅评价** 的真实 DexYCB 21 关节骨架、腕部轨迹与 RGB 投影，可拖动查看。参考列不包含推测的网格、场景或接触概率，不传入模型，也不计入推理完成数。通过 `build_site.py --export-references` 从独立评价目录重新导出。
+
 ## 原始方法
 
 [EgoFound3R 论文](https://arxiv.org/abs/2610.01210) · [官方代码](https://github.com/MINT-SJTU/EgoFound3R)

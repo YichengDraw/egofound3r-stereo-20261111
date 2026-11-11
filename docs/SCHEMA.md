@@ -49,6 +49,8 @@
 
 方法 `kind` 可为 `official`、`adapted`、`reference`、`baseline`。两路独立官方推理都应标为 `official`；`adapted` 仅用于实际实现且清楚说明的双目适配。
 
+真实标注参照使用 `kind: "reference"`，名称必须明确包含“GT 参考 · 仅评价”，且不附加模型评价指标。其几何声明 `data_role: "ground_truth_reference"`；只包含实际已有的标注。`manifest.default_columns: 3` 可让无指定方法参数的页面默认显示三列。
+
 缺少预测时，设置 `status: "blocked"`，提供 `missing_reason`，省略 `geometry` 和虚构指标。真实输入视频仍正常同步播放，三维区域显示原因。`video` 可以覆盖该方法使用的视频；`overlay_video` 可以指定已经渲染投影的视频。视频时间零点不同可设置 `video_offset_s`。视频、几何、评估与索引文件相对路径均以网站根目录解析。
 
 ## geometry.json
@@ -93,6 +95,8 @@
 - 顶点、关节、点云必须使用同一坐标系。`opencv` 显示时统一翻转 Y/Z，保留左右手和真实几何关系；`y_up` 保持原方向。`mm` 会统一换成米显示。
 - 跨方法联动相机应使用同一坐标系。未对齐的相机坐标须在页面文字说明，用户可关闭联动。
 - `valid[T,H]` 决定手部是否显示；缺失结果不要填零坐标假装有效。
+- 只有关节的真实 GT 参考可省略 `vertices`、`faces`、`scene`，设置 `vertex_count: 0`。页面自动开启骨架，可显示真实腕部轨迹；不据此补造网格或场景。
+- `hand_order` 优先使用明确的数组，也兼容逗号分隔字符串。`"unknown"` 保留未知侧别与 native slot 标签；只有左右面片索引完全相同时才视为共享拓扑，否则需显式 `faces_by_slot` 或确定的手侧映射。页面不会猜测左右手。
 - `contact`、`visibility` 为 0–1 概率。缺少这些输出时保持左右手颜色，并明确提示缺失。
 - `joints2d` 是当前展示 RGB 的原始像素坐标，默认顺序为常用 21 关节骨架。若为 0–1 坐标，设置 `joints2d_normalized: true`。
 - 只有在 `joints` 真正为对应 RGB 相机坐标时，才可省略 `joints2d` 并设置 `projection_space: "camera"`、`projection_K`。世界坐标不能直接用 K 投影。

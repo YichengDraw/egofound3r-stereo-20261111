@@ -42,6 +42,19 @@ async function loadArray(spec,base,signal) {
   if(expected!=null && expected!==arr.length) throw new Error(`数组尺寸不符：${new URL(u).pathname}，需要 ${expected}，得到 ${arr.length}`);
   assetCache.set(key,arr); return arr;
 }
+function resolveHandLayout(g) {
+  const count=g.hand_count||2;
+  const order=Array.isArray(g.hand_order)?g.hand_order:typeof g.hand_order==='string'?g.hand_order.split(',').map(s=>s.trim()):[];
+  const sides=Array.from({length:count},(_,i)=>['left','right'].includes(order[i])?order[i]:null);
+  const sameIndices=(a,b)=>ArrayBuffer.isView(a)&&ArrayBuffer.isView(b)&&a.length===b.length&&a.every((v,i)=>v===b[i]);
+  // An unknown hand side is compatible with an explicitly shared topology.
+  // Legacy left/right keys establish shared topology only if every index agrees.
+  const common=ArrayBuffer.isView(g.faces)?g.faces:sameIndices(g.faces?.left,g.faces?.right)?g.faces.left:null;
+  const faces=Array.from({length:count},(_,i)=>g.faces_by_slot?.[i]||common||(sides[i]?g.faces?.[sides[i]]:null)||null);
+  const labels=Array.from({length:count},(_,i)=>g.hand_labels?.[i]||(sides[i]==='left'?'左手':sides[i]==='right'?'右手':`native slot ${i}`));
+  const colorIndices=sides.map((side,i)=>side==='left'?0:side==='right'?1:i%COLORS.length);
+  return {sides,faces,labels,colorIndices,missingFaceSlots:faces.flatMap((face,i)=>face?[]:[i])};
+}
 async function loadGeometry(path,signal) {
   const u=urlFor(path), g=await fetchJSON(u,signal);
   const out={...g,_base:u,_warnings:[]};
@@ -51,12 +64,14 @@ async function loadGeometry(path,signal) {
     if(g.faces.left || g.faces.right) out.faces={left:await loadArray(g.faces.left,u,signal),right:await loadArray(g.faces.right,u,signal)};
     else out.faces=await loadArray(g.faces,u,signal);
   })());
+  if(g.faces_by_slot) jobs.push((async()=>{out.faces_by_slot=await Promise.all(g.faces_by_slot.map(spec=>loadArray(spec,u,signal)));})());
   if(g.scene) jobs.push((async()=>{const shape=g.scene.points?.shape;out.scene={...g.scene,point_count:g.scene.point_count||shape?.[shape.length-2],frame_count:g.scene.frame_count||g.scene.frame_indices?.length||(shape?.length===3?shape[0]:1),points:await loadArray(g.scene.points,u,signal),colors:await loadArray(g.scene.colors,u,signal),valid:await loadArray(g.scene.valid,u,signal)};})());
   if(g.series) jobs.push((async()=>{out.series=await Promise.all(g.series.map(async s=>({...s,values:await loadArray(s.values,u,signal)})));})());
   await Promise.all(jobs);
   out.frame_count=Number(g.frame_count||g.vertices?.shape?.[0]||g.joints?.shape?.[0]||state.sequence.frames);
-  out.hand_count=Number(g.hand_count||2); out.vertex_count=Number(g.vertex_count||778); out.joint_count=Number(g.joint_count||21);
+  out.hand_count=Number(g.hand_count??2); out.vertex_count=Number(g.vertex_count??778); out.joint_count=Number(g.joint_count??21);
   if(out.display_valid)out.valid=out.display_valid;
+  out._handLayout=resolveHandLayout(out);
   if(!out.vertices && !out.joints && !out.scene?.points) throw new Error('该结果没有可显示的网格、关节或场景点云。');
   return out;
 }
@@ -85,12 +100,12 @@ class SceneViewer {
     this.buildHands();this.buildScene();this.buildTrajectories();this.update(state.frame);this.fit();
   }
   buildHands(){
-    const g=this.data, V=g.vertex_count, J=g.joint_count;this.edges=g.joint_edges||EDGES;
+    const g=this.data, V=g.vertex_count, J=g.joint_count;this.edges=g.joint_edges||EDGES;this.layout=g._handLayout||resolveHandLayout(g);
     for(let h=0;h<g.hand_count;h++){
-      const side=(g.hand_order||['left','right'])[h],index=side==='right'?1:0;
+      const side=this.layout.sides[h],index=this.layout.colorIndices[h];
       if(g.vertices){
         const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(V*3),3));geo.setAttribute('color',new THREE.BufferAttribute(new Float32Array(V*3),3));
-        let faces=g.faces?.[side]||((ArrayBuffer.isView(g.faces))?g.faces:null);
+        const faces=this.layout.faces[h];
         if(faces) geo.setIndex(new THREE.BufferAttribute(new Uint32Array(faces),1));
         const mat=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:true,roughness:.68,metalness:.04,side:THREE.DoubleSide});
         const mesh=faces?new THREE.Mesh(geo,mat):new THREE.Points(geo,new THREE.PointsMaterial({size:.004,vertexColors:true,sizeAttenuation:true}));
@@ -121,7 +136,7 @@ class SceneViewer {
         if([...g.joints.subarray(a,a+3),...g.joints.subarray(b,b+3)].every(finite))for(const k of [a,b])pts.push(g.joints[k]*this.scale,g.joints[k+1]*this.scale,g.joints[k+2]*this.scale);
       }
       const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
-      const line=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:COLORS[h%2],transparent:true,opacity:.55}));this.root.add(line);this.traces.push(line);
+      const line=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:COLORS[this.layout.colorIndices[h]],transparent:true,opacity:.55}));this.root.add(line);this.traces.push(line);
     }
   }
   handValid(frame,h){const g=this.data;return !g.valid || g.valid[frame*g.hand_count+h]>.5;}
@@ -214,6 +229,8 @@ class MethodPanel {
     this.q('.video-missing').hidden=true;this.video.pause();this.video.removeAttribute('src');
     const rgb=state.sequence.rgb?.[m.view||'left'],video=m.overlay_video||m.video||rgb?.video;
     this.rgb=rgb;this.bakedOverlay=!!m.overlay_video;setText(this.q('.rgb-title'),this.bakedOverlay?'RGB + 模型投影':'RGB + 2D 关节');
+    if(m.kind==='reference')setText(this.q('.rgb-title'),'RGB + GT 投影');
+    setText(this.q('.scene-panel .pane-label>span:first-child'),m.kind==='reference'?'GT 标注骨架':'可交互 3D');
     const poster=m.poster||rgb?.poster;if(poster)this.video.poster=urlFor(poster);else this.video.removeAttribute('poster');
     if(video){this.video.src=urlFor(video);this.video.load();}else{const missing=this.q('.video-missing');missing.hidden=false;setText(missing,m.video_missing_reason||'未导出该视角的视频。');}
     if(this.viewer){this.viewer.dispose();this.viewer=null;}
@@ -224,8 +241,9 @@ class MethodPanel {
     try{
       const geom=await loadGeometry(m.geometry,state.controller?.signal);
       if(this.disposed||token!==this.loadId)return;this.geometry=geom;
-      const labels=geom.hand_labels||geom.hand_order?.map(s=>s==='left'?'左手':s==='right'?'右手':s)||['左手','右手'];
-      this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.replaceChildren(node('i','dot '+(i?'right':'left')),document.createTextNode(labels[i]||`手槽 ${i}`)));
+      if(geom.joints&&!geom.vertices)$('joints').checked=true;
+      const layout=geom._handLayout;
+      this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.replaceChildren(node('i','dot '+(layout.colorIndices[i]?'right':'left')),document.createTextNode(layout.labels[i]||`native slot ${i}`)));
       try{this.viewer=new SceneViewer(this.q('.webgl-host'),this);this.viewer.setData(geom);message.hidden=true;}catch(e){this.webglError=true;setText(message,`此浏览器暂时无法创建 WebGL 视图。\n${e.message}`);}
       if(!this.bakedOverlay&&!geom.joints2d&&geom.projection_space!=='camera')setText(this.q('.rgb-title'),'输入 RGB · 未导出 2D 投影');
       setText(this.q('.coordinate-label'),m.coordinate_system||geom.coordinate_system||state.sequence.coordinate_system||`${geom.coordinate_convention==='opencv'?'相机坐标':'三维坐标'} · ${geom.units||'m'}`);
@@ -240,10 +258,11 @@ class MethodPanel {
     if(this.video.src&&this.video.readyState>=1){const target=Math.max(0,Math.min(Number.isFinite(this.video.duration)?Math.max(0,this.video.duration-.001):t,t+off));if(Math.abs(this.video.currentTime-target)>.5/(state.sequence.fps||30))this.video.currentTime=target;}
     this.viewer?.update(frame);this.drawOverlay();this.drawMetrics(frame);this.drawChart();
     const g=this.geometry,f=this.viewer?.geometryFrame(frame)??frame,opts=settings();
-    let text=[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`${count}/${g.hand_count} 只手有效`);if(!g.scene?.points)text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
+    let text=this.method.kind==='reference'?['GT 参考 · 非模型预测']:[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`${count}/${g.hand_count} 只手有效`);if(!g.scene?.points&&this.method.kind!=='reference')text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
+    if(g?.vertices&&g._handLayout?.missingFaceSlots.length)text.push(`手槽 ${g._handLayout.missingFaceSlots.join('/')} 未提供明确面片拓扑，显示顶点`);
     setText(this.q('.frame-state'),text.join(' · '));
     const heat=this.q('.heat-legend');heat.hidden=opts.color==='hand'||!g?.[opts.color];
-    this.qAll('.scene-legend>span:not(.heat-legend)').forEach(el=>el.hidden=!heat.hidden);
+    this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.hidden=!heat.hidden||(g&&i>=g.hand_count));
     if(!heat.hidden)setText(heat.querySelector('span'),opts.color==='contact'?'接触概率 0 → 1':'可见概率 0 → 1');
     let caption=[];if(g?.observed){const n=Array.from({length:g.hand_count},(_,h)=>g.observed[f*g.hand_count+h]>.5).filter(Boolean).length;caption.push(n?`${n} 只手：网络输出帧`:'插值 / 填补帧');}else if(g?.network_anchor){caption.push(g.network_anchor[f]>.5?'网络采样帧':'时间插值帧');}if(g?.fill_mask){const n=Array.from({length:g.hand_count},(_,h)=>g.fill_mask[f*g.hand_count+h]>.5).filter(Boolean).length;if(n)caption.push(`${n} 只手：官方填补结果`);}setText(this.q('.video-caption'),caption.join(' · '));
   }
@@ -263,7 +282,7 @@ class MethodPanel {
         else{const i=((f*H+hand)*J+j)*3,X=g.joints[i],Y=g.joints[i+1],Z=g.joints[i+2];if(Z<=0){coords.push(null);continue;}x=K[0]*X/Z+K[2];y=K[4]*Y/Z+K[5];}
         coords.push(finite(x)&&finite(y)?[x*scale+ox,y*scale+oy]:null);
       }
-      ctx.strokeStyle=COLORS[hand%2];ctx.fillStyle=COLORS[hand%2];ctx.shadowColor='#000';ctx.shadowBlur=2;
+      const color=COLORS[g._handLayout?.colorIndices[hand]??hand%2];ctx.strokeStyle=color;ctx.fillStyle=color;ctx.shadowColor='#000';ctx.shadowBlur=2;
       for(const [a,b] of (g.joint_edges||EDGES)){if(!coords[a]||!coords[b])continue;ctx.beginPath();ctx.moveTo(...coords[a]);ctx.lineTo(...coords[b]);ctx.stroke();}
       for(const p of coords){if(!p)continue;ctx.beginPath();ctx.arc(...p,2,0,Math.PI*2);ctx.fill();}
     }
@@ -341,6 +360,7 @@ function renderPanels(){
 function saveQuery(){if(!state.sequence)return;const q=new URLSearchParams();q.set('seq',state.sequence.id);if(state.panels.length)q.set('methods',state.panels.map(p=>p.method?.id).filter(Boolean).join(','));history.replaceState(null,'',`${location.pathname}?${q}`);}
 
 function wireUI(){
+  setText($('color-mode').querySelector('option[value="hand"]'),'手槽颜色');
   $('sequence').addEventListener('change',()=>selectSequence($('sequence').value));$('columns').addEventListener('change',()=>{renderPanels();saveQuery();});
   $('play').addEventListener('click',()=>setPlaying(!state.playing));$('previous').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame-1);});$('next').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame+1);});
   $('scrubber').addEventListener('input',()=>{setPlaying(false);setFrame(Number($('scrubber').value));});$('frame-number').addEventListener('change',()=>{setPlaying(false);setFrame(Number($('frame-number').value));});
@@ -355,14 +375,15 @@ function wireUI(){
 async function main(){
   wireUI();requestAnimationFrame(tick);
   try{
-    state.manifest=await fetchJSON(urlFor('manifest.json'));const man=state.manifest;
+    const manifestURL=new URL('manifest.json',document.baseURI);manifestURL.search=new URL(import.meta.url).search;
+    state.manifest=await fetchJSON(manifestURL.href);const man=state.manifest;
     document.title=man.title||'EgoFound3R · 复现对比';setText($('page-title'),man.title||'EgoFound3R · 复现对比');setText($('page-subtitle'),man.subtitle||'');
     if(man.status&&man.status!=='complete'){$('run-state').hidden=false;setText($('run-state'),man.status_label||({blocked:'待权重授权 · 未完成推理',awaiting_results:'待导入推理结果',partial:'部分推理结果'})[man.status]||man.status);}
     for(const s of man.sources||[]){const a=node('a','',s.label);a.href=s.url;a.target='_blank';a.rel='noopener';$('source-links').append(a);}
     setText($('footer-provenance'),man.provenance||`仅展示已导出的真实推理结果${man.generated_at?' · '+man.generated_at:''}`);
     $('sequence').replaceChildren();for(const seq of man.sequences||[]){const o=node('option','',seq.label||seq.id);o.value=seq.id;$('sequence').append(o);}
     if(!man.sequences?.length){$('sequence').append(node('option','','尚未导入序列'));notice(man.notice||'尚未导入真实推理结果。');renderDescription();for(const id of ['play','previous','next','scrubber','frame-number','columns'])$(id).disabled=true;setText($('load-status'),'等待真实结果');return;}
-    const params=new URLSearchParams(location.search);if(params.get('methods')?.split(',').length===3)$('columns').value='3';
+    const params=new URLSearchParams(location.search);if(params.has('methods'))$('columns').value=params.get('methods').split(',').length>=3?'3':'2';else if(Number(man.default_columns)===3)$('columns').value='3';
     const requested=params.get('seq'),id=man.sequences.some(s=>s.id===requested)?requested:man.sequences[0].id;await selectSequence(id);
   }catch(e){notice(`结果索引读取失败：${e.message}`,true);setText($('load-status'),'请检查 manifest.json 与资源路径');$('load-status').classList.add('error');}
 }

@@ -6,7 +6,9 @@ copies ground truth into a model panel, or substitutes a different model.
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -24,6 +26,8 @@ def main() -> None:
     p.add_argument("--root", type=Path, required=True)
     p.add_argument("--docs", type=Path)
     p.add_argument("--export-predictions", action="store_true")
+    p.add_argument("--export-references", action="store_true",
+                   help="Export separately labelled ground-truth skeletons for reference only")
     args = p.parse_args()
     root = args.root.resolve()
     docs = (args.docs or root / "docs").resolve()
@@ -75,6 +79,7 @@ def main() -> None:
     completed = 0
     scored = 0
     total = 0
+    references = 0
     for src in preview["scenes"]:
         sid = src["id"]
         prepared = by_id[sid]
@@ -92,6 +97,7 @@ def main() -> None:
                 "原版模型不联合读取左右图像。本页保留两路独立结果，便于比较视角影响。",
             ], "rgb": {}, "methods": [],
         }
+        reference_methods = []
         for v, input_v in zip(src["views"], prepared["views"]):
             total += 1
             key = v["view"]
@@ -141,14 +147,48 @@ def main() -> None:
                     copy_file(score, docs / "downloads" / score.name)
                     scored += 1
             seq["methods"].append(method)
+            reference = docs / asset / "reference/geometry.json"
+            gt = root / "evaluation_ref" / sid / str(v["camera_id"]) / "gt.npz"
+            if args.export_references and gt.exists():
+                subprocess.run([sys.executable, str(root / "scripts/export_gt_reference.py"),
+                                "--gt", str(gt), "--output", str(reference.parent),
+                                "--intrinsics", str(v["intrinsics_path"])], check=True)
+            if reference.exists():
+                ref_geometry = json.loads(reference.read_text())
+                if ref_geometry["frame_count"] != seq["frames"] or ref_geometry.get("data_role") != "ground_truth_reference":
+                    raise ValueError("Reference must contain matching real GT frames and an explicit reference role")
+                reference_methods.append({
+                    "id": f"gt_{key.lower()}", "label": f"GT 参考 · 相机 {key} · 仅评价",
+                    "kind": "reference", "view": key, "view_label": f"相机 {key}",
+                    "status": "complete", "geometry": str(reference.relative_to(docs)),
+                    "coordinate_system": f"相机 {key} 坐标 · m",
+                    "summary": "真实 DexYCB 标注：21 关节、腕部轨迹及 RGB 投影；不是模型预测。",
+                    "metrics": [],
+                })
+                references += 1
+        seq["methods"].extend(reference_methods)
+        if reference_methods:
+            seq["notes"].append("GT 参考列仅展示真实标注的骨架、腕部轨迹和投影；不输入模型，也不计入预测完成数。")
         manifest["sequences"].append(seq)
     if completed:
         manifest.update(status="complete" if completed == total and scored == total else "partial",
                         status_label=f"推理 {completed}/{total} · 评价 {scored}/{total}",
                         notice=f"已导出 {completed}/{total} 路真实预测，完成 {scored}/{total} 路独立评价。两路仍为官方单视频模型的独立运行。")
+    if references:
+        manifest["default_columns"] = 3
+        manifest["notice"] += f" 可拖动的 GT 参考来自 {references} 路真实标注，不是模型预测。"
     (docs / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
+    # A new deployment must not reuse a cached script/manifest pair.
+    if (docs / "index.html").exists() and (docs / "app.js").exists():
+        revision = hashlib.sha256((docs / "app.js").read_bytes() + (docs / "manifest.json").read_bytes()).hexdigest()[:12]
+        page, matches = re.subn(r'src="app\.js(?:\?v=[^"]*)?"',
+                               f'src="app.js?v={revision}"', (docs / "index.html").read_text())
+        if matches != 1:
+            raise ValueError("Expected one app.js module script in index.html")
+        (docs / "index.html").write_text(page)
     print(json.dumps({"docs": str(docs), "sequences": len(manifest["sequences"]),
                       "camera_streams": total, "predictions": completed, "evaluations": scored,
+                      "ground_truth_references": references,
                       "status": manifest["status"]}, ensure_ascii=False))
 
 
