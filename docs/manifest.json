@@ -2,7 +2,7 @@
   "schema_version": "egofound3r.viewer.v1",
   "title": "EgoFound3R · 双 RGB / 已知内参",
   "subtitle": "DexYCB 箱子与香蕉 · 146 个同步时刻 · 292 幅真实 RGB",
-  "generated_at": "2026-11-11T07:58:27.925314+00:00",
+  "generated_at": "2026-11-11T08:03:25.965243+00:00",
   "status": "blocked",
   "status_label": "待权重授权 · 未完成推理",
   "notice": "两套官方权重均返回 HTTP 401，需要账户获得访问权限并登录。当前展示真实双 RGB 输入；模型预测、3D 重建和指标尚未生成。 可拖动的 GT 参考来自 4 路真实标注，不是模型预测。",

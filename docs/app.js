@@ -76,13 +76,66 @@ async function loadGeometry(path,signal) {
   return out;
 }
 
+class SoftwareRenderer {
+  constructor(){
+    this.domElement=document.createElement('canvas');this.context=this.domElement.getContext('2d');
+    if(!this.context)throw new Error('Canvas 2D 不可用');
+    this.isSoftwareRenderer=true;this.pixelRatio=1;this.width=1;this.height=1;this.sampled=false;
+  }
+  setPixelRatio(value){this.pixelRatio=value;}
+  setSize(width,height){this.width=width;this.height=height;this.domElement.width=Math.round(width*this.pixelRatio);this.domElement.height=Math.round(height*this.pixelRatio);}
+  render(scene,camera){
+    const ctx=this.context,w=this.width,h=this.height,dpr=this.pixelRatio;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=1;ctx.fillStyle=scene.background?.isColor?scene.background.getStyle(THREE.SRGBColorSpace):'#15202d';ctx.fillRect(0,0,w,h);
+    scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);
+    const commands=[],tmp=new THREE.Vector3(),view=new THREE.Vector3(),color=new THREE.Color();this.sampled=false;
+    const project=(position,index,matrix)=>{
+      const x=position.getX(index),y=position.getY(index),z=position.getZ(index);if(![x,y,z].every(finite))return null;
+      tmp.set(x,y,z).applyMatrix4(matrix);view.copy(tmp).applyMatrix4(camera.matrixWorldInverse);tmp.project(camera);
+      if(![tmp.x,tmp.y,tmp.z].every(finite)||tmp.z < -1||tmp.z > 1||view.z>=0)return null;
+      return {x:(tmp.x+1)*w/2,y:(1-tmp.y)*h/2,z:tmp.z,depth:-view.z};
+    };
+    scene.traverseVisible(object=>{
+      if(!(object.isPoints||object.isLine||object.isMesh))return;
+      const geometry=object.geometry,position=geometry?.attributes.position,material=Array.isArray(object.material)?object.material[0]:object.material;if(!position||!material?.visible)return;
+      const opacity=material.opacity??1,overlay=material.depthTest===false,colors=geometry.attributes.color;
+      const cssColor=index=>{if(material.vertexColors&&colors){color.setRGB(colors.getX(index),colors.getY(index),colors.getZ(index));return color.getStyle(THREE.SRGBColorSpace);}return material.color?.getStyle(THREE.SRGBColorSpace)||'#cad8e8';};
+      const cache=new Map(),point=index=>{if(!cache.has(index))cache.set(index,project(position,index,object.matrixWorld));return cache.get(index);};
+      const start=Math.max(0,geometry.drawRange.start||0),maxCount=geometry.index?.count??position.count,end=Math.min(maxCount,start+(geometry.drawRange.count??Infinity));
+      const at=i=>geometry.index?geometry.index.getX(i):i;
+      const segment=(a,b,alpha=opacity)=>{const p=point(a),q=point(b);if(!p||!q)return;commands.push({kind:'line',p,q,z:(p.z+q.z)/2,color:cssColor(a),alpha,overlay,width:object.isMesh?.8:Math.max(1.4,material.linewidth||1)});};
+      if(object.isPoints){
+        const stride=Math.max(1,Math.ceil((end-start)/16000));if(stride>1)this.sampled=true;
+        for(let i=start;i<end;i+=stride){const index=at(i),p=point(index);if(!p||p.x < -20||p.x>w+20||p.y < -20||p.y>h+20)continue;
+          const radius=material.sizeAttenuation===false?(material.size||2)/2:(material.size||.004)*h*camera.projectionMatrix.elements[5]/(4*p.depth);
+          commands.push({kind:'point',p,z:p.z,color:cssColor(index),alpha:opacity,overlay,radius:Math.max(1.1,Math.min(14,radius))});
+        }
+      }else if(object.isMesh){
+        const triangles=Math.floor((end-start)/3),stride=Math.max(1,Math.ceil(triangles/6000));if(stride>1)this.sampled=true;
+        for(let t=0;t<triangles;t+=stride){const i=start+t*3,a=at(i),b=at(i+1),c=at(i+2);segment(a,b,opacity*.55);segment(b,c,opacity*.55);segment(c,a,opacity*.55);}
+      }else{
+        const step=object.isLineSegments?2:1,total=Math.max(0,Math.floor((end-start-1)/step)+1),stride=Math.max(1,Math.ceil(total/20000));if(stride>1)this.sampled=true;
+        for(let i=start;i+1<end;i+=step*stride)segment(at(i),at(i+1));
+      }
+    });
+    commands.sort((a,b)=>Number(a.overlay)-Number(b.overlay)||b.z-a.z);ctx.lineCap='round';ctx.lineJoin='round';
+    for(const item of commands){ctx.globalAlpha=item.alpha;if(item.kind==='line'){ctx.strokeStyle=item.color;ctx.lineWidth=item.width;ctx.beginPath();ctx.moveTo(item.p.x,item.p.y);ctx.lineTo(item.q.x,item.q.y);ctx.stroke();}else{ctx.fillStyle=item.color;ctx.beginPath();ctx.arc(item.p.x,item.p.y,item.radius,0,Math.PI*2);ctx.fill();}}
+    ctx.globalAlpha=1;
+  }
+  dispose(){this.context.clearRect(0,0,this.width,this.height);}
+  forceContextLoss(){}
+}
+
 class SceneViewer {
   constructor(host,panel) {
     this.host=host;this.panel=panel;this.data=null;this.meshes=[];this.skeletons=[];this.jointPoints=[];this.traces=[];this.disposed=false;
     this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#15202d');
     this.camera=new THREE.PerspectiveCamera(48,1,.001,200);
     this.camera.position.set(0,.15,1);
-    this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power'});
+    const canvas=document.createElement('canvas');let gl=null;
+    try{gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'low-power'});}catch(e){}
+    try{this.renderer=gl?new THREE.WebGLRenderer({canvas,context:gl,antialias:true,alpha:false,powerPreference:'low-power'}):new SoftwareRenderer();}catch(e){this.renderer=new SoftwareRenderer();}
+    this.isSoftware=!!this.renderer.isSoftwareRenderer;
     this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     host.append(this.renderer.domElement);
     this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=false;this.controls.minDistance=.015;this.controls.maxDistance=150;
@@ -244,7 +297,7 @@ class MethodPanel {
       if(geom.joints&&!geom.vertices)$('joints').checked=true;
       const layout=geom._handLayout;
       this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.replaceChildren(node('i','dot '+(layout.colorIndices[i]?'right':'left')),document.createTextNode(layout.labels[i]||`native slot ${i}`)));
-      try{this.viewer=new SceneViewer(this.q('.webgl-host'),this);this.viewer.setData(geom);message.hidden=true;}catch(e){this.webglError=true;setText(message,`此浏览器暂时无法创建 WebGL 视图。\n${e.message}`);}
+      try{this.viewer=new SceneViewer(this.q('.webgl-host'),this);this.viewer.setData(geom);message.hidden=true;if(this.viewer.isSoftware)setText(this.q('.scene-panel .pane-label>span:first-child'),m.kind==='reference'?'GT 标注骨架 · 软件 3D':'软件 3D · 网格线框');}catch(e){this.webglError=true;setText(message,`此浏览器暂时无法创建三维视图。\n${e.message}`);}
       if(!this.bakedOverlay&&!geom.joints2d&&geom.projection_space!=='camera')setText(this.q('.rgb-title'),'输入 RGB · 未导出 2D 投影');
       setText(this.q('.coordinate-label'),m.coordinate_system||geom.coordinate_system||state.sequence.coordinate_system||`${geom.coordinate_convention==='opencv'?'相机坐标':'三维坐标'} · ${geom.units||'m'}`);
       this.update(state.frame);
@@ -260,6 +313,8 @@ class MethodPanel {
     const g=this.geometry,f=this.viewer?.geometryFrame(frame)??frame,opts=settings();
     let text=this.method.kind==='reference'?['GT 参考 · 非模型预测']:[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`${count}/${g.hand_count} 只手有效`);if(!g.scene?.points&&this.method.kind!=='reference')text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
     if(g?.vertices&&g._handLayout?.missingFaceSlots.length)text.push(`手槽 ${g._handLayout.missingFaceSlots.join('/')} 未提供明确面片拓扑，显示顶点`);
+    if(this.viewer?.isSoftware&&g?.vertices)text.push('软件视图：真实面片线框');
+    if(this.viewer?.renderer.sampled)text.push('已按显示预算抽样点或线');
     setText(this.q('.frame-state'),text.join(' · '));
     const heat=this.q('.heat-legend');heat.hidden=opts.color==='hand'||!g?.[opts.color];
     this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.hidden=!heat.hidden||(g&&i>=g.hand_count));
