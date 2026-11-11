@@ -23,7 +23,7 @@ function notice(message,error=false) {
   $('notice').hidden=!message; $('notice').classList.toggle('error',error); setText($('notice'),message);
 }
 async function fetchJSON(path,signal) {
-  const r=await fetch(path,{signal}); if(!r.ok) throw new Error(`${r.status} · ${new URL(path).pathname}`); return r.json();
+  const r=await fetch(path,{signal,cache:'no-cache'}); if(!r.ok) throw new Error(`${r.status} · ${new URL(path).pathname}`); return r.json();
 }
 async function loadArray(spec,base,signal) {
   if(spec==null) return null;
