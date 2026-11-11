@@ -1,0 +1,11 @@
+{
+  "status": "awaiting_publication_of_completed_results",
+  "repository": "https://github.com/YichengDraw/egofound3r-stereo-20261111",
+  "url": "https://yichengdraw.github.io/egofound3r-stereo-20261111/",
+  "predictions": 13,
+  "evaluations": 13,
+  "GTreferences": 13,
+  "prediction_geometry_exports": 26,
+  "frames": 2080,
+  "updated_utc": "2026-11-11T11:25:24.075638+00:00"
+}

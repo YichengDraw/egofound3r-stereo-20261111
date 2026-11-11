@@ -141,7 +141,9 @@ def evaluate(payload: dict, gt: dict, mapping: dict | None = None, pck_threshold
                      "gt_hand_frames": int(eligible.any(-1).sum()),
                      "evaluated_hand_frames": int(evaluated.any(-1).sum()),
                      "filled_annotated_hand_frames": int((filled_gt & eligible.any(-1)).sum()),
-                     "pa_evaluated_hand_frames": pa_frames},
+                     "pa_evaluated_hand_frames": pa_frames,
+                     "pa_evaluated_joint_count": int(np.isfinite(pa).sum()),
+                     "root_relative_evaluated_joint_count": int(rr_valid.sum())},
         "metrics": {"mpjpe_raw_mm": average(raw, evaluated),
                     "mpjpe_root_relative_mm": average(rr, rr_valid),
                     "mpjpe_pa_mm": average(pa),
@@ -196,3 +198,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

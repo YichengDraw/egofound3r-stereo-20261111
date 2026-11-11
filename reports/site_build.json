@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "sequences": 11,
+  "streams": 13,
+  "prediction_geometry_exports": 26,
+  "ground_truth_reference_exports": 13,
+  "real_rgb_frames": 2080,
+  "revision": "7a1a5a03c137",
+  "generated_utc": "2026-11-11T11:24:11.602804+00:00"
+}

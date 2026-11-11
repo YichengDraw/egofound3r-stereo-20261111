@@ -1,22 +1,23 @@
 {
-  "checked_date": "2026-11-11",
-  "status": "blocked",
-  "official_weights": [
+  "verified_at_utc": "2026-11-11T10:00:59.527517+00:00",
+  "transport": "Mac PSSD to L40S direct SSH; ProxyCommand=none; ProxyJump=none",
+  "verification": "Destination SHA256 matches source; sizes match official HF metadata",
+  "files": [
     {
-      "repository": "Frank-F2021/EgoFound3R",
-      "filename": "EgoFound3R.pt",
-      "official_resolve_http_status": 401,
-      "message": "Access to model Frank-F2021/EgoFound3R is restricted. You must have access to it and be authenticated to access it. Please log in."
+      "path": "weights/EgoFound3R.pt",
+      "bytes": 423526586,
+      "sha256": "02ba3135b030a23f88b91a986c173f6a3c600f6da45637605fd09914e9d78e66"
     },
     {
-      "repository": "facebook/VGGT-Omega",
-      "filename": "vggt_omega_1b_512.pt",
-      "official_resolve_http_status": 401,
-      "message": "Access to model facebook/VGGT-Omega is restricted. You must have access to it and be authenticated to access it. Please log in."
+      "path": "weights/vggt_omega_1b_512.pt",
+      "bytes": 4576706117,
+      "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934"
     }
   ],
-  "credentials": "No existing Hugging Face client credential was available in the checked default and recent project environments.",
-  "inference_runs_completed": 0,
-  "predicted_geometry_generated": false,
-  "metrics_generated": false
+  "inference_started_by_transfer": false,
+  "status": "resolved_verified_and_used",
+  "inference_runs_completed": 13,
+  "predicted_geometry_exports": 26,
+  "evaluations_completed": 13,
+  "note": "Historical HTTP401 is resolved by the verified legal local weight transfer. No weight re-download was performed."
 }

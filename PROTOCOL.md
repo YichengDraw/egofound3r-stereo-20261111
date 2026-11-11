@@ -1,66 +1,50 @@
-# EgoFound3R：双 RGB、已知内参复现协议
+# 复现协议与评价口径
 
-## 当前状态
+## 固定输入边界
 
-2026-11-11，官方代码和数据准备已经开展，**真实 EgoFound3R 推理尚未完成**。两套官方模型文件的下载请求均返回 HTTP 401，需要账户获得访问权限并登录。`reports/weight_access.json` 保存实际检查结果；页面不展示编造的预测或指标。
+官方提交 `264f4df9fd42536aae4dba982d18272cc3334077`，原仓库保持 clean。合法现成 EgoFound3R 与 VGGT-Omega 权重的 SHA256 见 `reports/weight_transfer_verified_20261111.json`。只向官方 CLI 输入 RGB 视频及真实相机 K；GT 手、物体位姿、深度、相机外参存放在 `evaluation_ref/`，不传给推理。
 
-## 数据与信息边界
+DexYCB 两相机独立运行，未联合双目、未融合、未将相机交错成时间。HOT3D 单 RGB 与 HO3D 单 RGB 是单独列出的补充，不计入双目统计。外部 K 经官方 `--root-k-source external --root-k-file` 用于手 root solver 和投影；场景仍预测 K。评分前将模型缩放后的 K 恢复到原 RGB 尺寸并与源 K 逐项核对。
 
-采用近期使用过的 DexYCB 箱子 `20200928_143606`（74 帧）和香蕉 `20200928_145724`（72 帧）。每段取相同帧号的两台 RGB 相机 `836212060125`、`932122062010`，每个视角保留真实内参。两段共有 146 个同步时刻、292 幅 RGB 图像。
+## 运行
 
-这是固定的宽基线双相机组合，与佩戴式窄基线双目在相机位置、遮挡和视角差异上不同；它满足两路同步 RGB 和已知内参的信息条件，不能代表完全相同的硬件场景。最终数量、同步帧号、分辨率及标定校验以 `reports/data_validation.json` 为准。
+H=10 FPS，G stride=5，chunk=2s，overlap=0.5s；官方 keep_aspect /512 输入；启用 --upsample-mano，关闭逐帧 overlay 图像文件，其余官方后处理保留。R 为输入视频帧率：Dex/Aria 30，HO3D 假设 10；R 可包含 H 之间的时间插值。官方缺失填补另有 mask，不能与普通时间插值混淆。
 
-`input_manifest.json` 仅包含 RGB、内参及时间。3D 手标注、物体位姿、深度和标定外参放在独立评价目录，不传给模型。标定外参可用于解释相机关系和评价，不参与官方推理。
+全部使用 L40S。逐路重新查询实际 GPU UUID 与可用内存；串行、文件锁避免重复执行；nice=10，CPU 线程2，MPS active thread 20%，PyTorch allocator 上限16GiB，选择至少22GiB空余的 L40S。不终止、不抢占其他健康作业，未用 H20。这不是独占硬件吞吐基准；运行时来自原生 summary。
 
-## 官方实现与双目范围
+```bash
+R=/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111
+PY=/nvme-ssd1/zhaoyicheng/egohsi3r-reproduction-20261104/envs/official/bin/python
+$PY $R/scripts/execute_suite.py --root $R --manifest $R/data/input_manifest_expanded.json
+$PY $R/scripts/audit_anatomy.py --root $R
+$PY $R/scripts/evaluate_suite.py --root $R
+$PY $R/scripts/test_contracts.py --official-repo $R/upstream
+$PY $R/scripts/build_complete_site.py --root $R
+```
 
-官方仓库：<https://github.com/MINT-SJTU/EgoFound3R>，固定提交 `264f4df9fd42536aae4dba982d18272cc3334077`。采用官方现成权重，不训练网络。
+原始每路官方参数完整记录于 `reports/inference_runs.json`。已完成输出经验证后复用；非空不完整目录拒绝覆盖，须先检查失败原因。
 
-官方 `MarkerModel.forward` 接收 `[B,T,3,H,W]`，其输入是一段单相机视频，没有独立视角维度或固定双目外参接口。本项目分别运行相机 A 和相机 B，并保留两套原始预测。**这构成双 RGB 数据上的两路官方复现，尚未实现联合利用左右图像的双目模型。** 如果后续增加双目几何融合，应在单独的方法列报告。
+## 手、单位、坐标
 
-已知内参直接通过官方参数 `--root-k-source external --root-k-file K.json` 输入，用于手部 Root solver 与手部投影。场景分支仍预测自己的内参。不能将此配置描述为整个模型固定真实相机参数。
+原生手 slot0=left，slot1=right：由 Aria1976 多帧 RGB 解剖投影独立确认并固定，发布 schema 本身未提供语义名称；不按每帧最小 GT 误差交换槽位。21关节为 wrist，再 thumb/index/middle/ring/little 各4关节。以模型自己的指尖 joint 与已知 MANO 顶点对应矩阵核对顺序。
 
-两路图像不交错拼进时间轴。时间轴始终是同一相机的真实时间顺序。
+Canonical hand 是每帧 OpenCV 相机坐标，单位米。`pose_w2c_metric` 是 world→camera，取逆得到 c2w。世界系只用于可视化和逐路相机评价。相机轨迹比较仅消除第一有效相机的刚体坐标规范，不拟合尺度、Sim(3) 或轨迹。Dex 相机 GT 固定；Aria 相机由匹配硬件时间戳的官方姿态给出。
 
-## 固定运行设置
+## 独立评价
 
-| 项目 | 配置 |
-|---|---|
-| 权重 | 官方 EgoFound3R + VGGT-Omega；下载后记录版本与 SHA-256 |
-| 输入 resize | 官方 `keep_aspect`；默认 512 上限，按 16 倍数取整 |
-| 手部网络采样 | H = 10 FPS |
-| 场景网络采样 | G stride = 5，约 2 FPS |
-| 视频窗口 / overlap | 2 秒 / 0.5 秒 |
-| 输出帧率 | 原视频 30 FPS，包含官方时间插值 |
-| 778 顶点 | 开启官方 `--upsample-mano`；由原生 195 点固定插值得到 |
-| 后处理 | 保留官方默认 anchor filter、缺手填补、局部手形/Root UV 平滑、手深度尺度与窗口重叠尺度处理 |
-| 输出 | 官方张量、summary、普通 overlay、四模式 overlay、网页二进制几何与评价报告 |
+Primary mask = official canonical valid AND finite AND NOT official missing-fill。GT mask 从原标注读取；无预测仍在有效 GT 分母。单手数据只评价已标注解剖侧；另一槽的错检数仍保留在逐槽计数。所有帧通过显式 source_frame_indices 对齐。GT 不进入模型，也不影响模型阈值、尺度和后处理。
 
-每个运行显式传入配置文件，保留官方 provenance。运行脚本不修改官方网络、权重或默认后处理。环境兼容修复如有必要需另记 diff。
+- Raw MPJPE：原始相机空间、绝对 3D 关节欧氏距离，m→mm，无配准。
+- Root-relative：各自减去 wrist 再算 MPJPE，揭示关节形状误差。
+- PA：每只手每帧一个 proper-rotation Sim(3)，允许旋转、平移和尺度；不能用它代表绝对定位精度。
+- PCK20/PCK50：提供条件有效预测比例与全有效 GT 比例，后者把缺失预测记为未命中。
+- Coverage：有效关节/手帧数除以 GT 关节/手帧数，同时报告 official valid、fill、display、H-anchor 与非 H 的 R 帧数。
+- 含填补结果只作 SECONDARY display diagnostic；不改变主覆盖率、主指标或失败分母。
+- 每数据组按实际有效关节加权（wrist 按手帧、PA 按可 PA 关节），不得把各视频均值简单平均。
+- HO3D contact：native195 IDs 对应 GT778 子集，概率阈值0.5固定，报告 P/R/F1、有效顶点覆盖率、全 GT 正类召回和距离 MAE；缺标签不补标签。
 
-## 3D 展示约定
+缺失的独立场景深度/接触参考明确标为不可评分，不把输入检查或 GT 展示当模型准确率。
 
-官方 `metric_predictions.hand` 是相机坐标、米制的手部顶点与关节。`pose_w2c_metric` 是世界到相机矩阵，转换到预测世界系时使用其逆矩阵。场景点云来自预测深度与场景预测内参反投影，并按真实 G 帧号对应。点云是可见表面，模型不输出独立完整物体 mesh。
+## 失败与展示
 
-接触颜色表示模型预测概率，可能包含与物体或另一只手的接触。网页会区分模型有效预测与官方填补结果。两路独立推理得到的世界坐标系分别定义，不默认认为它们已对齐。
-
-网页中的联动视角仅控制交互相机，方便观察同样的朝向；它不等于跨视角几何配准。
-
-**GT 参考列**来自独立评价目录中的真实 DexYCB 标注，仅显示 21 关节骨架、腕部轨迹和原始 RGB 投影；没有网络预测含义。标注不进入模型输入，参考导出不增加预测完成数，也不生成不存在的手部网格、场景点云或接触概率。
-
-## 评价约定
-
-在显式确认输出手槽位及关节顺序后，使用独立的评价标注计算相机空间绝对关节误差、去腕关节误差和有效预测覆盖率。有效性由官方 mask、有限数值及相应 GT 有效性共同决定；缺失和填补单列，不填零或从分母中悄悄删除。
-
-统计单位为序列、相机、手帧，保留逐帧结果。这两个片段用于近期数据上的复现诊断，不代表完整数据集的基准分数。其他模型的历史数字只在输入、时间、关节顺序、有效手帧和评价口径一致时比较。
-
-## 来源
-
-- [EgoFound3R 官方代码](https://github.com/MINT-SJTU/EgoFound3R)
-- [EgoFound3R 论文](https://arxiv.org/abs/2610.01210)
-- [官方 EgoFound3R 权重](https://huggingface.co/Frank-F2021/EgoFound3R)
-- [官方 VGGT-Omega 权重](https://huggingface.co/facebook/VGGT-Omega)
-- [DexYCB 数据集](https://dex-ycb.github.io/)
-- [DexYCB 官方工具](https://github.com/NVlabs/dex-ycb-toolkit)
-
-官方代码/权重、数据集、模型拓扑等第三方资产保留原许可。本仓库不重新分发模型权重、MANO 资产或完整数据集。
+HTTP401 是历史准备阶段已解决的问题。预处理的 Aria2022 缓存长度差异、HO3D 缺标注被真实记录并修复，未丢弃 RGB。官方网络成功退出与预测有效性是两回事：页面保留错检、零覆盖与填补。公开几何严格从真实 `.pt` 导出，GT 独立标识；公式测试数据只在临时目录，绝不导入网页。

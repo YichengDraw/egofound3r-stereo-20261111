@@ -36,12 +36,13 @@
       <label class="check"><input id="loop" type="checkbox" checked>循环</label>
     </section>
     <section class="display-bar" aria-label="可视化选项">
-      <div class="display-group"><label class="check"><input id="overlay" type="checkbox" checked>2D 关节</label><label class="check"><input id="scene" type="checkbox" checked>场景点云</label><label class="check"><input id="hands" type="checkbox" checked>手部网格</label><label class="check"><input id="joints" type="checkbox">3D 骨架</label><label class="check"><input id="trajectory" type="checkbox">手腕轨迹</label><label class="check"><input id="wireframe" type="checkbox">线框</label></div>
+      <div class="display-group"><label class="check"><input id="overlay" type="checkbox" checked>2D 关节</label><label class="check"><input id="scene" type="checkbox" checked>场景点云</label><label class="check"><input id="hands" type="checkbox" checked>手部网格</label><label class="check"><input id="joints" type="checkbox" checked>3D 骨架</label><label class="check" title="半透明显示官方填补；不会计入有效覆盖率"><input id="filled" type="checkbox">显示填补</label><label class="check"><input id="trajectory" type="checkbox">有效腕轨迹</label><label class="check"><input id="wireframe" type="checkbox">线框</label></div>
       <div class="display-group"><label class="small-label">手部颜色 <select id="color-mode"><option value="hand">左右手</option><option value="contact">接触概率</option><option value="visibility">可见概率</option></select></label><label class="check"><input id="linked" type="checkbox" checked>联动视角</label><button id="reset-camera" class="small-button">重置视角</button></div>
     </section>
     <section id="comparison" class="comparison" aria-label="同步可视化对比"></section>
+    <section class="suite-summary"><div class="section-title"><h2>全部样本 · 同口径独立评价</h2><span>双 RGB 与单目补充分组统计</span></div><div id="suite-metrics" class="table-scroll"></div></section>
     <section class="bottom-grid">
-      <div class="summary-panel"><div class="section-title"><h2>全片段指标</h2><span id="metric-scope">读取真实评估结果</span></div><div id="metrics" class="table-scroll"><p class="empty-inline">尚未加载评估结果。</p></div></div>
+      <div class="summary-panel"><div class="section-title"><h2>本片段指标 · 排除填补</h2><span id="metric-scope">读取真实评估结果</span></div><div id="metrics" class="table-scroll"><p class="empty-inline">尚未加载评估结果。</p></div></div>
       <div class="summary-panel"><div class="section-title"><h2>结果与说明</h2></div><div id="result-notes" class="result-notes"></div><div id="downloads" class="downloads"></div></div>
     </section>
     <footer><span>拖动旋转 · 滚轮缩放 · 右键平移</span><span id="footer-provenance">仅展示已导出的真实推理结果</span><span id="load-status" role="status"></span></footer>
@@ -57,6 +58,7 @@
     </article>
   </template>
   <noscript><p class="notice">请启用 JavaScript，以查看同步视频和可拖动的三维结果。</p></noscript>
-  <script type="module" src="app.js?v=bd695784684e"></script>
+  <script type="module" src="app.js?v=7a1a5a03c137"></script>
 </body>
 </html>
+

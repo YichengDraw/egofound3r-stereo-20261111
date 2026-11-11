@@ -1,0 +1,1 @@
+PASS: analytic camera inversion, G/R frame mapping, official upsampling anchors, binary layout, camera-space 2D projection, fill exclusion, GT denominator and explicit mapping checks. NO MODEL INFERENCE PERFORMED.

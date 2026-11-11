@@ -1,0 +1,217 @@
+{
+  "T_R": 150,
+  "T_H_canonical": 53,
+  "pipeline_wall_seconds": 66.29183262586594,
+  "overlay_frame_images": false,
+  "R_fps": 30.0,
+  "H_fps": 10.0,
+  "G_fps": 2.0,
+  "global_stride": 5,
+  "global_anchor_phase": 2,
+  "clip_count": 3,
+  "T_G": 11,
+  "inference_schema_version": "egofound3r.metric_inference.v1",
+  "metric_scale_valid_clips": 3,
+  "forward_seconds_total": 5.155787595547736,
+  "hand_h_root_smoothing": {
+    "enabled": false,
+    "mode": "none",
+    "applied_count": 0
+  },
+  "provenance": {
+    "schema_version": "egofound3r.metric_inference.v1",
+    "config_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml",
+    "config_sha256": "3ea35501936e086a853b21b777adf432434c9cc9e992c2b2db198952b1ad25dd",
+    "checkpoint_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/weights/EgoFound3R.pt",
+    "checkpoint_size_bytes": 423526586,
+    "video_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/aria_3209/rgb_214_1/input.mp4",
+    "temporal_architecture_id": "egofound3r_multirate",
+    "git_commit": "264f4df9fd42536aae4dba982d18272cc3334077",
+    "git_branch": "main",
+    "git_dirty": false,
+    "decoded_video_fps": 30.0,
+    "effective_r_fps": 30.0,
+    "model_input_size_hw": [
+      512,
+      512
+    ],
+    "source_video_size_hw": [
+      768,
+      768
+    ],
+    "command_argv": [
+      "/nvme-ssd1/zhaoyicheng/egohsi3r-reproduction-20261104/envs/official/bin/python",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/upstream/infer_marker_video.py",
+      "--config",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml",
+      "--checkpoint",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/weights/EgoFound3R.pt",
+      "--video-path",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/aria_3209/rgb_214_1/input.mp4",
+      "--output-dir",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/outputs/aria_3209__rgb",
+      "--device",
+      "cuda:0",
+      "--upsample-mano",
+      "--no-overlay-frame-images",
+      "--high-fps",
+      "10",
+      "--global-stride",
+      "5",
+      "--chunk-seconds",
+      "2",
+      "--overlap-seconds",
+      "0.5",
+      "--root-k-source",
+      "external",
+      "--root-k-file",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/aria_3209/rgb_214_1/root_intrinsics.json"
+    ],
+    "model_compute_dtype": "torch.bfloat16",
+    "input_resize_mode": "keep_aspect",
+    "requested_input_size_hw": [
+      512,
+      512
+    ],
+    "input_affine_source_to_model": [
+      [
+        0.6666666666666666,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.6666666666666666,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "output_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/outputs/aria_3209__rgb/inference_output.pt",
+  "hand_778_exported": true,
+  "overlay_marker_count": 195,
+  "root_k_source": "external",
+  "root_z_postprocessing": {
+    "options": {
+      "smooth": true,
+      "depth_source": "none",
+      "depth_file": null,
+      "smooth_strength": 1.0,
+      "depth_strength": 1.0,
+      "max_relative_change": 0.2,
+      "visibility_threshold": 0.5
+    },
+    "applied_count": 300,
+    "depth_accepted_count": 0
+  },
+  "hand_depth_scale": {
+    "enabled": true,
+    "seconds": 0.35785415954887867,
+    "raw_to_meter_pred": [
+      0.798456072807312,
+      0.6582086682319641,
+      0.6808944344520569
+    ],
+    "raw_to_meter_fused": [
+      0.9557393193244934,
+      0.8638419508934021,
+      0.8301554322242737
+    ],
+    "raw_to_meter_effective": [
+      0.9557393193244934,
+      0.8638419508934021,
+      0.8301554322242737
+    ]
+  },
+  "overlap_depth_scale": {
+    "enabled": true,
+    "nodes": [
+      {
+        "factor": 0.9557393050672038,
+        "valid": true,
+        "source": "weak_hand_component",
+        "component": 0,
+        "reference_chunk": 0,
+        "propagation_hops": 0,
+        "log_uncertainty": 0.2248880780279915,
+        "confidence": 0.05513400510114291,
+        "reliable": false
+      },
+      {
+        "factor": 0.8638419312472873,
+        "valid": true,
+        "source": "weak_hand_component",
+        "component": 0,
+        "reference_chunk": 2,
+        "propagation_hops": 1,
+        "log_uncertainty": 0.2652545125062167,
+        "confidence": 0.013336807675557932,
+        "reliable": false
+      },
+      {
+        "factor": 0.8301554548783525,
+        "valid": true,
+        "source": "weak_hand_component",
+        "component": 0,
+        "reference_chunk": 2,
+        "propagation_hops": 0,
+        "log_uncertainty": 0.21332337781932267,
+        "confidence": 0.02196950839012803,
+        "reliable": false
+      }
+    ],
+    "accepted_edges": 2,
+    "timing": {
+      "spool_write_seconds": 0.023892811499536037,
+      "resolve_seconds": 0.006494469940662384,
+      "rebuild_scene_seconds": 0.46796236000955105,
+      "spool_bytes": 7895607
+    }
+  },
+  "video_io": {
+    "decoded_frames": 150,
+    "retrieved_frames": 53,
+    "cache_hits": 12,
+    "backward_seeks": 0,
+    "peak_cached_frames": 22,
+    "peak_cached_bytes": 86507520
+  },
+  "performance": {
+    "schema_version": "egofound3r.inference_performance.v1",
+    "device": "cuda:0",
+    "device_name": "NVIDIA L40S",
+    "device_total_memory_bytes": 47665709056,
+    "model_dtype": "torch.bfloat16",
+    "input_r_fps": 30.0,
+    "output_r_frames": 150,
+    "unique_h_frames": 53,
+    "unique_g_frames": 11,
+    "processed_h_frames": 65,
+    "processed_g_frames": 13,
+    "forward_calls": 3,
+    "includes_first_forward": true,
+    "extra_warmup_forwards": 0,
+    "forward_seconds_total": 5.155787595547736,
+    "forward_seconds_first": 3.46563817653805,
+    "forward_seconds_mean": 1.7185958651825786,
+    "forward_seconds_p50": 0.8843362387269735,
+    "forward_seconds_p95": 3.207507982756942,
+    "pipeline_wall_seconds": 66.29183262586594,
+    "end_to_end_wall_seconds": 83.17102404870093,
+    "forward_output_fps": 29.093518152208603,
+    "forward_processed_h_fps": 12.607191199290394,
+    "forward_processed_g_fps": 2.521438239858079,
+    "pipeline_output_fps": 2.262722179466081,
+    "end_to_end_output_fps": 1.8035127223174174,
+    "end_to_end_realtime_speedup": 0.060117090743913915,
+    "forward_peak_allocated_bytes": 4529341440,
+    "forward_peak_reserved_bytes": 7711227904,
+    "forward_peak_allocated_gib": 4.218277931213379,
+    "forward_peak_reserved_gib": 7.181640625,
+    "overlay_enabled": true
+  }
+}

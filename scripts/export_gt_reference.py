@@ -114,18 +114,20 @@ def export_reference(gt_path: Path, output: Path, intrinsics_path: Path) -> dict
             or calibration.get("coordinate_frame") != "rgb_camera"):
         raise ValueError("Expected the verified RGB pinhole calibration sidecar")
     K = np.asarray(calibration["K"], dtype=np.float64)
-    if K.shape != (3, 3) or not np.isfinite(K).all() or K[0, 0] <= 0 or K[1, 1] <= 0:
-        raise ValueError("This exporter requires one real static pinhole K")
-    if not np.allclose(K[2], [0, 0, 1], atol=1e-8) or abs(K[0, 1]) > 1e-8 or abs(K[1, 0]) > 1e-8:
+    if K.shape == (3, 3):
+        K = np.broadcast_to(K, (frames, 3, 3)).copy()
+    if K.shape != (frames, 3, 3) or not np.isfinite(K).all() or (K[:, 0, 0] <= 0).any() or (K[:, 1, 1] <= 0).any():
+        raise ValueError("Calibration must provide one static K or one K per frame")
+    if not np.allclose(K[:, 2], [0, 0, 1], atol=1e-8) or (np.abs(K[:, 0, 1]) > 1e-8).any() or (np.abs(K[:, 1, 0]) > 1e-8).any():
         raise ValueError("Calibration is not a zero-skew pinhole matrix")
-    if calibration.get("valid", True) is not True:
+    if not np.asarray(calibration.get("valid", True), dtype=bool).all():
         raise ValueError("Calibration must be marked valid")
     size = calibration["image_size_hw"]
     if not isinstance(size, list) or len(size) != 2 or any(type(x) is not int or x <= 0 for x in size):
         raise ValueError("Calibration must declare original RGB image_size_hw")
-    if K_gt is not None and (K_gt.shape != (3, 3) or not np.allclose(K, K_gt, atol=1e-6, rtol=1e-7)):
+    if K_gt is not None and (K_gt.shape not in ((3, 3), (frames, 3, 3)) or not np.allclose(K, K_gt, atol=1e-6, rtol=1e-7)):
         raise ValueError("Selected RGB intrinsics do not match this camera's GT calibration")
-    xyz_pixel = np.einsum("ij,thnj->thni", K, joints)
+    xyz_pixel = np.einsum("tij,thnj->thni", K, joints)
     projected = np.full(joints.shape[:-1] + (2,), np.nan, dtype=np.float32)
     projected[joint_valid] = xyz_pixel[..., :2][joint_valid] / xyz_pixel[..., 2:3][joint_valid]
     projection_error = None
@@ -215,3 +217,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

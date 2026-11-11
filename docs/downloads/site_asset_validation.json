@@ -1,0 +1,219 @@
+{
+  "status": "passed",
+  "checked_utc": "2026-11-11T11:24:17.032017+00:00",
+  "sequence_count": 11,
+  "prediction_geometry_exports": 26,
+  "ground_truth_reference_exports": 13,
+  "verified_binary_files": 559,
+  "checks": [
+    {
+      "method": "official_cam_a",
+      "sequence": "dexycb_box",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 1
+    },
+    {
+      "method": "official_cam_b",
+      "sequence": "dexycb_box",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 8
+    },
+    {
+      "method": "official_cam_a_world",
+      "sequence": "dexycb_box",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 1
+    },
+    {
+      "method": "official_cam_b_world",
+      "sequence": "dexycb_box",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 8
+    },
+    {
+      "method": "official_cam_a",
+      "sequence": "dexycb_banana",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 0
+    },
+    {
+      "method": "official_cam_b",
+      "sequence": "dexycb_banana",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 55
+    },
+    {
+      "method": "official_cam_a_world",
+      "sequence": "dexycb_banana",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 0
+    },
+    {
+      "method": "official_cam_b_world",
+      "sequence": "dexycb_banana",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 55
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_1976",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 300
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_1976",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 300
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_2022",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 264
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_2022",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 264
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_3070",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 296
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_3070",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 296
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_3209",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 265
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_3209",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 265
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_3302",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 255
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_3302",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 255
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "aria_3353",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 300
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "aria_3353",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 300
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "ho3d_mc1",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 365
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "ho3d_mc1",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 365
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "ho3d_smu1",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 368
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "ho3d_smu1",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 368
+    },
+    {
+      "method": "official_rgb",
+      "sequence": "ho3d_sm2",
+      "coordinate": "camera",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 373
+    },
+    {
+      "method": "official_rgb_world",
+      "sequence": "ho3d_sm2",
+      "coordinate": "world",
+      "native_tensor_equality": true,
+      "strict_fill_excluded": true,
+      "finite_valid_hand_frames": 373
+    }
+  ],
+  "scope": "File-level validation of real final assets; browser playback/drag/interaction acceptance is separately recorded."
+}

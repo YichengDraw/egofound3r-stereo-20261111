@@ -1,0 +1,208 @@
+{"started_utc": "2026-11-11T10:34:59.761758+00:00", "command": ["/nvme-ssd1/zhaoyicheng/egohsi3r-reproduction-20261104/envs/official/bin/python", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/scripts/gpu_entry.py", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/upstream/infer_marker_video.py", "--config", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml", "--checkpoint", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/weights/EgoFound3R.pt", "--video-path", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/dexycb_box/932122062010/input.mp4", "--output-dir", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/outputs/dexycb_box__cam_b", "--device", "cuda:0", "--upsample-mano", "--no-overlay-frame-images", "--high-fps", "10", "--global-stride", "5", "--chunk-seconds", "2", "--overlap-seconds", "0.5", "--root-k-source", "external", "--root-k-file", "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/dexycb_box/932122062010/root_intrinsics.json"], "gpu": {"index": 5, "name": "NVIDIA L40S", "uuid": "GPU-4db60d9a-84f2-815a-400d-0cc1742b4e2f", "free_mib": 24950, "utilization": 100}}
+GPU resource guard: NVIDIA L40S; allocator cap=16384 MiB; MPS=20
+project=egofound3r config=/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml
+/nvme-ssd1/zhaoyicheng/egohsi3r-reproduction-20261104/envs/official/lib/python3.11/site-packages/torch/nn/modules/transformer.py:382: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(
+{
+  "T_R": 74,
+  "T_H_canonical": 28,
+  "pipeline_wall_seconds": 27.596849743276834,
+  "overlay_frame_images": false,
+  "R_fps": 30.0,
+  "H_fps": 10.0,
+  "G_fps": 2.0,
+  "global_stride": 5,
+  "global_anchor_phase": 2,
+  "clip_count": 2,
+  "T_G": 6,
+  "inference_schema_version": "egofound3r.metric_inference.v1",
+  "metric_scale_valid_clips": 2,
+  "forward_seconds_total": 3.6321977162733674,
+  "hand_h_root_smoothing": {
+    "enabled": false,
+    "mode": "none",
+    "applied_count": 0
+  },
+  "provenance": {
+    "schema_version": "egofound3r.metric_inference.v1",
+    "config_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml",
+    "config_sha256": "3ea35501936e086a853b21b777adf432434c9cc9e992c2b2db198952b1ad25dd",
+    "checkpoint_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/weights/EgoFound3R.pt",
+    "checkpoint_size_bytes": 423526586,
+    "video_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/dexycb_box/932122062010/input.mp4",
+    "temporal_architecture_id": "egofound3r_multirate",
+    "git_commit": "264f4df9fd42536aae4dba982d18272cc3334077",
+    "git_branch": "main",
+    "git_dirty": false,
+    "decoded_video_fps": 30.0,
+    "effective_r_fps": 30.0,
+    "model_input_size_hw": [
+      384,
+      512
+    ],
+    "source_video_size_hw": [
+      480,
+      640
+    ],
+    "command_argv": [
+      "/nvme-ssd1/zhaoyicheng/egohsi3r-reproduction-20261104/envs/official/bin/python",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/upstream/infer_marker_video.py",
+      "--config",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/configs/runtime.toml",
+      "--checkpoint",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/weights/EgoFound3R.pt",
+      "--video-path",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/dexycb_box/932122062010/input.mp4",
+      "--output-dir",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/outputs/dexycb_box__cam_b",
+      "--device",
+      "cuda:0",
+      "--upsample-mano",
+      "--no-overlay-frame-images",
+      "--high-fps",
+      "10",
+      "--global-stride",
+      "5",
+      "--chunk-seconds",
+      "2",
+      "--overlap-seconds",
+      "0.5",
+      "--root-k-source",
+      "external",
+      "--root-k-file",
+      "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/data/dexycb_box/932122062010/root_intrinsics.json"
+    ],
+    "model_compute_dtype": "torch.bfloat16",
+    "input_resize_mode": "keep_aspect",
+    "requested_input_size_hw": [
+      512,
+      512
+    ],
+    "input_affine_source_to_model": [
+      [
+        0.8,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.8,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "output_path": "/nvme-ssd2/zhaoyicheng/egofound3r-reproduction-20261111/outputs/dexycb_box__cam_b/inference_output.pt",
+  "hand_778_exported": true,
+  "overlay_marker_count": 195,
+  "root_k_source": "external",
+  "root_z_postprocessing": {
+    "options": {
+      "smooth": true,
+      "depth_source": "none",
+      "depth_file": null,
+      "smooth_strength": 1.0,
+      "depth_strength": 1.0,
+      "max_relative_change": 0.2,
+      "visibility_threshold": 0.5
+    },
+    "applied_count": 74,
+    "depth_accepted_count": 0
+  },
+  "hand_depth_scale": {
+    "enabled": true,
+    "seconds": 0.006560053676366806,
+    "raw_to_meter_pred": [
+      0.5873388648033142,
+      0.5781865119934082
+    ],
+    "raw_to_meter_fused": [
+      0.5806272625923157,
+      0.5781865119934082
+    ],
+    "raw_to_meter_effective": [
+      0.5806272625923157,
+      0.5781865119934082
+    ]
+  },
+  "overlap_depth_scale": {
+    "enabled": true,
+    "nodes": [
+      {
+        "factor": 0.5806272493706481,
+        "valid": true,
+        "source": "metric_head_component",
+        "component": 0,
+        "reference_chunk": 0,
+        "propagation_hops": 0,
+        "log_uncertainty": 0.7046401326721897,
+        "confidence": 4.670646350815416e-06,
+        "reliable": false
+      },
+      {
+        "factor": 0.5781865119934082,
+        "valid": true,
+        "source": "metric_head_component",
+        "component": 0,
+        "reference_chunk": 1,
+        "propagation_hops": 0,
+        "log_uncertainty": 0.6931471805599453,
+        "confidence": 6.449011858933502e-06,
+        "reliable": false
+      }
+    ],
+    "accepted_edges": 1,
+    "timing": {
+      "spool_write_seconds": 0.015888367779552937,
+      "resolve_seconds": 0.007651457563042641,
+      "rebuild_scene_seconds": 0.2576039917767048,
+      "spool_bytes": 5263738
+    }
+  },
+  "video_io": {
+    "decoded_frames": 74,
+    "retrieved_frames": 28,
+    "cache_hits": 17,
+    "backward_seeks": 0,
+    "peak_cached_frames": 23,
+    "peak_cached_bytes": 67829760
+  },
+  "performance": {
+    "schema_version": "egofound3r.inference_performance.v1",
+    "device": "cuda:0",
+    "device_name": "NVIDIA L40S",
+    "device_total_memory_bytes": 47665709056,
+    "model_dtype": "torch.bfloat16",
+    "input_r_fps": 30.0,
+    "output_r_frames": 74,
+    "unique_h_frames": 28,
+    "unique_g_frames": 6,
+    "processed_h_frames": 45,
+    "processed_g_frames": 9,
+    "forward_calls": 2,
+    "includes_first_forward": true,
+    "extra_warmup_forwards": 0,
+    "forward_seconds_total": 3.6321977162733674,
+    "forward_seconds_first": 2.9883978832513094,
+    "forward_seconds_mean": 1.8160988581366837,
+    "forward_seconds_p50": 1.8160988581366837,
+    "forward_seconds_p95": 2.871167980739847,
+    "pipeline_wall_seconds": 27.596849743276834,
+    "end_to_end_wall_seconds": 44.02881775517017,
+    "forward_output_fps": 20.373340269572097,
+    "forward_processed_h_fps": 12.38919340717222,
+    "forward_processed_g_fps": 2.477838681434444,
+    "pipeline_output_fps": 2.681465482052999,
+    "end_to_end_output_fps": 1.6807173976709926,
+    "end_to_end_realtime_speedup": 0.05602391325569976,
+    "forward_peak_allocated_bytes": 4224937984,
+    "forward_peak_reserved_bytes": 7119831040,
+    "forward_peak_allocated_gib": 3.9347801208496094,
+    "forward_peak_reserved_gib": 6.630859375,
+    "overlay_enabled": true
+  }
+}

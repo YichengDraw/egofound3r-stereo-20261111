@@ -8,7 +8,7 @@ const EDGES = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,
 const TYPES = {float32:Float32Array,float64:Float64Array,uint8:Uint8Array,uint16:Uint16Array,uint32:Uint32Array,int32:Int32Array};
 const state = {manifest:null,sequence:null,frame:0,playing:false,clock:0,last:0,panels:[],controller:null,loadId:0,updatingCamera:false};
 const assetCache = new Map();
-const settings = () => ({scene:$('scene').checked,hands:$('hands').checked,joints:$('joints').checked,trajectory:$('trajectory').checked,wireframe:$('wireframe').checked,color:$('color-mode').value,overlay:$('overlay').checked});
+const settings = () => ({scene:$('scene').checked,hands:$('hands').checked,joints:$('joints').checked,trajectory:$('trajectory').checked,wireframe:$('wireframe').checked,color:$('color-mode').value,overlay:$('overlay').checked,filled:$('filled').checked});
 const fmt = (v, digits=2) => v != null && !(typeof v==='string' && v.trim()==='') && Number.isFinite(Number(v)) ? Number(v).toFixed(digits) : '—';
 const finite = (v) => Number.isFinite(v);
 const flatten = (v) => Array.isArray(v) ? v.flat(Infinity) : v;
@@ -70,7 +70,7 @@ async function loadGeometry(path,signal) {
   await Promise.all(jobs);
   out.frame_count=Number(g.frame_count||g.vertices?.shape?.[0]||g.joints?.shape?.[0]||state.sequence.frames);
   out.hand_count=Number(g.hand_count??2); out.vertex_count=Number(g.vertex_count??778); out.joint_count=Number(g.joint_count??21);
-  if(out.display_valid)out.valid=out.display_valid;
+  // Preserve strict validity; filled display is an explicit user toggle.
   out._handLayout=resolveHandLayout(out);
   if(!out.vertices && !out.joints && !out.scene?.points) throw new Error('该结果没有可显示的网格、关节或场景点云。');
   return out;
@@ -184,7 +184,7 @@ class SceneViewer {
     const g=this.data;if(!g.joints)return;
     for(let h=0;h<g.hand_count;h++){
       const pts=[];for(let f=1;f<g.frame_count;f++){
-        if(!this.handValid(f,h)||!this.handValid(f-1,h))continue;
+        if(g.valid&&(!g.valid[f*g.hand_count+h]||!g.valid[(f-1)*g.hand_count+h]))continue;
         const a=((f-1)*g.hand_count+h)*g.joint_count*3,b=(f*g.hand_count+h)*g.joint_count*3;
         if([...g.joints.subarray(a,a+3),...g.joints.subarray(b,b+3)].every(finite))for(const k of [a,b])pts.push(g.joints[k]*this.scale,g.joints[k+1]*this.scale,g.joints[k+2]*this.scale);
       }
@@ -192,7 +192,7 @@ class SceneViewer {
       const line=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:COLORS[this.layout.colorIndices[h]],transparent:true,opacity:.55}));this.root.add(line);this.traces.push(line);
     }
   }
-  handValid(frame,h){const g=this.data;return !g.valid || g.valid[frame*g.hand_count+h]>.5;}
+  handValid(frame,h){const g=this.data,mask=settings().filled&&g.display_valid?g.display_valid:g.valid;return !mask || mask[frame*g.hand_count+h]>.5;}
   geometryFrame(frame){
     const g=this.data;if(g.frame_indices?.length){let best=0;while(best+1<g.frame_indices.length&&Math.abs(g.frame_indices[best+1]-frame)<Math.abs(g.frame_indices[best]-frame))best++;return best;}
     return Math.min(g.frame_count-1,frame);
@@ -201,9 +201,9 @@ class SceneViewer {
     if(!this.data)return;const g=this.data,f=this.geometryFrame(frame),opts=settings(),V=g.vertex_count,J=g.joint_count,H=g.hand_count;
     this.frame=f;
     for(let h=0;h<H;h++){
-      const valid=this.handValid(f,h);
+      const valid=this.handValid(f,h),filled=!!g.fill_mask?.[f*H+h];
       if(this.meshes[h]){
-        const mesh=this.meshes[h];mesh.visible=opts.hands&&valid;mesh.material.wireframe=opts.wireframe;
+        const mesh=this.meshes[h];mesh.visible=opts.hands&&valid;mesh.material.wireframe=opts.wireframe;mesh.material.transparent=filled;mesh.material.opacity=filled?.42:1;
         const positions=mesh.geometry.attributes.position.array,colors=mesh.geometry.attributes.color.array,base=(f*H+h)*V*3;
         for(let i=0;i<V*3;i++)positions[i]=g.vertices[base+i]*this.scale;
         const attr=opts.color==='contact'?g.contact:opts.color==='visibility'?g.visibility:null;
@@ -216,7 +216,7 @@ class SceneViewer {
         if(mesh.isMesh)mesh.geometry.computeVertexNormals();
       }
       if(this.skeletons[h]){
-        const line=this.skeletons[h],jp=this.jointPoints[h];line.visible=jp.visible=opts.joints&&valid;
+        const line=this.skeletons[h],jp=this.jointPoints[h];line.visible=jp.visible=opts.joints&&valid;line.material.opacity=filled?.42:.95;
         const base=(f*H+h)*J*3,positions=line.geometry.attributes.position.array,jpa=jp.geometry.attributes.position.array;
         for(let i=0;i<J*3;i++)jpa[i]=g.joints[base+i]*this.scale;
         this.edges.forEach(([a,b],e)=>{for(let j=0;j<3;j++){positions[e*6+j]=jpa[a*3+j];positions[e*6+3+j]=jpa[b*3+j];}});
@@ -307,11 +307,11 @@ class MethodPanel {
   }
   update(frame){
     if(!this.method)return;
-    const t=frameTime(frame),off=this.method.video_offset_s||0;
+    const t=frame/(state.sequence.fps||30),off=this.method.video_offset_s||0;
     if(this.video.src&&this.video.readyState>=1){const target=Math.max(0,Math.min(Number.isFinite(this.video.duration)?Math.max(0,this.video.duration-.001):t,t+off));if(Math.abs(this.video.currentTime-target)>.5/(state.sequence.fps||30))this.video.currentTime=target;}
     this.viewer?.update(frame);this.drawOverlay();this.drawMetrics(frame);this.drawChart();
     const g=this.geometry,f=this.viewer?.geometryFrame(frame)??frame,opts=settings();
-    let text=this.method.kind==='reference'?['GT 参考 · 非模型预测']:[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`${count}/${g.hand_count} 只手有效`);if(!g.scene?.points&&this.method.kind!=='reference')text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
+    let text=this.method.kind==='reference'?['GT 参考 · 非模型预测']:[];if(g){let count=0;for(let h=0;h<g.hand_count;h++)if(!g.valid||g.valid[f*g.hand_count+h]>.5)count++;text.push(`严格有效 ${count}/${g.hand_count} 手`);if(g.fill_mask?.[f*g.hand_count]||g.fill_mask?.[f*g.hand_count+1])text.push(opts.filled?'填补：半透明显示':'填补：已隐藏');if(!g.scene?.points&&this.method.kind!=='reference')text.push('未导出场景点云');if(opts.color==='contact'&&!g.contact)text.push('缺少接触概率');if(opts.color==='visibility'&&!g.visibility)text.push('缺少可见概率');}
     if(g?.vertices&&g._handLayout?.missingFaceSlots.length)text.push(`手槽 ${g._handLayout.missingFaceSlots.join('/')} 未提供明确面片拓扑，显示顶点`);
     if(this.viewer?.isSoftware&&g?.vertices)text.push('软件视图：真实面片线框');
     if(this.viewer?.renderer.sampled)text.push('已按显示预算抽样点或线');
@@ -319,7 +319,7 @@ class MethodPanel {
     const heat=this.q('.heat-legend');heat.hidden=opts.color==='hand'||!g?.[opts.color];
     this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.hidden=!heat.hidden||(g&&i>=g.hand_count));
     if(!heat.hidden)setText(heat.querySelector('span'),opts.color==='contact'?'接触概率 0 → 1':'可见概率 0 → 1');
-    let caption=[];if(g?.observed){const n=Array.from({length:g.hand_count},(_,h)=>g.observed[f*g.hand_count+h]>.5).filter(Boolean).length;caption.push(n?`${n} 只手：网络输出帧`:'插值 / 填补帧');}else if(g?.network_anchor){caption.push(g.network_anchor[f]>.5?'网络采样帧':'时间插值帧');}if(g?.fill_mask){const n=Array.from({length:g.hand_count},(_,h)=>g.fill_mask[f*g.hand_count+h]>.5).filter(Boolean).length;if(n)caption.push(`${n} 只手：官方填补结果`);}setText(this.q('.video-caption'),caption.join(' · '));
+    let caption=[];if(g?.observed){const n=Array.from({length:g.hand_count},(_,h)=>g.observed[f*g.hand_count+h]>.5).filter(Boolean).length;caption.push(n?`${n} 只手：网络输出帧`:'插值 / 填补帧');}else if(g?.network_anchor){caption.push(g.network_anchor[f]>.5?'网络采样帧':'时间插值帧');}if(g?.scene?.frame_indices?.length){const a=g.scene.frame_indices.reduce((x,y)=>Math.abs(y-frame)<Math.abs(x-frame)?y:x);caption.push(`场景 G 锚帧 ${a}`);}if(g?.fill_mask){const n=Array.from({length:g.hand_count},(_,h)=>g.fill_mask[f*g.hand_count+h]>.5).filter(Boolean).length;if(n)caption.push(`${n} 只手：官方填补结果`);}setText(this.q('.video-caption'),caption.join(' · '));
   }
   qAll(s){return this.el.querySelectorAll(s);}
   drawOverlay(){
@@ -331,7 +331,7 @@ class MethodPanel {
     if(!projectable)return;
     ctx.lineWidth=1.6;ctx.lineCap='round';
     for(let hand=0;hand<H;hand++){
-      if(g.valid&&g.valid[f*H+hand]<.5)continue;const coords=[];
+      const mask=settings().filled&&g.display_valid?g.display_valid:g.valid;if(mask&&mask[f*H+hand]<.5)continue;ctx.globalAlpha=g.fill_mask?.[f*H+hand]?.42:1;ctx.setLineDash(g.fill_mask?.[f*H+hand]?[4,3]:[]);const coords=[];
       for(let j=0;j<J;j++){
         let x,y;if(g.joints2d){const i=((f*H+hand)*J+j)*2;x=g.joints2d[i];y=g.joints2d[i+1];if(g.joints2d_normalized){x*=vw;y*=vh;}}
         else{const i=((f*H+hand)*J+j)*3,X=g.joints[i],Y=g.joints[i+1],Z=g.joints[i+2];if(Z<=0){coords.push(null);continue;}x=K[0]*X/Z+K[2];y=K[4]*Y/Z+K[5];}
@@ -347,7 +347,7 @@ class MethodPanel {
     const add=(label,value,unit='')=>{const d=node('div','frame-metric'),l=node('span','',label),v=node('strong','',value);if(unit)v.append(node('small','',unit));d.append(l,v);target.append(d);};
     if(!g){add('几何状态',this.method.status==='complete'?'未提供':this.method.status==='blocked'?'待权重授权':'等待结果');return;}
     if(g.series?.length){for(const s of g.series.slice(0,3))add(s.label,fmt(s.values[f],s.digits??2),s.unit||'');}
-    if(g.contact){let sum=0,n=0;for(let h=0;h<g.hand_count;h++){if(g.valid&&!g.valid[f*g.hand_count+h])continue;const start=(f*g.hand_count+h)*g.vertex_count;for(let i=0;i<g.vertex_count;i++){const v=g.contact[start+i];if(finite(v)){sum+=v;n++;}}}add('顶点平均接触概率',n?fmt(sum/n,3):'—');}
+    if(g.contact){let sum=0,n=0;for(let h=0;h<g.hand_count;h++){if(g.valid&&!g.valid[f*g.hand_count+h])continue;const start=(f*g.hand_count+h)*g.vertex_count;for(let i=0;i<g.vertex_count;i++){const v=g.contact[start+i];if(finite(v)){sum+=v;n++;}}}add('有效顶点平均接触概率',n?fmt(sum/n,3):'—');}
     if(!target.childElementCount){add('当前帧',String(frame));add('几何单位',g.units||'m');}
     if(g.observed){let num=0;for(let h=0;h<g.hand_count;h++)num+=g.observed[f*g.hand_count+h]>.5;add('网络输出 / 有效手',`${num} / ${g.hand_count}`);}
   }
@@ -382,7 +382,7 @@ function tick(now){
 }
 
 function renderMetrics(){
-  const seq=state.sequence,target=$('metrics');target.replaceChildren();const methods=seq.methods||[];
+  const seq=state.sequence,target=$('metrics');target.replaceChildren();const methods=(seq.methods||[]).filter(m=>m.metrics?.length);
   const cols=[];for(const m of methods)for(const metric of m.metrics||[]){const key=metric.id||metric.label;if(!cols.find(c=>c.key===key))cols.push({...metric,key});}
   setText($('metric-scope'),seq.metric_scope||'同一片段 · 以注明的有效帧与单位为准');
   if(!cols.length){target.append(node('p','empty-inline',seq.metrics_missing_reason||'尚未提供该片段的定量评估。'));return;}
@@ -415,12 +415,12 @@ function renderPanels(){
 function saveQuery(){if(!state.sequence)return;const q=new URLSearchParams();q.set('seq',state.sequence.id);if(state.panels.length)q.set('methods',state.panels.map(p=>p.method?.id).filter(Boolean).join(','));history.replaceState(null,'',`${location.pathname}?${q}`);}
 
 function wireUI(){
-  setText($('color-mode').querySelector('option[value="hand"]'),'手槽颜色');
+  setText($('color-mode').querySelector('option[value="hand"]'),'左右手');
   $('sequence').addEventListener('change',()=>selectSequence($('sequence').value));$('columns').addEventListener('change',()=>{renderPanels();saveQuery();});
   $('play').addEventListener('click',()=>setPlaying(!state.playing));$('previous').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame-1);});$('next').addEventListener('click',()=>{setPlaying(false);setFrame(state.frame+1);});
   $('scrubber').addEventListener('input',()=>{setPlaying(false);setFrame(Number($('scrubber').value));});$('frame-number').addEventListener('change',()=>{setPlaying(false);setFrame(Number($('frame-number').value));});
   $('frame-number').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setPlaying(false);setFrame(Number(e.currentTarget.value));}});
-  for(const id of ['overlay','scene','hands','joints','trajectory','wireframe','color-mode'])$(id).addEventListener('change',()=>state.panels.forEach(p=>p.update(state.frame)));
+  for(const id of ['overlay','scene','hands','joints','trajectory','wireframe','color-mode','filled'])$(id).addEventListener('change',()=>state.panels.forEach(p=>p.update(state.frame)));
   $('linked').addEventListener('change',()=>{if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
   $('reset-camera').addEventListener('click',()=>{for(const p of state.panels)p.viewer?.fit();if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
   $('details-button').addEventListener('click',()=>{const isHidden=$('protocol').hidden;$('protocol').hidden=!isHidden;$('details-button').setAttribute('aria-expanded',String(isHidden));});
@@ -432,6 +432,16 @@ async function main(){
   try{
     const manifestURL=new URL('manifest.json',document.baseURI);manifestURL.search=new URL(import.meta.url).search;
     state.manifest=await fetchJSON(manifestURL.href);const man=state.manifest;
+    if(man.suite_summary){
+      const table=node('table'),head=node('tr');
+      for(const title of ['数据 / 输入','RGB 帧','有效手帧 / GT 手帧','覆盖率','绝对 MPJPE mm','去腕 MPJPE mm','PA MPJPE mm','PCK50 · 全 GT'])head.append(node('th','',title));
+      const thead=node('thead');thead.append(head);table.append(thead);const body=node('tbody');
+      for(const [dataset,result] of Object.entries(man.suite_summary)){
+        const c=result.coverage,m=result.metrics,tr=node('tr');
+        const values=[dataset+(dataset==='DexYCB'?' · 双 RGB 独立':' · 单 RGB 补充'),result.rgb_frames,`${c.evaluated_hand_frames} / ${c.gt_hand_frames}`,fmt(100*c.fraction,1)+'%',fmt(m.mpjpe_raw_mm),fmt(m.mpjpe_root_relative_mm),fmt(m.mpjpe_pa_mm),fmt(100*result.pck50_all_gt,1)+'%'];
+        for(const v of values)tr.append(node('td','',String(v)));body.append(tr);
+      }table.append(body);$('suite-metrics').append(table);
+    }
     document.title=man.title||'EgoFound3R · 复现对比';setText($('page-title'),man.title||'EgoFound3R · 复现对比');setText($('page-subtitle'),man.subtitle||'');
     if(man.status&&man.status!=='complete'){$('run-state').hidden=false;setText($('run-state'),man.status_label||({blocked:'待权重授权 · 未完成推理',awaiting_results:'待导入推理结果',partial:'部分推理结果'})[man.status]||man.status);}
     for(const s of man.sources||[]){const a=node('a','',s.label);a.href=s.url;a.target='_blank';a.rel='noopener';$('source-links').append(a);}
@@ -443,3 +453,4 @@ async function main(){
   }catch(e){notice(`结果索引读取失败：${e.message}`,true);setText($('load-status'),'请检查 manifest.json 与资源路径');$('load-status').classList.add('error');}
 }
 main();
+

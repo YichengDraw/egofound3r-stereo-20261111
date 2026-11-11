@@ -1,0 +1,227 @@
+{
+  "status": "passed",
+  "added_streams": 9,
+  "added_rgb_frames": 1788,
+  "streams": [
+    {
+      "decoded_frames": 150,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 17.316597832573784,
+      "video_sha256": "5aadcd13a1391ee836dbdf10cb5e0120f87f5967ea56a7212afa1c6bccbb9947",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "968344d3297459715771f0383534b4775a15aa5a7605a47c062741bbbb706ea2",
+      "source_last_sha256": "3fc928a5649b9fb11b8dfe9212cdad89078dfb2fb0515754c415bf9a3fa2a2f2",
+      "prior_scoring_cache_max_difference_m": 2.9675369161985543e-08,
+      "id": "aria_1976",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "d0d182bc81db0139e8ff443e8ec264dd40809e0340668eb1825ee9dcb92816bc",
+      "gt_sha256": "b9f2e66e7bbe5cc88015d7a199c8f983d8e4237ecc7829345f366adec3cc1968",
+      "timestamp_spacing_min_s": 0.033260559,
+      "timestamp_spacing_max_s": 0.033394633
+    },
+    {
+      "decoded_frames": 140,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 18.658204820421005,
+      "video_sha256": "d4f7d7913371764d9f71602bfc98cf926667085559b0ebbbf6595884865f27da",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "8412ec75053d921b20c2540ba054d88e00bbf309fdf4054e56f66f97658c11e1",
+      "source_last_sha256": "01f0d9b7858f859579e4232c05f2e252bd6a3f842764ab81000c6a682edffbdb",
+      "id": "aria_2022",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 280,
+      "calibration_sha256": "1936580c0443b47c3525c092dc79576afc8ef19ffbefe5a3fb22e6fb252f563f",
+      "gt_sha256": "a1e5b1f18a076d6e390e1a115b5fba63a44edce3e47f24064543acd17199951a",
+      "timestamp_spacing_min_s": 0.033302461000000005,
+      "timestamp_spacing_max_s": 0.033399398000000004
+    },
+    {
+      "decoded_frames": 150,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 7.747745090060764,
+      "video_sha256": "490738293d27e19d2abf80d5e77244818498e61c06053f689718bdfcc91bc0e6",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "ad0ed3a82c9fc70639368a294ad400bde2547ea8dfc3134704596a43301af601",
+      "source_last_sha256": "fd7407c87c4dfbc58c7c04244d1d454c1fd9c1cf3d385fde71b4a8104f9d42a4",
+      "id": "aria_3070",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "355a7fdb4078577c3975c53d516b76bf7f498bad06a9da05e3f7390402710d61",
+      "gt_sha256": "9ef34705b8051735f3efbe32f1abf592c79686b4877a359322ef103db1529598",
+      "timestamp_spacing_min_s": 0.031744886,
+      "timestamp_spacing_max_s": 0.034988275
+    },
+    {
+      "decoded_frames": 150,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 6.239654541015625,
+      "video_sha256": "7e9b7edb39d6ca4697160e9056a36e3366987edef0dff4ed93ad1d95b4a94855",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "794b5fdda0241185306b1fc117ff4566964f4fd5e1c8852cf4e14ca5f13403f8",
+      "source_last_sha256": "a5b5b1f7f3a366fd2629a927076c5a64a7c5ad0eebcc5ea0ed1d648a0ec7098b",
+      "prior_scoring_cache_max_difference_m": 2.9527410627672168e-08,
+      "id": "aria_3209",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "5ec4aadef1204b9b8c634e01b896b96048775cdc31541d844c4bccc1ee013fba",
+      "gt_sha256": "652ae19fb2870d4c3a0b035f11d0b24a3f94779e2b607d4ec40b44e8c7218336",
+      "timestamp_spacing_min_s": 0.031750127,
+      "timestamp_spacing_max_s": 0.034177849
+    },
+    {
+      "decoded_frames": 150,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 14.000807020399305,
+      "video_sha256": "e60e1cb65d992723632c588eb711d8edbe810ca9cd8d975f393a95036698a982",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "04f11615dbbab8a69c23eb52f38efe9a33a27c9ef82fdd92c76f85c70ab5d56a",
+      "source_last_sha256": "ee9b4b4deca86f2974f94cf1c759e315e82169d538ee360199c695f7992a2ba5",
+      "id": "aria_3302",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "529f14d00df56574855dcd904482644792514dac887152a9b52aabd29652435d",
+      "gt_sha256": "fa1c7f4c3ed12a3f9295c0cba494b507cda37f0b48a4af606aad74cd389b2925",
+      "timestamp_spacing_min_s": 0.031324463000000004,
+      "timestamp_spacing_max_s": 0.035398263
+    },
+    {
+      "decoded_frames": 150,
+      "size_hw": [
+        768,
+        768
+      ],
+      "min_mean_BG_channel_difference": 13.073523627387154,
+      "video_sha256": "f2987accca6266671bd7ae607366562d22d06c9c9126ca40bb509f8b071c6167",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "b798f3416afbd59e2cf02243a90f4a60147b81609abcf1bfdad9b380185ff3cd",
+      "source_last_sha256": "7c2b45fa7524d527d96d0242fb31416dbf6df0acb8a1e5678e876b2c8fe08eb2",
+      "id": "aria_3353",
+      "dataset": "HOT3D-Aria",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "ea34107b6507d118c209151d99a5bb16fac7df90c3ba844ef2d5c8402ef750b8",
+      "gt_sha256": "4772fd30204ffc620de0a5bf129b906903424c137d896be4d2baddff893ace60",
+      "timestamp_spacing_min_s": 0.033275403,
+      "timestamp_spacing_max_s": 0.033379655
+    },
+    {
+      "decoded_frames": 299,
+      "size_hw": [
+        480,
+        640
+      ],
+      "min_mean_BG_channel_difference": 8.026722005208333,
+      "video_sha256": "5a79609d7d57da1a1f6f5137d22e1a96ece27e2c3449f6916a258584696e54a1",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "64e7ea8c9d6ca69d41152bd43b0915704e889756f678a873dbc1e1746533acba",
+      "source_last_sha256": "6fbbd8a30fca50a74ec972c276c675d448b7f571bf611b387db934b9164c78fa",
+      "id": "ho3d_mc1",
+      "dataset": "HO3D-v3",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 271,
+      "calibration_sha256": "4c96e950f0a14c4cce998477ef2139874c1cf82aad55ea3dbce8d428830ceae0",
+      "gt_sha256": "dee1517db4f63570adc515b3d474c6bf43309f1175448c292b1c7e3f497a5e7a",
+      "timing_assumption": "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
+      "missing_annotation_source_frame_ids": [
+        342,
+        345,
+        348,
+        351,
+        354,
+        357,
+        360,
+        363,
+        366,
+        369,
+        372,
+        375,
+        378,
+        381,
+        384,
+        387,
+        390,
+        393,
+        396,
+        399,
+        402,
+        405,
+        408,
+        411,
+        414,
+        417,
+        420,
+        423
+      ]
+    },
+    {
+      "decoded_frames": 299,
+      "size_hw": [
+        480,
+        640
+      ],
+      "min_mean_BG_channel_difference": 10.587604166666667,
+      "video_sha256": "1a6a372b8cbee553f4cc3a68675b8754ac54d8bf07da0531bd070d81d76f029e",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "5c59638af3a626ab0850a18eb2f5f23843e57e7b2814ec567ca7ba01cf525286",
+      "source_last_sha256": "493efb30cb7ca4b5153254017274d627d423063d298ccb7924d6ca82800e2989",
+      "id": "ho3d_smu1",
+      "dataset": "HO3D-v3",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 297,
+      "calibration_sha256": "34875d128de408fd02a69a968162671559f1c4f95c61a58c64401e0866c58892",
+      "gt_sha256": "05d36a772cbf918820f37e78bf2a2696f58c05fbfc81aef0aba396ec3ff020ac",
+      "timing_assumption": "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
+      "missing_annotation_source_frame_ids": [
+        606,
+        1140
+      ]
+    },
+    {
+      "decoded_frames": 300,
+      "size_hw": [
+        480,
+        640
+      ],
+      "min_mean_BG_channel_difference": 8.784905598958334,
+      "video_sha256": "598747b5a0e066191542b62e39fbc0db348fcbbcfb419407a035a835c913e791",
+      "encoding": "H264 CRF16 yuv420p; original images retained through symlinks; no spatial resize",
+      "source_first_sha256": "de83af7ce25de3fc79822fe4369c44f026f3f8994e85929dd8e89429f05ae696",
+      "source_last_sha256": "07648747a407d98b51c2cabce97a39d4f8503eaab46c318742b1c7523aa3c0b0",
+      "id": "ho3d_sm2",
+      "dataset": "HO3D-v3",
+      "input_group": "monocular_rgb_supplement",
+      "gt_hand_frames": 300,
+      "calibration_sha256": "2826d36799be7c1d96b0dc3acf5972c7f57a00729e17cbed88d70d2d1dc640ed",
+      "gt_sha256": "d4290560bf9c2ac3918306f718a061c3ede2c22ede2b49634d0196862937fdbe",
+      "timing_assumption": "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
+      "missing_annotation_source_frame_ids": []
+    }
+  ],
+  "total_sequences": 11,
+  "total_streams": 13,
+  "total_rgb_frames": 2080,
+  "input_gt": false,
+  "input_depth": false,
+  "input_extrinsics": false
+}

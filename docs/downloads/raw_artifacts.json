@@ -1,0 +1,109 @@
+{
+  "tag": "reproduction-20261111",
+  "artifacts": [
+    {
+      "run_id": "dexycb_box__cam_a",
+      "prediction_bytes": 19216179,
+      "prediction_sha256": "723eb06493d9f2149c94a66b765b3676d9d079575db19c46322dff00dc65a99c",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_a.tar.gz",
+      "archive_bytes": 10475620,
+      "archive_sha256": "5163c942dd1e5a2a8b1aea1051d2fb49aa68c98fab4c64d9730841d9065d678a"
+    },
+    {
+      "run_id": "dexycb_box__cam_b",
+      "prediction_bytes": 19600539,
+      "prediction_sha256": "cea163a4db608955d65d481a5b3455969dd3241a36161ea35fe38fd3f62a3fa2",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_b.tar.gz",
+      "archive_bytes": 9781249,
+      "archive_sha256": "5dbe21e91f997283a51c8ebaec381fdd5eea4179d0d21c42771e797bf9c5f761"
+    },
+    {
+      "run_id": "dexycb_banana__cam_a",
+      "prediction_bytes": 17384243,
+      "prediction_sha256": "fa63682b420805fb9e589c43abd5ef4b75d9bca2c15f3d1cfea52eceb3d94746",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_a.tar.gz",
+      "archive_bytes": 9022464,
+      "archive_sha256": "1a17bf82db6c5a9bceaaf5c754c9a4e00585a1fb42c02e37868a06b6ebc12384"
+    },
+    {
+      "run_id": "dexycb_banana__cam_b",
+      "prediction_bytes": 17759259,
+      "prediction_sha256": "e597f25a5e2ecdb1402f256d62434d90bebdf4679303688b60ac2ac5a84f1815",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_b.tar.gz",
+      "archive_bytes": 11607287,
+      "archive_sha256": "d6e55f9edc4962a63fa1488a70ea814bb116375d86dc4b8ba2c538494e2be61d"
+    },
+    {
+      "run_id": "aria_1976__rgb",
+      "prediction_bytes": 43445991,
+      "prediction_sha256": "03afc8e7ca5e3bc44b249f1c0a5ed56c6ed4619c74a65815713eb2a35fa2d963",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_1976__rgb.tar.gz",
+      "archive_bytes": 34049050,
+      "archive_sha256": "ecff4c14310908bae6b209600bfecf6508cf8443302c245314b4307a93ef705f"
+    },
+    {
+      "run_id": "aria_2022__rgb",
+      "prediction_bytes": 40006227,
+      "prediction_sha256": "650c9ed050a351e88df7f1e998a97622d5b4d11b6cecbbe794ca934d45f1206c",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_2022__rgb.tar.gz",
+      "archive_bytes": 31371377,
+      "archive_sha256": "8b409242a694eaeaedf5183115e279707c1721ea6c49d42fb7b18dd474ba0578"
+    },
+    {
+      "run_id": "aria_3070__rgb",
+      "prediction_bytes": 43442579,
+      "prediction_sha256": "6e9f1f987d818bc1cec400d08174fcbf2e69331a68e6580ed4ec4d137a9fc079",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3070__rgb.tar.gz",
+      "archive_bytes": 35257613,
+      "archive_sha256": "ae707543714ec04fb77827811fcda5e45842e91241a1720cd9785951242f628e"
+    },
+    {
+      "run_id": "aria_3209__rgb",
+      "prediction_bytes": 43442067,
+      "prediction_sha256": "723c2280b7826986214ff85931c595576cdb3a47a3c31fb1ae4921ad6825fd0e",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3209__rgb.tar.gz",
+      "archive_bytes": 35143262,
+      "archive_sha256": "405162364c6b11764a5b6e6b5672ba8db6d8f00cc54ac5f54d2965a43a12ed2f"
+    },
+    {
+      "run_id": "aria_3302__rgb",
+      "prediction_bytes": 43441555,
+      "prediction_sha256": "dafd4572300bb39fc5f9306ff7b0ae321852daf8962e69576c7181fa1ecb6fd7",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3302__rgb.tar.gz",
+      "archive_bytes": 33547644,
+      "archive_sha256": "e10cb17e46eef738297fce74c4a4dfa29096cb017b62c7d4be1a5fcafce82d64"
+    },
+    {
+      "run_id": "aria_3353__rgb",
+      "prediction_bytes": 43446439,
+      "prediction_sha256": "c39f9a217a481f98e36a714f9383f5de5d83fa3a5eda0d7efc4d2ff106e22a19",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3353__rgb.tar.gz",
+      "archive_bytes": 34039237,
+      "archive_sha256": "c408f10651ecaa7971f97400e53c55b65a92f97d83e2e8e4d90a53ef922b4767"
+    },
+    {
+      "run_id": "ho3d_mc1__rgb",
+      "prediction_bytes": 135086347,
+      "prediction_sha256": "fa2edf8830be554e742206ea6ada47010dd51f6bb53649c6618b9a100e96d6f0",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_mc1__rgb.tar.gz",
+      "archive_bytes": 106205200,
+      "archive_sha256": "11b8c6689160041bf34c2958ec7769d2bdd2a62dadbf38c8cd80872537fb81d5"
+    },
+    {
+      "run_id": "ho3d_smu1__rgb",
+      "prediction_bytes": 135084875,
+      "prediction_sha256": "8898a603216e402ce0919cb085b5ec1f9af773ca98b60077a754b7bda13c7410",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_smu1__rgb.tar.gz",
+      "archive_bytes": 105694994,
+      "archive_sha256": "b297c8f7d17f3416d9ba32aa8622cc8348cdb53290aa7c9ef640609b917cd792"
+    },
+    {
+      "run_id": "ho3d_sm2__rgb",
+      "prediction_bytes": 135221899,
+      "prediction_sha256": "0f4efe48b26698d7f5eafa38696a86424798a054bef20ca29ac3ee6f14649476",
+      "archive_url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_sm2__rgb.tar.gz",
+      "archive_bytes": 106286110,
+      "archive_sha256": "8424caecb506486ac872792de7b732d494589b6ab28db7494af10e3992965f2c"
+    }
+  ]
+}

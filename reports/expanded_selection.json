@@ -1,0 +1,15 @@
+{
+  "frozen_utc": "2026-11-11T10:38:51.556923+00:00",
+  "rule": "All six available calibrated Aria RGB clips and all three recent HO3D clips; selected by data availability before expanded inference, no outcome filtering",
+  "excluded": [
+    {
+      "dataset": "ARCTIC",
+      "sequences": [
+        "s03_box_grab_01_1",
+        "s03_mixer_grab_01_1",
+        "s03_waffleiron_grab_01_1"
+      ],
+      "reason": "Recent RGB images exist, but no verified source camera calibration found in supplied project roots; do not label estimated SfM intrinsics as known K"
+    }
+  ]
+}

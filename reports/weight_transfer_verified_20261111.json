@@ -1,0 +1,18 @@
+{
+  "verified_at_utc": "2026-11-11T10:00:59.527517+00:00",
+  "transport": "Mac PSSD to L40S direct SSH; ProxyCommand=none; ProxyJump=none",
+  "verification": "Destination SHA256 matches source; sizes match official HF metadata",
+  "files": [
+    {
+      "path": "weights/EgoFound3R.pt",
+      "bytes": 423526586,
+      "sha256": "02ba3135b030a23f88b91a986c173f6a3c600f6da45637605fd09914e9d78e66"
+    },
+    {
+      "path": "weights/vggt_omega_1b_512.pt",
+      "bytes": 4576706117,
+      "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934"
+    }
+  ],
+  "inference_started_by_transfer": false
+}

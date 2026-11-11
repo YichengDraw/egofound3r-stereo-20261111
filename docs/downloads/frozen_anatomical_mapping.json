@@ -1,0 +1,34 @@
+{
+  "native_hand_order": [
+    "left",
+    "right"
+  ],
+  "joint_order": "OpenPose21: wrist, thumb, index, middle, ring, little; four joints per finger",
+  "joint_mapping": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "evidence": "Fixed before quantitative suite scoring: visual RGB audit of HOT3D-Aria 1976 at frames 0,74,149; native slot 0 projects onto anatomical left hand, slot 1 onto right. Internal predicted joint-tip vs MANO-tip distance matrix confirms five finger order. No per-frame swapping or best-error selection.",
+  "audit_run": "aria_1976__rgb",
+  "audit_image": "anatomical_slot_audit.jpg",
+  "upstream_limitation": "Released inference schema does not explicitly name the two anatomical slots; mapping is an empirical audit of this checkpoint, not an asserted upstream guarantee."
+}
