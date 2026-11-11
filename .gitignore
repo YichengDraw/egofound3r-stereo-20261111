@@ -1,9 +1,9 @@
 __pycache__/
 *.pyc
-weights/
-cache/
-outputs/
-upstream/
-data/
-evaluation_ref/
-logs/
+/weights/
+/cache/
+/outputs/
+/upstream/
+/data/
+/evaluation_ref/
+/logs/

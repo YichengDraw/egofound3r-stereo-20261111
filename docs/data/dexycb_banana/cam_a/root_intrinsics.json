@@ -1,0 +1,28 @@
+{
+  "schema_version": "egofound3r.root_intrinsics_input.v1",
+  "camera_model": "pinhole",
+  "coordinate_frame": "rgb_camera",
+  "image_size_hw": [
+    480,
+    640
+  ],
+  "K": [
+    [
+      616.640869140625,
+      0.0,
+      308.548095703125
+    ],
+    [
+      0.0,
+      616.2581787109375,
+      248.52310180664062
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "valid": true,
+  "video_sha256": "e66b85d72a571cd3d419c594e32767ec6caad9a2dc83147013540bfdb6842b7a"
+}
