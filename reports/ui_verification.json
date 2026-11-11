@@ -1,0 +1,48 @@
+{
+  "verified_at_utc": "2026-11-11T08:07:27.048067+00:00",
+  "rendered_code_commit": "30557378fd9520074d33bf09e50368920cc6d7d3",
+  "page_url": "https://yichengdraw.github.io/egofound3r-stereo-20261111/?seq=dexycb_banana&methods=official_a%2Cofficial_b%2Cgt_b",
+  "model_inference_completed": 0,
+  "model_evaluations_completed": 0,
+  "planned_camera_streams": 4,
+  "ground_truth_reference_streams": 4,
+  "checks": {
+    "real_rgb_video_dimensions": [
+      480,
+      640
+    ],
+    "video_decode_errors": [],
+    "jump_to_source_frame_37": {
+      "three_video_times_s": [
+        1.233333,
+        1.233333,
+        1.233333
+      ],
+      "passed": true
+    },
+    "non_looping_playback_to_box_frame_73": {
+      "three_video_times_s": [
+        2.433333,
+        2.433333,
+        2.433333
+      ],
+      "passed": true
+    },
+    "sequence_switch_box_to_banana": true,
+    "reference_camera_switch_A_to_B": true,
+    "real_gt_2d_overlay_visible": true,
+    "real_gt_wrist_trajectory_visible": true,
+    "real_gt_3d_mouse_drag_rotation_visible": true,
+    "software_renderer_fallback_used": true,
+    "persistent_model_blocked_label_visible": true
+  },
+  "unverified": [
+    "Native WebGL rendering in this cloud browser; software fallback was exercised",
+    "EgoFound3R predicted geometry and model accuracy; official gated weights unavailable"
+  ],
+  "screenshot": {
+    "path": "reports/site-review.jpg",
+    "sha256": "174cebadcfe12fe9f5104dfe6a66b2f4e8c38231c528fa12e07f0cae2511713d"
+  },
+  "scope": "Observed real RGB and separately labelled real GT references only; GT is not a model prediction."
+}
