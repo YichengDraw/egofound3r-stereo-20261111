@@ -1,0 +1,146 @@
+{
+  "status": "passed",
+  "scenes": [
+    {
+      "id": "dexycb_box",
+      "views": [
+        {
+          "id": "dexycb_box_a",
+          "rgb_count": 74,
+          "label_count": 74,
+          "all_rgb_dimensions": [
+            640,
+            480
+          ],
+          "rgb_mode": "RGB",
+          "min_mean_RG_channel_difference": 14.668828125,
+          "valid_joint_count": 1554,
+          "total_joint_count": 1554,
+          "K_projection_label_residual_px": {
+            "mean": 1.486489567726946e-05,
+            "max": 4.4261030399661306e-05,
+            "count": 1554
+          },
+          "video_probe": {
+            "width": 640,
+            "height": 480,
+            "r_frame_rate": "30/1",
+            "duration": "2.466667",
+            "nb_read_frames": "74"
+          },
+          "video_sha256": "65cfba4c206ad068311b990da71ca2420ee4202ec4f85f87a217ec3dad0c1e27"
+        },
+        {
+          "id": "dexycb_box_b",
+          "rgb_count": 74,
+          "label_count": 74,
+          "all_rgb_dimensions": [
+            640,
+            480
+          ],
+          "rgb_mode": "RGB",
+          "min_mean_RG_channel_difference": 16.222799479166667,
+          "valid_joint_count": 1554,
+          "total_joint_count": 1554,
+          "K_projection_label_residual_px": {
+            "mean": 1.1346697604418037e-05,
+            "max": 3.4359785758963376e-05,
+            "count": 1554
+          },
+          "video_probe": {
+            "width": 640,
+            "height": 480,
+            "r_frame_rate": "30/1",
+            "duration": "2.466667",
+            "nb_read_frames": "74"
+          },
+          "video_sha256": "792c0bbd8f1905f308949abd0042ef8d1836484ede696ac4489375170178c2d2"
+        }
+      ],
+      "cross_camera_gt_consistency_mm": {
+        "mean": 0.00024994585144114763,
+        "max": 0.00927954893367484,
+        "joint_count": 1554
+      }
+    },
+    {
+      "id": "dexycb_banana",
+      "views": [
+        {
+          "id": "dexycb_banana_a",
+          "rgb_count": 72,
+          "label_count": 72,
+          "all_rgb_dimensions": [
+            640,
+            480
+          ],
+          "rgb_mode": "RGB",
+          "min_mean_RG_channel_difference": 15.208082682291666,
+          "valid_joint_count": 1512,
+          "total_joint_count": 1512,
+          "K_projection_label_residual_px": {
+            "mean": 1.3715679181594766e-05,
+            "max": 4.3962564455318725e-05,
+            "count": 1512
+          },
+          "video_probe": {
+            "width": 640,
+            "height": 480,
+            "r_frame_rate": "30/1",
+            "duration": "2.400000",
+            "nb_read_frames": "72"
+          },
+          "video_sha256": "e66b85d72a571cd3d419c594e32767ec6caad9a2dc83147013540bfdb6842b7a"
+        },
+        {
+          "id": "dexycb_banana_b",
+          "rgb_count": 72,
+          "label_count": 72,
+          "all_rgb_dimensions": [
+            640,
+            480
+          ],
+          "rgb_mode": "RGB",
+          "min_mean_RG_channel_difference": 17.434638671875,
+          "valid_joint_count": 1512,
+          "total_joint_count": 1512,
+          "K_projection_label_residual_px": {
+            "mean": 1.2689191536124758e-05,
+            "max": 3.446552533693085e-05,
+            "count": 1512
+          },
+          "video_probe": {
+            "width": 640,
+            "height": 480,
+            "r_frame_rate": "30/1",
+            "duration": "2.400000",
+            "nb_read_frames": "72"
+          },
+          "video_sha256": "83f01634ab60df2637e966243f67b8bce1bd2e46b5516a4b117a782079b5e7a4"
+        }
+      ],
+      "cross_camera_gt_consistency_mm": {
+        "mean": 0.00031148880193110346,
+        "max": 0.0123042916456432,
+        "joint_count": 1512
+      }
+    }
+  ],
+  "image_contract": {
+    "source": "Official DexYCB color JPG files",
+    "additional_rectification": false,
+    "lens_distortion_coefficients_provided": false,
+    "official_sdk_policy": "Uses published color K directly on these RGB images without cv2.undistort; no distortion coefficients are supplied in intrinsics YAML.",
+    "pinhole_assumption": "Use the dataset-provided pinhole convention. This does not independently certify physical lens distortion is zero."
+  },
+  "total_sequences": 2,
+  "total_camera_streams": 4,
+  "total_rgb_frames": 292,
+  "input_depth": false,
+  "input_gt": false,
+  "input_extrinsics": false,
+  "baseline_m": 0.6308049926273707,
+  "relative_rotation_deg": 43.04627492127997,
+  "completed_utc": "2026-11-11T07:40:54.453170+00:00",
+  "elapsed_s": 2.1000316021963954
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111a25">
+  <meta name="description" content="EgoFound3R 复现实验：同步 RGB、手部重建、场景点云与可交互三维对比。">
+  <title>EgoFound3R · 复现对比</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">E3</span><div><div class="title-row"><h1 id="page-title">EgoFound3R <span>复现对比</span></h1><span id="run-state" hidden></span></div><p id="page-subtitle">同步 RGB · 已知内参 · 手与场景三维重建</p></div></div>
+    <nav id="source-links" aria-label="论文、代码与结果来源"></nav>
+  </header>
+  <main>
+    <section class="selection-bar" aria-label="选择对比内容">
+      <label class="sequence-select"><span>数据片段</span><select id="sequence" aria-label="选择数据片段"><option>正在读取结果…</option></select></label>
+      <div id="sequence-meta" class="sequence-meta"></div>
+      <label class="compact-select"><span>布局</span><select id="columns" aria-label="对比列数"><option value="2">双列对比</option><option value="3">三列对比</option></select></label>
+      <button id="details-button" class="text-button" aria-expanded="false" aria-controls="protocol">输入与复现说明 <span aria-hidden="true">⌄</span></button>
+    </section>
+    <section id="protocol" class="protocol" hidden>
+      <div id="protocol-items" class="protocol-grid"></div>
+      <div id="sequence-description" class="explanation"></div>
+    </section>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <section class="playback-bar" aria-label="同步播放控制">
+      <button id="play" class="primary-button" aria-label="播放" title="播放 / 暂停（空格）"><span id="play-icon">▶</span><span id="play-text">播放</span></button>
+      <button id="previous" class="icon-button" aria-label="上一帧" title="上一帧（左箭头）">‹</button>
+      <button id="next" class="icon-button" aria-label="下一帧" title="下一帧（右箭头）">›</button>
+      <div class="timeline"><input id="scrubber" aria-label="同步时间轴" type="range" min="0" max="0" value="0" step="1"><div class="timeline-labels"><span id="time-label">0.00 s</span><span id="source-frame-label"></span><span id="duration-label">0.00 s</span></div></div>
+      <label class="frame-label">帧 <input id="frame-number" type="number" value="0" min="0" max="0" aria-label="跳转至帧"></label>
+      <select id="speed" aria-label="播放速度"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+      <label class="check"><input id="loop" type="checkbox" checked>循环</label>
+    </section>
+    <section class="display-bar" aria-label="可视化选项">
+      <div class="display-group"><label class="check"><input id="overlay" type="checkbox" checked>2D 关节</label><label class="check"><input id="scene" type="checkbox" checked>场景点云</label><label class="check"><input id="hands" type="checkbox" checked>手部网格</label><label class="check"><input id="joints" type="checkbox">3D 骨架</label><label class="check"><input id="trajectory" type="checkbox">手腕轨迹</label><label class="check"><input id="wireframe" type="checkbox">线框</label></div>
+      <div class="display-group"><label class="small-label">手部颜色 <select id="color-mode"><option value="hand">左右手</option><option value="contact">接触概率</option><option value="visibility">可见概率</option></select></label><label class="check"><input id="linked" type="checkbox" checked>联动视角</label><button id="reset-camera" class="small-button">重置视角</button></div>
+    </section>
+    <section id="comparison" class="comparison" aria-label="同步可视化对比"></section>
+    <section class="bottom-grid">
+      <div class="summary-panel"><div class="section-title"><h2>全片段指标</h2><span id="metric-scope">读取真实评估结果</span></div><div id="metrics" class="table-scroll"><p class="empty-inline">尚未加载评估结果。</p></div></div>
+      <div class="summary-panel"><div class="section-title"><h2>结果与说明</h2></div><div id="result-notes" class="result-notes"></div><div id="downloads" class="downloads"></div></div>
+    </section>
+    <footer><span>拖动旋转 · 滚轮缩放 · 右键平移</span><span id="footer-provenance">仅展示已导出的真实推理结果</span><span id="load-status" role="status"></span></footer>
+  </main>
+  <template id="method-template">
+    <article class="method-card">
+      <div class="method-heading"><span class="method-accent"></span><select class="method-select" aria-label="选择对比方法"></select><span class="method-kind"></span></div>
+      <div class="method-description"></div>
+      <div class="video-panel"><video muted playsinline preload="auto"></video><canvas class="overlay-canvas"></canvas><div class="video-missing" hidden></div><div class="pane-label"><span class="rgb-title">RGB + 2D 投影</span><span class="video-view"></span></div><div class="video-caption"></div></div>
+      <div class="scene-panel"><div class="webgl-host"></div><div class="pane-label"><span>可交互 3D</span><span class="coordinate-label"></span></div><div class="scene-message">正在加载几何结果…</div><div class="scene-legend"><span><i class="dot left"></i>左手</span><span><i class="dot right"></i>右手</span><span class="heat-legend" hidden><i></i><span>低 → 高</span></span></div><button class="fit-camera" title="将手部居中" aria-label="将手部居中">⌖</button><div class="frame-state"></div></div>
+      <div class="frame-metrics"></div>
+      <div class="chart-container"><canvas class="series-chart" aria-label="逐帧指标曲线"></canvas><div class="chart-label"></div></div>
+    </article>
+  </template>
+  <noscript><p class="notice">请启用 JavaScript，以查看同步视频和可拖动的三维结果。</p></noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

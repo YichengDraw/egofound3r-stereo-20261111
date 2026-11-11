@@ -1,0 +1,22 @@
+{
+  "checked_date": "2026-11-11",
+  "status": "blocked",
+  "official_weights": [
+    {
+      "repository": "Frank-F2021/EgoFound3R",
+      "filename": "EgoFound3R.pt",
+      "official_resolve_http_status": 401,
+      "message": "Access to model Frank-F2021/EgoFound3R is restricted. You must have access to it and be authenticated to access it. Please log in."
+    },
+    {
+      "repository": "facebook/VGGT-Omega",
+      "filename": "vggt_omega_1b_512.pt",
+      "official_resolve_http_status": 401,
+      "message": "Access to model facebook/VGGT-Omega is restricted. You must have access to it and be authenticated to access it. Please log in."
+    }
+  ],
+  "credentials": "No existing Hugging Face client credential was available in the checked default and recent project environments.",
+  "inference_runs_completed": 0,
+  "predicted_geometry_generated": false,
+  "metrics_generated": false
+}

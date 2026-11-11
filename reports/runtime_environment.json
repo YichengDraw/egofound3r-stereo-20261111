@@ -1,0 +1,11 @@
+{
+  "python_environment": "existing official research environment",
+  "torch": "2.7.0+cu128",
+  "torchvision": "0.22.0+cu128",
+  "opencv": "4.11.0",
+  "scipy": "1.17.1",
+  "numpy": "1.26.4",
+  "official_cli_import": "passed",
+  "model_loading": "not_run_missing_authorized_weights",
+  "model_inference": "not_run_missing_authorized_weights"
+}
