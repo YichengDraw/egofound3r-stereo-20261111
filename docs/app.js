@@ -9,7 +9,7 @@ const EDGES = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,
 const TYPES = {float32:Float32Array,float64:Float64Array,uint8:Uint8Array,uint16:Uint16Array,uint32:Uint32Array,int32:Int32Array};
 const state = {manifest:null,sequence:null,frame:0,playing:false,clock:0,last:0,panels:[],controller:null,loadId:0,updatingCamera:false};
 const legacyCache=new Map();
-const LEGACY_COLORS={hggt_native:'#fa74b8',hggt_adapted:'#b69bff',hawor:'#66dda5',gt:'#f3f6ff',ego:'#f4b24b'};
+const LEGACY_COLORS={hggt_native:'#fa74b8',hggt_adapted:'#b69bff',hawor:'#66dda5',gt:'#f3f6ff',ego:'#ff5252'};
 async function loadLegacy(entry,signal){
   if(legacyCache.has(entry.id))return legacyCache.get(entry.id);
   const job=(async()=>{const response=await fetch(entry.geometry_url,{signal});if(!response.ok)throw new Error(`HGGT 数据 ${response.status}`);const text=await response.text();
@@ -23,6 +23,30 @@ async function loadLegacy(entry,signal){
 function deduplicateGTProjections(){
   const assigned=new Set(state.panels.filter(p=>p.method?.kind==='reference').map(p=>p.method.view));
   for(const p of state.panels){const hide=p.method?.kind==='reference'||assigned.has(p.method?.view);p.q('.projection-gt').hidden=hide;p.q('.projection-row').classList.toggle('single-projection',hide);if(!hide)assigned.add(p.method?.view);p.drawProjections();}
+}
+function updateVideoSwitcher(){
+  const host=$('video-switcher');if(!host||!state.sequence)return;
+  const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id),matched=state.panels.filter(p=>p.legacyEntry);
+  for(const button of host.querySelectorAll('[data-video-source]')){
+    const key=button.dataset.videoSource,panels=key==='input'?state.panels:matched;
+    button.disabled=key!=='input'&&!matched.length;
+    button.setAttribute('aria-selected',String(panels.length>0&&panels.every(p=>p.activeVideoTab===key)));
+  }
+  setText(host.querySelector('.video-switch-hint'),!entry?'当前片段没有昨日 HGGT / HaWoR 视频。点击下方四段之一，直接打开原视频。':!matched.length?'昨日结果只覆盖相机 A；请先在任一列标题选择相机 A。':entry.view==='cam_a'?'点击选项卡切换相机 A 的视频；相机 B 没有昨日结果，继续显示自己的 RGB。':'点击选项卡统一切换视频；下方 3D 勾选与预测 / GT 投影保持独立。');
+}
+function renderVideoSwitcher(){
+  const host=$('video-switcher');host.replaceChildren();
+  host.append(node('strong','','视频切换'));
+  const tabs=node('div','video-source-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','统一切换视频');
+  for(const [key,label] of [['input','EgoFound3R / RGB'],['comparison','HGGT × HaWoR 原视频'],['native','HGGT 原生投影']]){
+    const b=node('button','video-tab',label);b.type='button';b.dataset.videoSource=key;b.setAttribute('role','tab');b.setAttribute('aria-controls','comparison');b.addEventListener('click',()=>{for(const p of state.panels)p.videoButtons?.get(key)?.click();updateVideoSwitcher();});tabs.append(b);
+  }
+  host.append(tabs,node('p','video-switch-hint'));
+  const choices=node('div','video-source-samples');choices.append(node('span','','昨日有结果的片段：'));
+  for(const [id,label] of [['dexycb_box','箱子'],['dexycb_banana','香蕉'],['aria_1976','Aria 1976'],['aria_3209','Aria 3209']]){
+    const b=node('button','small-button',label);b.type='button';b.setAttribute('aria-label',`打开 ${label} 的 HGGT / HaWoR 视频`);if(id===state.sequence.id)b.setAttribute('aria-current','true');b.addEventListener('click',async()=>{await selectSequence(id);if(!state.panels.some(p=>p.legacyEntry)){const entry=state.legacyManifest.samples.find(x=>x.id===id),m=state.sequence.methods.find(x=>x.view===entry.view&&x.kind!=='reference'&&!x.id.endsWith('_world'));if(m){state.panels[0].load(m.id);saveQuery();}}for(const p of state.panels)p.videoButtons?.get('comparison')?.click();updateVideoSwitcher();});choices.append(b);
+  }
+  host.append(choices);updateVideoSwitcher();
 }
 function renderLegacyMaterials(){
   const target=$('legacy-materials'),legacy=state.legacyManifest,entry=legacy?.samples.find(x=>x.id===state.sequence?.id);target.replaceChildren();
@@ -326,7 +350,7 @@ class MethodPanel {
     this.index=index;this.el=$('method-template').content.firstElementChild.cloneNode(true);this.method=null;this.geometry=null;this.viewer=null;this.disposed=false;this.loadId=0;
     this.q=s=>this.el.querySelector(s);this.video=this.q('video');this.archiveVideo=this.q('.archive-video');this.canvas=this.q('.overlay-canvas');this.q('.method-accent').style.background=ACCENTS[index%3];
     const select=this.q('.method-select');for(const m of state.sequence.methods||[]){const op=node('option','',m.label||m.id);op.value=m.id;select.append(op);}select.value=methodId;
-    select.addEventListener('change',()=>{this.load(select.value);saveQuery();});
+    select.addEventListener('change',()=>{this.load(select.value);saveQuery();updateVideoSwitcher();});
     this.q('.fit-camera').addEventListener('click',()=>{this.viewer?.fit();if($('linked').checked&&this.viewer)syncCameras(this.viewer);});
     this.video.addEventListener('seeked',()=>{if(!this.video.seeking)this.present(this.mediaFrame());});
     this.video.addEventListener('loadeddata',()=>{if(!state.playing){this.seek(state.frame);this.present(state.frame);}});
@@ -387,13 +411,14 @@ class MethodPanel {
   }
   setupVideoTabs(){
     const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id&&x.view===this.method.view);this.legacyEntry=entry;this.activeVideoTab='input';this.archiveVideo.pause();this.archiveVideo.removeAttribute('src');this.archiveVideo.load();this.archiveVideo.onloadedmetadata=null;this.archiveVideo.hidden=true;this.video.hidden=false;this.canvas.hidden=false;this.q('.video-panel').classList.remove('archive-active');
-    const tabs=this.q('.video-tabs');tabs.replaceChildren();
+    const tabs=this.q('.video-tabs');tabs.replaceChildren();this.videoButtons=new Map();
     const choices=[{id:'input',label:this.method.kind==='reference'?'RGB + GT':'EgoFound3R / RGB'},...(entry?.videos||[])];
     for(const choice of choices){const b=node('button','video-tab',choice.label);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(choice.id==='input'));b.addEventListener('click',()=>{
       setPlaying(false);this.activeVideoTab=choice.id;for(const el of tabs.children)el.setAttribute('aria-selected',String(el===b));const archived=choice.id!=='input';this.video.hidden=archived;this.canvas.hidden=archived;this.archiveVideo.hidden=!archived;this.q('.video-panel').classList.toggle('archive-active',archived);
       if(archived){this.archiveFPS=choice.fps;this.archiveVideo.src=choice.url;this.archiveVideo.load();setText(this.q('.rgb-title'),choice.label+' · 原片未改');this.archiveVideo.onloadedmetadata=()=>this.seekArchive(state.frame);}
       else{this.archiveVideo.pause();this.archiveVideo.removeAttribute('src');this.archiveVideo.load();setText(this.q('.rgb-title'),this.method.kind==='reference'?'RGB + GT 投影':'RGB + 2D 关节');}
-    });tabs.append(b);}
+    updateVideoSwitcher();
+    });this.videoButtons.set(choice.id,b);tabs.append(b);}
     setText(this.q('.legacy-scope'),entry?'昨日视频与当前片段逐源帧对应；投影仍使用下方同帧 RGB。':state.legacyManifest?.samples.some(x=>x.id===state.sequence.id)?'昨日 HGGT / HaWoR 仅有相机 A；此相机没有对应结果。':'昨日没有此片段的 HGGT / HaWoR 结果。');
   }
   seekArchive(frame){if(this.activeVideoTab==='input'||this.archiveVideo.readyState<1)return;const t=(frame+.05)/(this.archiveFPS||30);if(Math.abs(this.archiveVideo.currentTime-t)>.1/(this.archiveFPS||30))this.archiveVideo.currentTime=Math.min(t,this.archiveVideo.duration-.001);}
@@ -626,7 +651,7 @@ function renderPanels(){
   if(!methods.length){$('comparison').append(node('p','empty-inline','这个片段尚无可显示的方法结果。'));return;}
   const params=new URLSearchParams(location.search),ids=params.get('methods')?.split(',')||[];
   for(let i=0;i<n;i++){const candidate=selected[i]||ids[i];const id=methods.some(m=>m.id===candidate)?candidate:methods[Math.min(i,methods.length-1)].id;const p=new MethodPanel(i,id);state.panels.push(p);}
-  deduplicateGTProjections();
+  deduplicateGTProjections();renderVideoSwitcher();
 }
 function saveQuery(){if(!state.sequence)return;const q=new URLSearchParams();q.set('seq',state.sequence.id);if(state.panels.length)q.set('methods',state.panels.map(p=>p.method?.id).filter(Boolean).join(','));history.replaceState(null,'',`${location.pathname}?${q}`);}
 
