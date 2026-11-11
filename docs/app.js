@@ -341,7 +341,7 @@ class MethodPanel {
   }
   async load(id){
     setPlaying(false);const token=++this.loadId;this.projectionGeometry=null;this.referenceGeometry=null;this.meshPaths=null;this.method=(state.sequence.methods||[]).find(x=>x.id===id);this.geometry=null;
-    const m=this.method;if(!m)return;this.setupVideoTabs();for(const pane of this.qAll('.projection-pane')){delete pane.dataset.validHands;delete pane.dataset.projected;}
+    const m=this.method;if(!m)return;this.q('.method-checks').replaceChildren();setText(this.q('.comparison-scope'),'正在加载同坐标比较几何…');this.setupVideoTabs();for(const pane of this.qAll('.projection-pane')){delete pane.dataset.validHands;delete pane.dataset.projected;}
     this.q('.method-select').value=id;const kind=this.q('.method-kind');kind.className='method-kind '+(m.kind||'');setText(kind,({official:'官方流程',adapted:'双目适配',reference:'参考真值',baseline:'已有基线'})[m.kind]||m.kind||'推理结果');
     setText(this.q('.method-description'),m.summary||m.notes?.[0]||'');
     setText(this.q('.coordinate-label'),m.coordinate_system||state.sequence.coordinate_system||'');
@@ -386,7 +386,7 @@ class MethodPanel {
     }catch(e){if(e.name==='AbortError'||token!==this.loadId)return;setText(message,`几何结果读取失败：${e.message}`);this.el.dataset.error='true';setText($('load-status'),'部分资源读取失败，请查看对应面板');$('load-status').classList.add('error');}
   }
   setupVideoTabs(){
-    const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id&&x.view===this.method.view);this.legacyEntry=entry;this.activeVideoTab='input';this.archiveVideo.pause();this.archiveVideo.removeAttribute('src');this.archiveVideo.load();this.archiveVideo.hidden=true;this.video.hidden=false;this.canvas.hidden=false;
+    const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id&&x.view===this.method.view);this.legacyEntry=entry;this.activeVideoTab='input';this.archiveVideo.pause();this.archiveVideo.removeAttribute('src');this.archiveVideo.load();this.archiveVideo.onloadedmetadata=null;this.archiveVideo.hidden=true;this.video.hidden=false;this.canvas.hidden=false;this.q('.video-panel').classList.remove('archive-active');
     const tabs=this.q('.video-tabs');tabs.replaceChildren();
     const choices=[{id:'input',label:this.method.kind==='reference'?'RGB + GT':'EgoFound3R / RGB'},...(entry?.videos||[])];
     for(const choice of choices){const b=node('button','video-tab',choice.label);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(choice.id==='input'));b.addEventListener('click',()=>{
