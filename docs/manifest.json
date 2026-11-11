@@ -2,7 +2,7 @@
   "schema_version": "egofound3r.viewer.v1",
   "title": "EgoFound3R · 官方实跑 / 已知 K",
   "subtitle": "11 段 · 13 路 RGB · 2,080 帧 · 双 RGB 独立推理 + 单目补充",
-  "status": "complete_verified_online",
+  "status": "complete",
   "generated_at": "2026-11-11T11:23:33.902172+00:00",
   "default_columns": 2,
   "notice": "已完成 13/13 路官方推理与独立评价。有效覆盖率必须与误差一起读；默认隐藏官方填补，勾选后半透明显示。DexYCB 是两相机独立运行，Aria/HO3D 是单 RGB 补充。",
@@ -5686,5 +5686,6 @@
         }
       ]
     }
-  ]
+  ],
+  "acceptance_status": "passed"
 }

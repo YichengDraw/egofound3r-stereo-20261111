@@ -51,7 +51,8 @@ def main():
     ]
     existing = {x['url'] for x in manifest['downloads']}
     manifest['downloads'] += [x for x in additions if x['url'] not in existing]
-    manifest['status'] = 'complete_verified_online'
+    manifest['status'] = 'complete'
+    manifest['acceptance_status'] = 'passed'
     save(docs / 'manifest.json', manifest)
     failure_lines = []
     for dataset, group in suite['datasets'].items():
