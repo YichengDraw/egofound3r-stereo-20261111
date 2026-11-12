@@ -1,0 +1,391 @@
+{
+  "schema_version": "egofound3r.viewer.geometry.v1",
+  "kind": "prediction",
+  "data_role": "model_prediction",
+  "label": "EgoHSI3R · 默认 RGB",
+  "model": "EgoHSI3R",
+  "is_model_prediction": true,
+  "frame_count": 72,
+  "hand_count": 2,
+  "joint_count": 21,
+  "vertex_count": 0,
+  "coordinate_convention": "opencv",
+  "coordinate_space": "camera",
+  "units": "m",
+  "world_scope": "per_frame_camera",
+  "hand_order": [
+    "left",
+    "right"
+  ],
+  "hand_labels": [
+    "左手",
+    "右手"
+  ],
+  "joint_order": "native_openpose21",
+  "joint_root_index": 0,
+  "joint_names": [
+    "wrist",
+    "thumb_base",
+    "thumb_middle",
+    "thumb_distal",
+    "thumb_tip",
+    "index_base",
+    "index_middle",
+    "index_distal",
+    "index_tip",
+    "middle_base",
+    "middle_middle",
+    "middle_distal",
+    "middle_tip",
+    "ring_base",
+    "ring_middle",
+    "ring_distal",
+    "ring_tip",
+    "little_base",
+    "little_middle",
+    "little_distal",
+    "little_tip"
+  ],
+  "joint_edges": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      0,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      0,
+      9
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      10,
+      11
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      0,
+      13
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      14,
+      15
+    ],
+    [
+      15,
+      16
+    ],
+    [
+      0,
+      17
+    ],
+    [
+      17,
+      18
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      19,
+      20
+    ]
+  ],
+  "frame_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71
+  ],
+  "timestamps_s": [
+    0.0,
+    0.03333333333333333,
+    0.06666666666666667,
+    0.1,
+    0.13333333333333333,
+    0.16666666666666666,
+    0.2,
+    0.23333333333333334,
+    0.26666666666666666,
+    0.3,
+    0.3333333333333333,
+    0.36666666666666664,
+    0.4,
+    0.43333333333333335,
+    0.4666666666666667,
+    0.5,
+    0.5333333333333333,
+    0.5666666666666667,
+    0.6,
+    0.6333333333333333,
+    0.6666666666666666,
+    0.7,
+    0.7333333333333333,
+    0.7666666666666667,
+    0.8,
+    0.8333333333333334,
+    0.8666666666666667,
+    0.9,
+    0.9333333333333333,
+    0.9666666666666667,
+    1.0,
+    1.0333333333333334,
+    1.0666666666666667,
+    1.1,
+    1.1333333333333333,
+    1.1666666666666667,
+    1.2,
+    1.2333333333333334,
+    1.2666666666666666,
+    1.3,
+    1.3333333333333333,
+    1.3666666666666667,
+    1.4,
+    1.4333333333333333,
+    1.4666666666666666,
+    1.5,
+    1.5333333333333334,
+    1.5666666666666667,
+    1.6,
+    1.6333333333333333,
+    1.6666666666666667,
+    1.7,
+    1.7333333333333334,
+    1.7666666666666666,
+    1.8,
+    1.8333333333333333,
+    1.8666666666666667,
+    1.9,
+    1.9333333333333333,
+    1.9666666666666666,
+    2.0,
+    2.033333333333333,
+    2.066666666666667,
+    2.1,
+    2.1333333333333333,
+    2.1666666666666665,
+    2.2,
+    2.2333333333333334,
+    2.2666666666666666,
+    2.3,
+    2.3333333333333335,
+    2.3666666666666667
+  ],
+  "fps": 30.0,
+  "joints": {
+    "url": "joints.bin",
+    "dtype": "float32",
+    "shape": [
+      72,
+      2,
+      21,
+      3
+    ],
+    "byte_length": 36288,
+    "byte_order": "little",
+    "sha256": "28d8d85be7a81af3354306b1261a82b6c81fe2cbeb01221286476f00b1dd09c7"
+  },
+  "valid": {
+    "url": "valid.bin",
+    "dtype": "uint8",
+    "shape": [
+      72,
+      2
+    ],
+    "byte_length": 144,
+    "byte_order": "little",
+    "sha256": "b12e2241f52cead2b69e94dc93845fcd00ec4b0bb000afa3bbe12a9a20961745"
+  },
+  "display_valid": {
+    "url": "display_valid.bin",
+    "dtype": "uint8",
+    "shape": [
+      72,
+      2
+    ],
+    "byte_length": 144,
+    "byte_order": "little",
+    "sha256": "b12e2241f52cead2b69e94dc93845fcd00ec4b0bb000afa3bbe12a9a20961745"
+  },
+  "joint_valid": {
+    "url": "joint_valid.bin",
+    "dtype": "uint8",
+    "shape": [
+      72,
+      2,
+      21
+    ],
+    "byte_length": 3024,
+    "byte_order": "little",
+    "sha256": "a2272ca8134c1f62d1e4d59bce4bb3f5480e8c0f65a82a274c946ff79f5d433f"
+  },
+  "joints2d": {
+    "url": "joints2d.bin",
+    "dtype": "float32",
+    "shape": [
+      72,
+      2,
+      21,
+      2
+    ],
+    "byte_length": 24192,
+    "byte_order": "little",
+    "sha256": "ca69f36d4e0c8542e44c91f11dcf7ef08f0ed389d981678e0204bd6d7ad836d3"
+  },
+  "projection_K": {
+    "url": "projection_K.bin",
+    "dtype": "float32",
+    "shape": [
+      72,
+      3,
+      3
+    ],
+    "byte_length": 2592,
+    "byte_order": "little",
+    "sha256": "302b7466e1124a4604bf409923d065bf183f739a423b5591a22b40b9abd6b180"
+  },
+  "projection_space": "input_rgb_pixels",
+  "projection_image_size_hw": [
+    480,
+    640
+  ],
+  "projection_source": "Stored model-estimated intrinsics for 512x384 RGB, rescaled by 1.25 to original 640x480 RGB. Not ground-truth K.",
+  "validity_policy": "Original hand_mask and finite joints. No missing-hand geometry is generated or filled.",
+  "notice": "真实缓存的21关节骨架；本层不包含手部网格。投影使用模型原始估计内参，无GT拟合。",
+  "source": {
+    "model": "EgoHSI3R",
+    "source_site": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/",
+    "source_sample_id": "R1",
+    "camera_id": "836212060125",
+    "recording_id": "20200928-subject-07/20200928_145724/836212060125",
+    "source_prediction_filename": "R1_detector.npz",
+    "inference_sha256": "c82dec27b7ea8917e4140b1808c18958475aa85c0da4afe7bbc376ede21ddd42",
+    "source_array": "joints_camera",
+    "source_hand_order": [
+      "right",
+      "left"
+    ],
+    "export_hand_permutation": [
+      1,
+      0
+    ],
+    "source_input_video_sha256": "08fb939be80f6c8a302048666f9de730c9562678bbc91c510647daee74f86b1a",
+    "source_model_image_size_hw": [
+      384,
+      512
+    ],
+    "source_input_image_size_hw": [
+      480,
+      640
+    ],
+    "checkpoint_code_commit": "2153d2658fe86a3ca1595b4335306390cb582ead",
+    "checkpoint_sha256": "c0a5d9a5b94d24e154cf1f19492b43f41731626de7871b501ec9dd77f956efc5",
+    "model_inference_rerun": false,
+    "gt_used_for_inference": false
+  }
+}

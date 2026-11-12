@@ -1,0 +1,803 @@
+{
+  "schema": "egohsi3r.imported_materials.v1",
+  "source_site": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/",
+  "source_manifest_url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/site-data.json",
+  "source_manifest_sha256": "fadf831c7a1a1861ed897e49ca880ec2b47f11eacbd95f3437ad32407a423c71",
+  "code_commit": "2153d2658fe86a3ca1595b4335306390cb582ead",
+  "weight_sha256": "c0a5d9a5b94d24e154cf1f19492b43f41731626de7871b501ec9dd77f956efc5",
+  "original_sequence_count": 9,
+  "original_frame_count": 2126,
+  "original_sequences": [
+    {
+      "source_id": "O0",
+      "label": "官方双杯 demo",
+      "dataset": "repository_demo",
+      "frames": 461,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 461,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 461,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 461,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O0_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": null,
+        "jointCamera": null,
+        "jointRelative": null,
+        "jointFirst": null,
+        "velocity": null,
+        "acceleration": null,
+        "wrist": null,
+        "contactF1": null,
+        "contactDistance": null
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "O1",
+      "label": "剪刀操作",
+      "dataset": "ARCTIC",
+      "frames": 150,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 150,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 150,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 150,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O1_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": null,
+        "jointCamera": null,
+        "jointRelative": null,
+        "jointFirst": null,
+        "velocity": null,
+        "acceleration": null,
+        "wrist": null,
+        "contactF1": null,
+        "contactDistance": null
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "O2",
+      "label": "锤击玩具",
+      "dataset": "TACO",
+      "frames": 120,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 120,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 120,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 120,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O2_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": null,
+        "jointCamera": null,
+        "jointRelative": null,
+        "jointFirst": null,
+        "velocity": null,
+        "acceleration": null,
+        "wrist": null,
+        "contactF1": null,
+        "contactDistance": null
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "O3",
+      "label": "官方 DexYCB 样例",
+      "dataset": "DexYCB",
+      "frames": 72,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/O3_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": null,
+        "jointCamera": null,
+        "jointRelative": null,
+        "jointFirst": null,
+        "velocity": null,
+        "acceleration": null,
+        "wrist": null,
+        "contactF1": null,
+        "contactDistance": null
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R0",
+      "label": "抓取箱子",
+      "dataset": "DexYCB",
+      "frames": 74,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。",
+            "旧 HaWoR 覆盖视频的末帧仍绘制了 left_valid=False 的左手占位网格，形成紫色面片遮挡。基线几何评价按有效手掩码计算。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 45.569131705237645,
+        "jointRelative": 6.084888162172366,
+        "jointFirst": 45.337798333787696,
+        "velocity": 0.34608836127895626,
+        "acceleration": 15.99517696179263,
+        "wrist": 46.19076224772533,
+        "contactF1": 0.49280754587995074,
+        "contactDistance": 33.42800534669279,
+        "cameraTranslation": 1.090116004360547,
+        "cameraRotation": 0.035340814262606234
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R1",
+      "label": "抓取香蕉",
+      "dataset": "DexYCB",
+      "frames": 72,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。",
+            "旧 HaWoR 覆盖视频的末帧仍绘制了 left_valid=False 的左手占位网格，形成紫色面片遮挡。基线几何评价按有效手掩码计算。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 18.751357332582266,
+        "jointRelative": 5.581371056062199,
+        "jointFirst": 19.956813955098184,
+        "velocity": 0.22015431148827683,
+        "acceleration": 9.754910136077847,
+        "wrist": 19.058976541089045,
+        "contactF1": 0.5095444263640059,
+        "contactDistance": 12.83898667115645,
+        "cameraTranslation": 1.4387258704695027,
+        "cameraRotation": 0.040938726988718414
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R2",
+      "label": "勺子搅拌",
+      "dataset": "TACO",
+      "frames": 249,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 249,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 249,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 249,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R2_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 37.78120059413809,
+        "jointRelative": 17.6753399919811,
+        "jointFirst": 43.38867648400685,
+        "velocity": 0.21647166866897932,
+        "acceleration": 9.500922359978004,
+        "wrist": 39.071619450999584,
+        "contactF1": 0.2647869582674757,
+        "contactDistance": 35.70020671835395,
+        "cameraTranslation": 40.09001596051519,
+        "cameraRotation": 2.1763300094021827
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R3",
+      "label": "滚刷清扫",
+      "dataset": "TACO",
+      "frames": 221,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 221,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 221,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 221,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R3_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 25.493709151619033,
+        "jointRelative": 14.904437739864646,
+        "jointFirst": 30.390076523208904,
+        "velocity": 0.21791139891067907,
+        "acceleration": 8.328766293784048,
+        "wrist": 19.863807066491642,
+        "contactF1": 0.4492720652859707,
+        "contactDistance": 13.17670137571828,
+        "cameraTranslation": 25.08810629129842,
+        "cameraRotation": 1.2335625682254834
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R4",
+      "label": "拔出 USB",
+      "dataset": "OakInk2",
+      "frames": 707,
+      "media": {
+        "overlay": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 707,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。",
+            "该独立视频按源帧索引以名义30fps回放；source ID与真实时间按frames.csv显示，图表及指标按真实源时钟。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_overlay_poster.jpg"
+        },
+        "rgb": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 707,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_rgb_poster.jpg"
+        },
+        "panel": {
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 708,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。",
+            "707源帧按真实时间前帧保持为708个视频帧。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R4_detector_panel_poster.jpg"
+        }
+      },
+      "original_scores": {
+        "coverage": 79.4908062234795,
+        "jointCamera": 113.9686410034263,
+        "jointRelative": 19.469614564091557,
+        "jointFirst": 253.46298484025797,
+        "velocity": 0.18372854682315254,
+        "acceleration": 7.902263146565474,
+        "wrist": 99.44640972530162,
+        "contactF1": 0.21437544587939836,
+        "contactDistance": 78.22315990985915,
+        "cameraTranslation": 178.39743224100803,
+        "cameraRotation": 5.274145304352221
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    }
+  ],
+  "samples": [
+    {
+      "source_id": "R0",
+      "id": "dexycb_box",
+      "camera_id": "836212060125",
+      "view": "cam_a",
+      "frame_count": 74,
+      "frame_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ],
+      "source_frame_ids_equal": true,
+      "timestamps_equal": true,
+      "timestamp_max_difference_s": 0.0,
+      "gt_joint_arrays_exactly_equal": true,
+      "gt_max_difference_m": 0.0,
+      "gt_masks_exactly_equal": true,
+      "base16_native_vs_official_max_difference_m": 0.0,
+      "original_prediction_sha256": "f106e31243ed50cf46972633340b129de033351158b978ee8b8a836129dc01a4",
+      "original_gt_sha256": "974f999ee607e84733f068f5be07c91520b0c7901fb55b78ef4c9ff23a76718b",
+      "reference_joints_sha256": "0c786753ffeb44d03f29cc6a5bed06a4ddfac102afca876a3e8ad8e370f8cb39",
+      "source_input_video_sha256": "10981631ef661deb0b6ebf3a81933f7a5d1a0b7c1191c9ee19f36592f8717711",
+      "egofound_input_video_sha256": "65cfba4c206ad068311b990da71ca2420ee4202ec4f85f87a217ec3dad0c1e27",
+      "input_video_bytes_identical": false,
+      "image_identity_note": "Same dataset recording, camera and source frame IDs. Video encoding differs; no claim of byte-identical compressed or decoded RGB.",
+      "source_intrinsics": "model estimated, not calibrated K",
+      "source_intrinsics_image_size_hw": [
+        384,
+        512
+      ],
+      "source_intrinsics_rescale_to_input": 1.25,
+      "label": "抓取箱子",
+      "dataset": "DexYCB",
+      "fps": 30.0,
+      "geometry": "data/dexycb_box/cam_a/egohsi3r/geometry.json",
+      "videos": [
+        {
+          "id": "overlay",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_overlay_poster.jpg"
+        },
+        {
+          "id": "rgb",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_rgb_poster.jpg"
+        },
+        {
+          "id": "panel",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 74,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。",
+            "旧 HaWoR 覆盖视频的末帧仍绘制了 left_valid=False 的左手占位网格，形成紫色面片遮挡。基线几何评价按有效手掩码计算。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R0_detector_panel_poster.jpg"
+        }
+      ],
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 45.569131705237645,
+        "jointRelative": 6.084888162172366,
+        "jointFirst": 45.337798333787696,
+        "velocity": 0.34608836127895626,
+        "acceleration": 15.99517696179263,
+        "wrist": 46.19076224772533,
+        "contactF1": 0.49280754587995074,
+        "contactDistance": 33.42800534669279,
+        "cameraTranslation": 1.090116004360547,
+        "cameraRotation": 0.035340814262606234
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    },
+    {
+      "source_id": "R1",
+      "id": "dexycb_banana",
+      "camera_id": "836212060125",
+      "view": "cam_a",
+      "frame_count": 72,
+      "frame_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71
+      ],
+      "source_frame_ids_equal": true,
+      "timestamps_equal": true,
+      "timestamp_max_difference_s": 0.0,
+      "gt_joint_arrays_exactly_equal": true,
+      "gt_max_difference_m": 0.0,
+      "gt_masks_exactly_equal": true,
+      "base16_native_vs_official_max_difference_m": 0.0,
+      "original_prediction_sha256": "c82dec27b7ea8917e4140b1808c18958475aa85c0da4afe7bbc376ede21ddd42",
+      "original_gt_sha256": "7eb3f1ec04e5e1f75a61cba9fe7674b4d46a1cd2ce13d24de7be2d882905f45b",
+      "reference_joints_sha256": "f883495a7ab1291aaff04653d8156913c0a85f947ff41bea25fdb2e87d9dad2e",
+      "source_input_video_sha256": "08fb939be80f6c8a302048666f9de730c9562678bbc91c510647daee74f86b1a",
+      "egofound_input_video_sha256": "e66b85d72a571cd3d419c594e32767ec6caad9a2dc83147013540bfdb6842b7a",
+      "input_video_bytes_identical": false,
+      "image_identity_note": "Same dataset recording, camera and source frame IDs. Video encoding differs; no claim of byte-identical compressed or decoded RGB.",
+      "source_intrinsics": "model estimated, not calibrated K",
+      "source_intrinsics_image_size_hw": [
+        384,
+        512
+      ],
+      "source_intrinsics_rescale_to_input": 1.25,
+      "label": "抓取香蕉",
+      "dataset": "DexYCB",
+      "fps": 30.0,
+      "geometry": "data/dexycb_banana/cam_a/egohsi3r/geometry.json",
+      "videos": [
+        {
+          "id": "overlay",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_overlay.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "官方默认检测器；reset=20、TTT开启；原始默认预测保留。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_overlay_poster.jpg"
+        },
+        {
+          "id": "rgb",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_rgb.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "nominal_source_index",
+          "notes": [
+            "同一原始输入的展示缩小/重新编码版本；定量结果继续使用原输入。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_rgb_poster.jpg"
+        },
+        {
+          "id": "panel",
+          "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_panel.mp4",
+          "fps": 30,
+          "frameCount": 72,
+          "clock": "true_time_resampled",
+          "notes": [
+            "原完整诊断面板，包含固定世界视角、有效性/接触时间条与腕轨迹；独立播放，不加入逐源帧同步组。",
+            "旧 HaWoR 覆盖视频的末帧仍绘制了 left_valid=False 的左手占位网格，形成紫色面片遮挡。基线几何评价按有效手掩码计算。"
+          ],
+          "poster": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/media/R1_detector_panel_poster.jpg"
+        }
+      ],
+      "original_scores": {
+        "coverage": 100.0,
+        "jointCamera": 18.751357332582266,
+        "jointRelative": 5.581371056062199,
+        "jointFirst": 19.956813955098184,
+        "velocity": 0.22015431148827683,
+        "acceleration": 9.754910136077847,
+        "wrist": 19.058976541089045,
+        "contactF1": 0.5095444263640059,
+        "contactDistance": 12.83898667115645,
+        "cameraTranslation": 1.4387258704695027,
+        "cameraRotation": 0.040938726988718414
+      },
+      "original_score_definition": "Historical 21-point marker metrics; not the new Base16 comparison.",
+      "condition": "官方 detector · reset 20 · TTT3R · 512"
+    }
+  ],
+  "scope": "Only the default detector runs R0/R1 are imported into matched geometry and Base16 scoring. No GT-box, focal-control, reset or trained ablation variants are substituted.",
+  "no_model_rerun": true
+}

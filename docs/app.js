@@ -9,7 +9,7 @@ const EDGES = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,
 const TYPES = {float32:Float32Array,float64:Float64Array,uint8:Uint8Array,uint16:Uint16Array,uint32:Uint32Array,int32:Int32Array};
 const state = {manifest:null,sequence:null,frame:0,playing:false,clock:0,last:0,panels:[],controller:null,loadId:0,updatingCamera:false};
 const legacyCache=new Map();
-const LEGACY_COLORS={hggt_native:'#fa74b8',hggt_adapted:'#b69bff',hawor:'#66dda5',gt:'#f3f6ff',ego:'#ff5252'};
+const LEGACY_COLORS={hggt_native:'#fa74b8',hggt_adapted:'#b69bff',hawor:'#66dda5',gt:'#f3f6ff',ego:'#ff5252',egohsi3r:'#16cadb'};
 async function loadLegacy(entry,signal){
   if(legacyCache.has(entry.id))return legacyCache.get(entry.id);
   const job=(async()=>{const response=await fetch(entry.geometry_url,{signal});if(!response.ok)throw new Error(`HGGT 数据 ${response.status}`);const text=await response.text();
@@ -24,36 +24,61 @@ function deduplicateGTProjections(){
   const assigned=new Set(state.panels.filter(p=>p.method?.kind==='reference').map(p=>p.method.view));
   for(const p of state.panels){const hide=p.method?.kind==='reference'||assigned.has(p.method?.view);p.q('.projection-gt').hidden=hide;p.q('.projection-row').classList.toggle('single-projection',hide);if(!hide)assigned.add(p.method?.view);p.drawProjections();}
 }
+function egoHSIEntry(){return state.egoHSIManifest?.samples?.find(x=>x.id===state.sequence?.id);}
+function updateDemoLayout(){
+  const view=state.demoView||'video';document.body.dataset.demoView=view;
+  for(const b of $('demo-view-tabs').querySelectorAll('button'))b.setAttribute('aria-selected',String(b.dataset.demoView===view));
+  const first=state.panels[0],archive=!!first&&view==='video'&&first.activeVideoTab!=='input';
+  for(const p of state.panels){p.el.classList.toggle('archive-duplicate',!!(archive&&p!==first&&p.method?.view===first.method?.view));p.el.classList.toggle('showing-archive',view==='video'&&p.activeVideoTab!=='input');const heading=p.q('.active-material-title');setText(heading,p.videoButtons?.get(p.activeVideoTab)?.textContent||'');}
+  $('comparison').classList.toggle('single-archive',!!archive&&state.panels.every(p=>p.method?.view===first.method?.view));
+}
 function updateVideoSwitcher(){
   const host=$('video-switcher');if(!host||!state.sequence)return;
-  const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id),matched=state.panels.filter(p=>p.legacyEntry);
   for(const button of host.querySelectorAll('[data-video-source]')){
-    const key=button.dataset.videoSource,panels=key==='input'?state.panels:matched;
-    button.disabled=key!=='input'&&!matched.length;
+    const key=button.dataset.videoSource,panels=state.panels.filter(p=>p.videoButtons?.has(key));
+    button.disabled=!panels.length;
     button.setAttribute('aria-selected',String(panels.length>0&&panels.every(p=>p.activeVideoTab===key)));
   }
-  setText(host.querySelector('.video-switch-hint'),!entry?'当前片段没有 HGGT / HaWoR 视频。点击下方四段之一，直接打开原视频。':!matched.length?(entry.view==='cam_a'?'HGGT / HaWoR 结果只覆盖相机 A；请先在任一列标题选择相机 A。':'当前列未选择对应 RGB 相机坐标；请在列标题选择 RGB，以查看 HGGT / HaWoR 材料。'):entry.view==='cam_a'?'点击选项卡切换相机 A 的视频；相机 B 没有 HGGT / HaWoR 结果，继续显示自己的 RGB。':'点击选项卡统一切换视频；下方 3D 勾选与预测 / GT 投影保持独立。');
+  updateDemoLayout();
 }
 function renderVideoSwitcher(){
   const host=$('video-switcher');host.replaceChildren();
-  host.append(node('strong','','视频切换'));
-  const tabs=node('div','video-source-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','统一切换视频');
-  for(const [key,label] of [['input','EgoFound3R / RGB'],['comparison','HGGT × HaWoR 原视频'],['native','HGGT 原生投影']]){
+  const tabs=node('div','video-source-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','选择视频内容');
+  for(const [key,label] of [['input','EgoFound3R 关节叠加'],['comparison','HGGT 与 HaWoR 对照'],['native','HGGT 原始预测'],['egohsi3r','EgoHSI3R 手部叠加']]){
     const b=node('button','video-tab',label);b.type='button';b.dataset.videoSource=key;b.setAttribute('role','tab');b.setAttribute('aria-controls','comparison');b.addEventListener('click',()=>{for(const p of state.panels)p.videoButtons?.get(key)?.click();updateVideoSwitcher();});tabs.append(b);
   }
-  host.append(tabs,node('p','video-switch-hint'));
-  const choices=node('div','video-source-samples');choices.append(node('span','','三方法匹配材料：'));
-  for(const [id,label] of [['dexycb_box','箱子'],['dexycb_banana','香蕉'],['aria_1976','Aria 1976'],['aria_3209','Aria 3209']]){
-    const b=node('button','small-button',label);b.type='button';b.setAttribute('aria-label',`打开 ${label} 的 HGGT / HaWoR 视频`);if(id===state.sequence.id)b.setAttribute('aria-current','true');b.addEventListener('click',async()=>{await selectSequence(id);if(!state.panels.some(p=>p.legacyEntry)){const entry=state.legacyManifest.samples.find(x=>x.id===id),m=state.sequence.methods.find(x=>x.view===entry.view&&x.kind!=='reference'&&!x.id.endsWith('_world'));if(m){state.panels[0].load(m.id);saveQuery();}}for(const p of state.panels)p.videoButtons?.get('comparison')?.click();updateVideoSwitcher();});choices.append(b);
-  }
-  host.append(choices);updateVideoSwitcher();
+  host.append(tabs);updateVideoSwitcher();
 }
 function renderCrossMethodComparison(){
-  const host=$('cross-method-comparison'),report=state.crossMethodReport;host.replaceChildren();
+  const host=$('cross-method-comparison'),report=state.fourMethodReport;host.replaceChildren();
+  const heading=node('div','cross-method-heading');heading.append(node('h2','','可比结果'));
+  const control=node('label','cross-method-scope');control.append(document.createTextNode('比较范围 '));const select=node('select');select.id='cross-method-scope';select.setAttribute('aria-label','指标比较范围');control.append(select);heading.append(control);host.append(heading);
+  const current=node('option','','当前片段');current.value='current';select.append(current);
+  for(const group of report?.groups||[]){const o=node('option','',group.label);o.value=group.id;select.append(o);}select.value=state.crossScope||'current';if(!select.value)select.value='current';select.addEventListener('change',()=>{state.crossScope=select.value;renderCrossMethodComparison();});
+  if(!report){host.append(node('p','original-score-note','比较数据暂未加载。视频与原始结果仍可查看。'));return;}
+  const scope=select.value==='current'?report.samples.find(x=>x.id===state.sequence.id):report.groups.find(x=>x.id===select.value);
+  if(!scope){host.append(node('p','original-score-note','这个片段只有 EgoFound3R 结果，未纳入多方法统一评价。原始指标可在下方“原始评测与下载”查看。'));return;}
+  const methods=['hawor','egofound3r','hggt','egohsi3r'],labels={hawor:'HaWoR',egofound3r:'EgoFound3R',hggt:'HGGT',egohsi3r:'EgoHSI3R'};
+  const scored=scope.scored_methods||[];host.append(node('p','cross-method-intro',`同一相机、同一源帧、16 个共同关节。${scope.common_hand_frames} 个共同有效手帧用于误差比较。`));
+  const table=node('table','cross-method-table');table.setAttribute('aria-label','四方法同口径比较表');const head=node('tr');head.append(node('th','','指标'));for(const key of methods){const th=node('th','',labels[key]),row=scope.methods[key];const status=!row||row.available===false?'没有此片段结果':row.strict_hand_frames===0?'没有有效预测':!scored.includes(key)?'未进入共同集合':'';if(status)th.append(node('small','method-status',status));head.append(th);}const thead=node('thead');thead.append(head);table.append(thead);const body=node('tbody');
+  const rows=[{label:'有效预测占比 ↑',type:'coverage'},{label:'关节位置误差 · mm ↓',key:'mpjpe16_mm',adapted:'adapted_mpjpe16_mm'},{label:'去腕关节误差 · mm ↓',key:'rr_mpjpe16_mm'},{label:'对齐后关节误差 · mm ↓',key:'pa_mpjpe16_mm'},{label:'手腕位置误差 · mm ↓',key:'wrist_error_mm',adapted:'adapted_wrist_error_mm'},{label:'去腕加速度误差 · m/s² ↓',key:'rr_acceleration16_error_m_s2'},{label:'50 mm 内关节占比 ↑',key:'pck50_all_gt',percent:true,adapted:'adapted_pck50_all_gt'}];
+  for(const spec of rows){const tr=node('tr'),th=node('th','',spec.label);th.scope='row';tr.append(th);for(const key of methods){const row=scope.methods[key],td=node('td');if(!row||row.available===false)td.append(node('strong','method-unavailable','—'));else if(spec.type==='coverage')td.append(node('strong','',fmt(100*row.strict_hand_frames/row.gt_hand_frames)+'%'),node('small','',`${row.strict_hand_frames} / ${row.gt_hand_frames} 手帧`));else{const val=row[spec.key];td.append(node('strong',val==null?'method-unavailable':'',val==null?'—':fmt(val*(spec.percent?100:1))+(spec.percent?'%':'')));if(spec.adapted&&row[spec.adapted]!=null)td.append(node('small','adapted-metric','位置适配 '+fmt(row[spec.adapted]*(spec.percent?100:1))+(spec.percent?'%':'')));}tr.append(td);}body.append(tr);}table.append(body);const wrap=node('div','table-scroll');wrap.append(table);host.append(wrap);
+  const details=node('details','cross-method-details');details.append(node('summary','','这些数值怎么比较？'));
+  for(const line of [`误差比较采用 ${scored.map(k=>labels[k]).join('、')} 同时有效的 ${scope.common_hand_frames} 个手帧；加速度使用 ${scope.common_acceleration_triplets} 组连续三帧。四个方法没有共同有效集合，不计算四方总排名。`,'有效预测占比以全部已标注手帧为分母，排除已标记的填补；50 mm 内关节占比也保留缺失预测。没有运行该片段的方法不记为零分。','16 个共同关节包含腕部和每根手指的三个非指尖关节。去腕误差减去各自手腕位置；对齐后误差另外消除整体旋转与尺度。原 21 点评价保留在下方资料中。','HGGT 主数值是原始预测；“位置适配”仅改变平移，不用 GT 拟合。EgoHSI3R 保留默认检测器与估计相机内参，未改成已知内参；同源帧不代表各方法输入编码、裁剪完全相同。'])details.append(node('p','',line));
+  const links=node('div','downloads');for(const [label,url] of [['统一指标数据','four-method-comparison.json'],['原始三方法指标','cross-method-comparison.json'],['评分脚本','https://github.com/YichengDraw/egofound3r-stereo-20261111/blob/main/scripts/build_four_method_comparison.py']]){const a=node('a','',label);a.href=urlFor(url);a.target='_blank';a.rel='noopener';links.append(a);}details.append(links);host.append(details);
+}
+function renderEgoHSIMaterials(){
+  const host=$('egohsi3r-materials');host.replaceChildren();host.append(node('h2','','EgoHSI3R · 原始结果'));
+  host.append(node('p','original-score-note','保留原九段默认复现及补充条件。箱子、香蕉的默认结果已按同源帧接入本页；其余样本与辅助框、同 RGB、关闭重置等条件保持原有分组，不混入统一比较。'));
+  const links=node('div','original-score-grid');for(const [label,url] of [['完整原始实验','https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/'],['本次对应与来源','egohsi3r-materials.json'],['原始结果数据',state.egoHSIManifest?.source_manifest_url||'https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/site-data.json']]){const a=node('a','',label);a.href=urlFor(url);a.target='_blank';a.rel='noopener';links.append(a);}host.append(links);
+}
+
+function renderOriginalThreeMethodComparison(){
+  const host=$('original-three-method-comparison'),report=state.crossMethodReport;host.replaceChildren();
   const heading=node('div','cross-method-heading');heading.append(node('h2','','HaWoR · EgoFound3R · HGGT 横向对比'));
-  const control=node('label','cross-method-scope');control.append(document.createTextNode('评价范围 '));const select=node('select');select.id='cross-method-scope';select.setAttribute('aria-label','三方法比较范围');control.append(select);heading.append(control);host.append(heading);
+  const control=node('label','cross-method-scope');control.append(document.createTextNode('评价范围 '));const select=node('select');select.id='original-three-method-scope';select.setAttribute('aria-label','原三方法比较范围');control.append(select);heading.append(control);host.append(heading);
   if(!report){host.append(node('p','error-inline','统一比较表暂未加载；原视频与原有指标仍可使用。'));return;}
-  const scopes=[report.aggregate,...report.samples];for(const scope of scopes){const o=node('option','',scope.label+(scope.id==='all'?'':` · ${scope.view==='cam_a'?'相机 A':'RGB'}`));o.value=scope.id;select.append(o);}select.value=state.crossScope||'all';select.addEventListener('change',()=>{state.crossScope=select.value;renderCrossMethodComparison();});
+  const scopes=[report.aggregate,...report.samples];for(const scope of scopes){const o=node('option','',scope.label+(scope.id==='all'?'':` · ${scope.view==='cam_a'?'相机 A':'RGB'}`));o.value=scope.id;select.append(o);}select.value=state.originalCrossScope||'all';select.addEventListener('change',()=>{state.originalCrossScope=select.value;renderOriginalThreeMethodComparison();});
   const scope=scopes.find(x=>x.id===select.value)||report.aggregate,methods=['hawor','egofound3r','hggt'];
   host.append(node('p','cross-method-intro','统一 Base16：腕部 + 每根手指 3 个非指尖关节，共 16 点。采用相同源帧、相机和解剖左右手，排除各方法已标记的填补。原有 21 点评测不变。'));
   const chips=node('div','cross-method-chips');for(const text of [`${scope.rgb_frames} 源视频帧`,`${scope.gt_hand_frames} GT 手帧`,`${scope.common_hand_frames} 三方共同有效手帧`,`${scope.common_acceleration_triplets} 共同三帧组`])chips.append(node('span','chip',text));host.append(chips);
@@ -110,7 +135,7 @@ function node(tag, cls, text) {
   const el=document.createElement(tag); if(cls) el.className=cls; if(text!=null) el.textContent=text; return el;
 }
 function notice(message,error=false) {
-  $('notice').hidden=!message; $('notice').classList.toggle('error',error); setText($('notice'),message);
+  $('notice').hidden=!message||!error; $('notice').classList.toggle('error',error); setText($('notice'),message);
 }
 async function fetchJSON(path,signal) {
   const r=await fetch(path,{signal,cache:'no-cache'}); if(!r.ok) throw new Error(`${r.status} · ${new URL(path).pathname}`); return r.json();
@@ -367,7 +392,7 @@ class SceneViewer {
     const span=Math.max(.15,Math.min(10,Math.max(size.x,size.y,size.z))),distance=span/(2*Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2)))*1.55;
     state.updatingCamera=true;this.controls.target.copy(center);this.camera.position.copy(center).add(new THREE.Vector3(span*.18,span*.06,distance));this.camera.up.set(0,1,0);this.camera.near=Math.max(.001,distance/1000);this.camera.far=Math.max(100,distance*100);this.camera.updateProjectionMatrix();this.controls.update();state.updatingCamera=false;this.render();
   }
-  render(){if(!this.disposed)this.renderer.render(this.scene,this.camera);}
+  render(){if(!this.disposed&&state.demoView==='scene')this.renderer.render(this.scene,this.camera);}
   dispose(){this.disposed=true;this.resizeObserver.disconnect();this.controls.dispose();this.scene.traverse(o=>{o.geometry?.dispose();if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});this.renderer.dispose();this.renderer.forceContextLoss();this.host.replaceChildren();}
 }
 
@@ -394,7 +419,7 @@ class MethodPanel {
     this.video.addEventListener('seeking',()=>{this.seekCount=(this.seekCount||0)+1;this.el.dataset.seekCount=this.seekCount;});
     this.resizeObserver=new ResizeObserver(()=>{this.drawOverlay();this.drawProjections();});this.resizeObserver.observe(this.el);
     this.startVideoFrames();
-    this.archiveVideo.addEventListener('error',()=>setText(this.q('.legacy-scope'),'昨日原视频加载失败，可从下方原材料链接打开；当前 RGB 与预测未受影响。'));
+    this.archiveVideo.addEventListener('error',()=>{if(this.activeVideoTab!=='input')notice('这个原始视频暂时无法播放，可在下方原始资料中打开。其他视图仍可使用。',true);});
     this.video.addEventListener('error',()=>{const m=this.q('.video-missing');m.hidden=false;setText(m,'视频读取失败。请检查资源路径或在下载区打开原文件。');});
     $('comparison').append(this.el);
     this.load(methodId);
@@ -423,7 +448,7 @@ class MethodPanel {
       if(this.disposed||token!==this.loadId)return;this.geometry=geom;
       if(geom.joints&&!geom.vertices)$('joints').checked=true;
       const layout=geom._handLayout;
-      this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.replaceChildren(node('i','dot '+(layout.colorIndices[i]?'right':'left')),document.createTextNode((m.kind==='reference'?'':'EgoFound3R · ')+(layout.labels[i]||`native slot ${i}`))));
+      this.qAll('.scene-legend>span:not(.heat-legend)').forEach((el,i)=>el.replaceChildren(node('i','dot '+(layout.colorIndices[i]?'right':'left')),document.createTextNode(layout.labels[i]||`native slot ${i}`)));
       try{this.viewer=new SceneViewer(this.q('.webgl-host'),this);this.viewer.setData(geom);message.hidden=true;if(this.viewer.isSoftware)setText(this.q('.scene-panel .pane-label>span:first-child'),m.kind==='reference'?'GT 标注骨架 · 软件 3D':'软件 3D · 网格线框');}catch(e){this.webglError=true;setText(message,`此浏览器暂时无法创建三维视图。\n${e.message}`);}
       if(!this.bakedOverlay&&!geom.joints2d&&geom.projection_space!=='camera')setText(this.q('.rgb-title'),'输入 RGB · 未导出 2D 投影');
       setText(this.q('.coordinate-label'),m.coordinate_system||geom.coordinate_system||state.sequence.coordinate_system||`${geom.coordinate_convention==='opencv'?'相机坐标':'三维坐标'} · ${geom.units||'m'}`);
@@ -440,7 +465,7 @@ class MethodPanel {
       this.q('.projection-gt').hidden=m.kind==='reference';
       this.q('.projection-row').classList.toggle('reference-only',m.kind==='reference');
       setText(this.q('.projection-pred .projection-title'),m.kind==='reference'?'GT 骨架投影 · 真实标注':'EgoFound3R 网格投影 · 原始几何');
-      this.update(state.frame);deduplicateGTProjections();this.setupComparisonLayers(token).catch(e=>{if(!this.disposed&&token===this.loadId&&e.name!=='AbortError')setText(this.q('.comparison-scope'),`比较几何加载失败：${e.message}`);});
+      this.update(state.frame);deduplicateGTProjections();this.setupComparisonLayers(token).catch(e=>{if(!this.disposed&&token===this.loadId&&e.name!=='AbortError')this.comparisonError(`比较几何加载失败：${e.message}`);});
       const first=state.panels.find(p=>p.viewer?.data)?.viewer;if($('linked').checked&&first)syncCameras(first);
       setText($('load-status'),'几何与视频按同一帧同步');
     }catch(e){if(e.name==='AbortError'||token!==this.loadId)return;setText(message,`几何结果读取失败：${e.message}`);this.el.dataset.error='true';setText($('load-status'),'部分资源读取失败，请查看对应面板');$('load-status').classList.add('error');}
@@ -448,7 +473,7 @@ class MethodPanel {
   setupVideoTabs(){
     const entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id&&x.view===this.method.view);this.legacyEntry=entry;this.activeVideoTab='input';this.archiveVideo.pause();this.archiveVideo.removeAttribute('src');this.archiveVideo.load();this.archiveVideo.onloadedmetadata=null;this.archiveVideo.hidden=true;this.video.hidden=false;this.canvas.hidden=false;this.q('.video-panel').classList.remove('archive-active');
     const tabs=this.q('.video-tabs');tabs.replaceChildren();this.videoButtons=new Map();
-    const choices=[{id:'input',label:this.method.kind==='reference'?'RGB + GT':'EgoFound3R / RGB'},...(entry?.videos||[])];
+    const hs=egoHSIEntry(),hsMatch=hs&&hs.view===this.method.view;const choices=[{id:'input',label:this.method.kind==='reference'?'真实标注':'EgoFound3R 关节叠加'},...(entry?.videos||[]).map(x=>({...x,label:x.id==='comparison'?'HGGT 与 HaWoR 对照':'HGGT 原始预测'})),...(hsMatch?[{id:'egohsi3r',label:'EgoHSI3R 手部叠加',url:hs.videos.find(v=>v.id==='overlay').url,fps:hs.videos.find(v=>v.id==='overlay').fps}]:[])];
     for(const choice of choices){const b=node('button','video-tab',choice.label);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(choice.id==='input'));b.addEventListener('click',()=>{
       setPlaying(false);this.activeVideoTab=choice.id;for(const el of tabs.children)el.setAttribute('aria-selected',String(el===b));const archived=choice.id!=='input';this.video.hidden=archived;this.canvas.hidden=archived;this.archiveVideo.hidden=!archived;this.q('.video-panel').classList.toggle('archive-active',archived);
       if(archived){this.archiveFPS=choice.fps;this.archiveVideo.src=choice.url;this.archiveVideo.load();setText(this.q('.rgb-title'),choice.label+' · 原片未改');this.archiveVideo.onloadedmetadata=()=>this.seekArchive(state.frame);}
@@ -458,17 +483,20 @@ class MethodPanel {
     setText(this.q('.legacy-scope'),entry?'HGGT / HaWoR 原视频与当前片段逐源帧对应；投影仍使用下方同帧 RGB。':state.legacyManifest?.samples.some(x=>x.id===state.sequence.id)?'HGGT / HaWoR 仅有相机 A；此相机没有对应结果。':'没有此片段的 HGGT / HaWoR 结果。');
   }
   seekArchive(frame){if(this.activeVideoTab==='input'||this.archiveVideo.readyState<1)return;const t=(frame+.05)/(this.archiveFPS||30);if(Math.abs(this.archiveVideo.currentTime-t)>.1/(this.archiveFPS||30))this.archiveVideo.currentTime=Math.min(t,this.archiveVideo.duration-.001);}
+  comparisonError(message){this.q('.comparison-scope').classList.add('error-inline');setText(this.q('.comparison-scope'),message);}
   async setupComparisonLayers(token){
+    this.q('.comparison-scope').classList.remove('error-inline');
     const v=this.viewer,box=this.q('.method-checks');box.replaceChildren();if(!v)return;
     const add=(key,label,primary=false)=>{const wrap=node('label','method-check'),input=node('input');input.type='checkbox';input.checked=primary;input.setAttribute('aria-label',`3D 显示 ${label}`);const dot=node('i');dot.style.background=primary?'linear-gradient(90deg, #64b6ff 50%, #f5b54f 50%)':LEGACY_COLORS[key]||'#64b6ff';wrap.append(input,dot,document.createTextNode(label));input.addEventListener('change',()=>{if(primary)v.primaryVisible=input.checked;else if(v.layers?.has(key))v.layers.get(key).enabled=input.checked;v.update(this.displayFrame??state.frame);if(input.checked)v.fit();if($('linked').checked)syncCameras(v);});box.append(wrap);};
     add('primary',this.method.kind==='reference'?'GT（本列）':'EgoFound3R（本列）',true);
-    if(this.geometry.coordinate_space==='world'){setText(this.q('.comparison-scope'),'本列是独立预测世界系，不能直接叠加HGGT / HaWoR 相机系。请选择相机坐标方法进行比较。');return;}
+    if(this.geometry.coordinate_space==='world'){setText(this.q('.comparison-scope'),'独立世界坐标，不能叠加其他方法。');return;}
     if(this.method.kind!=='reference'&&this.referenceGeometry){v.addComparisonLayer('gt',this.referenceGeometry,'GT');add('gt','GT');}
     if(this.method.kind==='reference'){
       const source=state.sequence.methods.find(m=>m.kind!=='reference'&&m.view===this.method.view&&!m.id.endsWith('_world'));if(source){const ego=await loadProjectionGeometry(source.geometry,state.controller?.signal);if(this.disposed||token!==this.loadId)return;v.addComparisonLayer('ego',ego,'EgoFound3R');add('ego','EgoFound3R');}
     }
-    if(this.legacyEntry){try{const legacy=await loadLegacy(this.legacyEntry,state.controller?.signal);if(this.disposed||token!==this.loadId)return;for(const [key,label] of [['hggt_native','HGGT 原生'],['hggt_adapted','HGGT 适配'],['hawor','HaWoR']])if(legacy[key]){v.addComparisonLayer(key,legacy[key],label);add(key,label);}}catch(e){if(e.name!=='AbortError')setText(this.q('.comparison-scope'),`HGGT / HaWoR 几何未加载：${e.message}`);return;}}
-    setText(this.q('.comparison-scope'),'本列“左右手”模式以蓝 / 金区分左右手；额外叠加按勾选项颜色区分：EgoFound3R 红、HGGT 原生粉、HGGT 适配紫、HaWoR 绿、GT 白。均为真实 21 关节，不做配准或 GT 拟合；统一评分另用 Base16。HaWoR 补全保留原标记。');v.update(this.displayFrame??state.frame);
+    if(this.legacyEntry){try{const legacy=await loadLegacy(this.legacyEntry,state.controller?.signal);if(this.disposed||token!==this.loadId)return;for(const [key,label] of [['hggt_native','HGGT 原始结果'],['hggt_adapted','HGGT 位置适配'],['hawor','HaWoR']])if(legacy[key]){v.addComparisonLayer(key,legacy[key],label);add(key,label);}}catch(e){if(e.name!=='AbortError')this.comparisonError(`HGGT / HaWoR 几何未加载：${e.message}`);return;}}
+    const hs=egoHSIEntry();if(hs?.view===this.method.view){try{const geometry=await loadProjectionGeometry(hs.geometry,state.controller?.signal);if(this.disposed||token!==this.loadId)return;v.addComparisonLayer('egohsi3r',geometry,'EgoHSI3R');add('egohsi3r','EgoHSI3R');}catch(e){if(e.name!=='AbortError')this.comparisonError(`EgoHSI3R 几何未加载：${e.message}`);return;}}
+    setText(this.q('.comparison-scope'),'同一相机坐标 · 未配准');v.update(this.displayFrame??state.frame);
   }
   mediaFrame(time=this.video.currentTime){return frameFromMediaTime(time,state.sequence.fps||30,state.sequence.frames,this.method?.video_offset_s||0);}
   startVideoFrames(){
@@ -499,10 +527,10 @@ class MethodPanel {
     // Use the actual presented video frame, not a free-running wall clock.
     const now=performance.now();
     const visible=this.q('.scene-panel').getBoundingClientRect();
-    const onScreen=visible.bottom>0&&visible.top<innerHeight;
-    if(!state.playing||(onScreen&&(!this.viewer?.isSoftware||now-(this.lastSceneDraw||0)>=100))){this.viewer?.update(frame);this.lastSceneDraw=now;}
-    this.drawOverlay();this.drawProjections();
-    if(!state.playing||now-(this.lastMetricDraw||0)>=150){this.drawMetrics(frame);this.drawChart();this.updateLabels(frame);this.lastMetricDraw=now;}
+    const onScreen=(state.demoView==='scene')&&visible.width>0&&visible.height>0&&visible.bottom>0&&visible.top<innerHeight;
+    if(onScreen&&(!state.playing||!this.viewer?.isSoftware||now-(this.lastSceneDraw||0)>=100)){this.viewer?.update(frame);this.lastSceneDraw=now;}
+    if((state.demoView||'video')==='video')this.drawOverlay();if(state.demoView==='projection')this.drawProjections();
+    if(!state.playing||now-(this.lastMetricDraw||0)>=150){if($('diagnostics').checked){this.drawMetrics(frame);this.drawChart();}this.updateLabels(frame);this.lastMetricDraw=now;}
   }
   update(frame){
     if(!this.method)return;
@@ -523,7 +551,7 @@ class MethodPanel {
     let caption=[];if(g?.observed){const n=Array.from({length:g.hand_count},(_,h)=>g.observed[f*g.hand_count+h]>.5).filter(Boolean).length;caption.push(n?`${n} 只手：网络输出帧`:'插值 / 填补帧');}else if(g?.network_anchor){caption.push(g.network_anchor[f]>.5?'网络采样帧':'时间插值帧');}if(g?.scene?.frame_indices?.length){const a=g.scene.frame_indices.reduce((x,y)=>Math.abs(y-frame)<Math.abs(x-frame)?y:x);caption.push(`场景 G 锚帧 ${a}`);}if(g?.fill_mask){const n=Array.from({length:g.hand_count},(_,h)=>g.fill_mask[f*g.hand_count+h]>.5).filter(Boolean).length;if(n)caption.push(`${n} 只手：官方填补结果`);}setText(this.q('.video-caption'),caption.join(' · '));
   }
   drawProjections(){
-    if(!this.method)return;
+    if(!this.method||state.demoView!=='projection')return;
     const frame=this.displayFrame??state.frame;
     this.drawProjectionPane(this.q('.projection-pred'),this.projectionGeometry,frame,this.method.kind==='reference');
     if(this.method.kind!=='reference'&&!this.q('.projection-gt').hidden)this.drawProjectionPane(this.q('.projection-gt'),this.referenceGeometry,frame,true);
@@ -637,7 +665,7 @@ function setPlaying(value){
   if(state.frame>=state.sequence.frames-1)setFrame(0);
   const videos=state.panels.filter(p=>p.video.src);
   for(const p of videos){p.seek(state.frame);p.video.playbackRate=Number($('speed').value);p.archiveVideo.playbackRate=p.video.playbackRate*(state.sequence.fps||30)/(p.archiveFPS||state.sequence.fps);}
-  Promise.all(videos.flatMap(p=>[p.video.play(),...(p.activeVideoTab!=='input'?[p.archiveVideo.play()]:[])])).catch(e=>{if(state.playToken===token){setPlaying(false);setText($('load-status'),'视频未能开始播放，请等待加载后重试。');}});
+  Promise.all(videos.flatMap(p=>[p.video.play(),...(p.activeVideoTab!=='input'&&(state.demoView||'video')==='video'&&!p.el.classList.contains('archive-duplicate')?[p.archiveVideo.play()]:[])])).catch(e=>{if(state.playToken===token){setPlaying(false);setText($('load-status'),'视频未能开始播放，请等待加载后重试。');}});
 }
 function tick(now){
   if(state.playing&&state.panels.length){
@@ -646,7 +674,7 @@ function tick(now){
     for(const p of state.panels)if(!p.video.requestVideoFrameCallback&&!p.video.seeking){const f=p.mediaFrame();if(p===master)updateTimeline(f);if(f!==p.displayFrame)p.present(f);}
     if(now-(state.lastSync||0)>300){
       state.lastSync=now;
-      for(const p of state.panels)if(p.activeVideoTab!=='input'&&p.archiveVideo.readyState>=2&&!p.archiveVideo.seeking){const target=p.video.currentTime*(state.sequence.fps||30)/(p.archiveFPS||30);if(Math.abs(p.archiveVideo.currentTime-target)>.12)p.archiveVideo.currentTime=target;}
+      for(const p of state.panels)if((state.demoView||'video')==='video'&&!p.el.classList.contains('archive-duplicate')&&p.activeVideoTab!=='input'&&p.archiveVideo.readyState>=2&&!p.archiveVideo.seeking){const target=p.video.currentTime*(state.sequence.fps||30)/(p.archiveFPS||30);if(Math.abs(p.archiveVideo.currentTime-target)>.12)p.archiveVideo.currentTime=target;}
       for(const p of state.panels.slice(1)){
         const delta=(p.video.currentTime-(p.method.video_offset_s||0))-(time-(master.method.video_offset_s||0));
         if(!p.video.seeking&&p.video.readyState>=2&&Math.abs(delta)>.12){p.video.currentTime=Math.max(0,time+(p.method.video_offset_s||0)-(master.method.video_offset_s||0));}
@@ -665,12 +693,11 @@ function renderMetrics(){
   const body=document.createElement('tbody');for(const m of methods){const tr=document.createElement('tr');tr.append(node('td','method-name-cell',m.label||m.id));for(const c of cols){const met=(m.metrics||[]).find(v=>(v.id||v.label)===c.key),value=met?.value;tr.append(node('td',value==null?'metric-missing':'',value==null?'—':typeof value==='number'?fmt(value,met.digits??2):String(value)));}body.append(tr);}table.append(body);target.append(table);
 }
 function renderComparisonAvailability(){
-  const host=$('comparison-availability'),entry=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id),sample=state.crossMethodReport?.samples.find(x=>x.id===state.sequence.id);
-  host.classList.toggle('limited',!entry);
-  let text;
-  if(!entry)text='本片段仅有 EgoFound3R 复现与可用 GT，没有 HGGT / HaWoR 对应结果。三方法材料只覆盖箱子、香蕉相机 A 及 Aria 1976、3209；可用下方快捷按钮切换。';
-  else {text=`本片段有三方法同源材料：${entry.view==='cam_a'?'仅相机 A（836212060125）；相机 B 只有 EgoFound3R':'Aria RGB（214-1）'}。`;if(sample)text+=sample.common_hand_frames?`三方共同严格有效 ${sample.common_hand_frames} / ${sample.gt_hand_frames} GT 手帧，误差按此共同子集比较。`:'EgoFound3R 无严格有效预测，三方共同误差不可评价；覆盖率和 PCK50 仍计入全部 GT。';}
-  setText(host,text+' GT 是真实标注，不是第四种方法。');
+  const host=$('comparison-availability'),legacy=state.legacyManifest?.samples.find(x=>x.id===state.sequence.id),hs=egoHSIEntry();
+  let text;if(hs)text='相机 A 可比较 HGGT、HaWoR、EgoHSI3R；EgoFound3R 无有效预测。';
+  else if(legacy)text='本片段可比较 HGGT、HaWoR、EgoFound3R；EgoHSI3R 没有对应结果。';
+  else text='本片段仅有 EgoFound3R 结果，其他方法暂无对应数据。';
+  host.classList.toggle('limited',!legacy);setText(host,text);
 }
 function renderDescription(){
   const seq=state.sequence,man=state.manifest;$('protocol-items').replaceChildren();
@@ -685,7 +712,7 @@ async function selectSequence(id){
   state.sequence=state.manifest.sequences.find(s=>s.id===id);if(!state.sequence)return;
   const seq=state.sequence;$('sequence').value=id;const frames=Math.max(1,seq.frames||1);seq.frames=frames;$('scrubber').max=frames-1;$('frame-number').max=frames-1;setText($('duration-label'),`${fmt(frameTime(frames-1))} s`);
   $('sequence-meta').replaceChildren();for(const t of [seq.dataset,`${frames} 帧`,`${seq.fps||30} fps`,seq.input_label||''])if(t)$('sequence-meta').append(node('span','chip',t));
-  renderDescription();renderMetrics();renderLegacyMaterials();renderCrossMethodComparison();renderComparisonAvailability();notice(seq.notice||state.manifest.notice||'');$('load-status').classList.remove('error');setText($('load-status'),'正在读取片段资源…');
+  renderDescription();renderMetrics();renderLegacyMaterials();renderOriginalThreeMethodComparison();renderCrossMethodComparison();renderEgoHSIMaterials();renderComparisonAvailability();notice(seq.notice||state.manifest.notice||'');$('load-status').classList.remove('error');setText($('load-status'),'正在读取片段资源…');
   renderPanels();setFrame(0);saveQuery();
 }
 function renderPanels(){
@@ -707,9 +734,10 @@ function wireUI(){
   $('scrubber').addEventListener('input',()=>{setPlaying(false);setFrame(Number($('scrubber').value));});$('frame-number').addEventListener('change',()=>{setPlaying(false);setFrame(Number($('frame-number').value));});
   $('frame-number').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setPlaying(false);setFrame(Number(e.currentTarget.value));}});
   for(const id of ['overlay','scene','hands','joints','trajectory','wireframe','color-mode','filled'])$(id).addEventListener('change',()=>state.panels.forEach(p=>p.update(state.frame)));
+  $('diagnostics').addEventListener('change',()=>{document.body.classList.toggle('show-diagnostics',$('diagnostics').checked);for(const p of state.panels)p.update(state.frame);});
   $('linked').addEventListener('change',()=>{if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
   $('reset-camera').addEventListener('click',()=>{for(const p of state.panels)p.viewer?.fit();if($('linked').checked){const v=state.panels.find(p=>p.viewer?.data)?.viewer;if(v)syncCameras(v);}});
-  $('details-button').addEventListener('click',()=>{const isHidden=$('protocol').hidden;$('protocol').hidden=!isHidden;$('details-button').setAttribute('aria-expanded',String(isHidden));});
+  for(const b of $('demo-view-tabs').querySelectorAll('button'))b.addEventListener('click',()=>{setPlaying(false);state.demoView=b.dataset.demoView;updateDemoLayout();for(const p of state.panels){p.viewer?.resize?.();p.update(state.frame);}});
   window.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName))return;if(e.code==='Space'){e.preventDefault();setPlaying(!state.playing);}else if(e.code==='ArrowLeft'){e.preventDefault();setPlaying(false);setFrame(state.frame-1);}else if(e.code==='ArrowRight'){e.preventDefault();setPlaying(false);setFrame(state.frame+1);}});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)setPlaying(false);});
 }
@@ -719,6 +747,7 @@ async function main(){
     const manifestURL=new URL('manifest.json',document.baseURI);manifestURL.search=new URL(import.meta.url).search;
     state.legacyManifest=await fetchJSON(urlFor('legacy-hggt.json'));
     state.manifest=await fetchJSON(manifestURL.href);const man=state.manifest;
+    try{state.egoHSIManifest=await fetchJSON(urlFor('egohsi3r-materials.json'));state.fourMethodReport=await fetchJSON(urlFor('four-method-comparison.json'));}catch(error){console.warn('EgoHSI3R 比较材料读取失败',error);}
     try{state.crossMethodReport=await fetchJSON(urlFor('cross-method-comparison.json'));}catch(error){console.warn('统一比较表读取失败',error);}
     if(man.suite_summary){
       const table=node('table'),head=node('tr');
@@ -730,7 +759,7 @@ async function main(){
         for(const v of values)tr.append(node('td','',String(v)));body.append(tr);
       }table.append(body);$('suite-metrics').append(table);
     }
-    document.title=man.title||'HGGT · HaWoR · EgoFound3R | 三方法复现对比';setText($('page-title'),man.title||'HGGT · HaWoR · EgoFound3R | 三方法复现对比');setText($('page-subtitle'),man.subtitle||'');
+    document.title=man.title;setText($('page-title'),man.heading||man.title);setText($('page-subtitle'),man.subtitle||'复现对比');
     if(man.status&&man.status!=='complete'){$('run-state').hidden=false;setText($('run-state'),man.status_label||({blocked:'待权重授权 · 未完成推理',awaiting_results:'待导入推理结果',partial:'部分推理结果'})[man.status]||man.status);}
     for(const s of man.sources||[]){const a=node('a','',s.label);a.href=s.url;a.target='_blank';a.rel='noopener';$('source-links').append(a);}
     setText($('footer-provenance'),man.provenance||`仅展示已导出的真实推理结果${man.generated_at?' · '+man.generated_at:''}`);

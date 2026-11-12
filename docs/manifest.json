@@ -1,12 +1,12 @@
 {
   "schema_version": "egofound3r.viewer.v1",
-  "title": "HGGT · HaWoR · EgoFound3R | 三方法复现对比",
-  "subtitle": "三方法匹配材料：4 段 / 446 帧 · EgoFound3R 扩展结果：11 段 / 13 路 RGB / 2,080 帧",
+  "title": "HGGT · HaWoR · EgoFound3R · EgoHSI3R | 复现对比",
+  "subtitle": "手部重建复现对比",
   "status": "complete",
   "generated_at": "2026-11-11T11:23:33.902172+00:00",
   "default_columns": 2,
-  "notice": "HGGT、HaWoR、EgoFound3R 的复现结果集中展示；用视频选项卡切换材料，用 3D 勾选叠加方法与 GT。三方法统一 Base16 比较表在下方，原有各方法评测单独保留。",
-  "provenance": "HGGT / HaWoR：2026-11-10 原始材料 · EgoFound3R：官方 clean 264f4df · 真实缓存结果 · GT 仅评价",
+  "notice": "按同源片段查看视频、三维结果和可比指标。各方法覆盖范围不同，缺失结果不补造。",
+  "provenance": "HGGT / HaWoR：2026-11-10 原始材料 · EgoFound3R：官方 clean 264f4df · 真实缓存结果 · GT 仅评价 · EgoHSI3R：2026-11-04 默认复现缓存",
   "suite_summary": {
     "DexYCB": {
       "streams": 4,
@@ -77,12 +77,16 @@
   },
   "protocol": [
     {
-      "label": "三方法覆盖范围",
-      "value": "箱子、香蕉仅相机 A；Aria 1976、3209 为 RGB。其他七段及 Dex 相机 B 仅有 EgoFound3R 结果，不补造 HGGT / HaWoR。"
+      "label": "四方法覆盖范围",
+      "value": "箱子、香蕉相机 A 可比较 HGGT、HaWoR、EgoHSI3R；EgoFound3R 在这两路没有严格有效预测。Aria 1976、3209 可比较 HGGT、HaWoR、EgoFound3R，未运行 EgoHSI3R。其他七段及 Dex 相机 B 仅有 EgoFound3R 结果。"
     },
     {
-      "label": "三方法评价",
-      "value": "相同源帧、相机和解剖手；统一 Base16，排除填补。误差按三方共同有效手帧，覆盖率及 PCK50 保留全部 GT 分母；与各自原 21 点表分开。"
+      "label": "统一评价",
+      "value": "相同源帧、相机和解剖手；统一 16 个非指尖共同关节，排除填补。分别在 DexYCB 和 Aria 组的三方共同有效手帧上计算误差。四方法共同集合为零，不计算四方总排名。覆盖率及 PCK50 保留全部 GT 分母，与各自原 21 点表分开。"
+    },
+    {
+      "label": "EgoHSI3R 原始条件",
+      "value": "2026-11-04 默认 detector / reset 20 / TTT3R / 512，保留估计内参；未替换为已知 K。箱子、香蕉的 GT 数组、有效性、源帧和时间戳与当前相机 A 完全一致。输入视频重编码不同，不声称像素字节一致。原九段与其他条件分组保留。"
     },
     {
       "label": "HGGT / HaWoR 材料",
@@ -129,6 +133,10 @@
     {
       "label": "HGGT / HaWoR 原始材料",
       "url": "https://yichengdraw.github.io/hggt-hawor-singleview-20261110/"
+    },
+    {
+      "label": "EgoHSI3R 原始实验",
+      "url": "https://egohsi3r-experiments-20261104.yichengdraw.chatgpt.site/"
     }
   ],
   "downloads": [
@@ -5703,5 +5711,6 @@
       ]
     }
   ],
-  "acceptance_status": "passed"
+  "acceptance_status": "passed",
+  "heading": "HGGT · HaWoR · EgoFound3R · EgoHSI3R"
 }

@@ -1,6 +1,16 @@
-# HGGT · HaWoR · EgoFound3R 三方法复现对比
+# HGGT · HaWoR · EgoFound3R · EgoHSI3R 复现对比
 
-网站汇集三方法的四段同源材料与统一 Base16 比较，另保留 EgoFound3R 的十一段扩展结果。三方法材料仅对应箱子、香蕉相机 A 和 Aria 1976、3209 RGB；其他片段及相机 B 不代表具有 HGGT / HaWoR 结果。下方原始实验报告与 21 点指标专指 EgoFound3R，原数据未改。
+网站按片段展示四个方法的已有复现结果。DexYCB 箱子、香蕉相机 A 比较 HGGT / HaWoR / EgoHSI3R，EgoFound3R 无严格有效预测；Aria 1976 / 3209 比较 HGGT / HaWoR / EgoFound3R，EgoHSI3R 未运行。不存在四方法共同有效集合，不做跨组总排名。保留 EgoFound3R 十一段扩展结果以及各方法原始材料、21 点评价和下载。所有新增指标仅重评分已有预测，未重跑模型。
+
+## 四方法接入与精简界面（2026-11-12）
+
+- `docs/four-method-comparison.json` / CSV：统一 Base16、分组共同有效集；未运行与零有效预测明确区分。
+- `docs/egohsi3r-materials.json`：原始九段、匹配证据、输入和内参差异及公开视频；箱子/香蕉轻量原生骨架用于三维勾选。
+- `scripts/build_four_method_comparison.py` 和 `scripts/export_egohsi3r_materials.py`：可复核评分与导出；原三方法报告未改。
+- Demo 操作顺序：选择片段 → 视频对照 / 三维结果 / 手部投影 → 同口径指标。仅保留一套视频来源选项卡与同步时间轴；显示设置、原始评测和证据默认折叠。
+- EgoHSI3R 默认 detector / reset 20 / TTT3R / 512，使用估计内参，保持原条件。原 GT、源帧和时间戳与当前相机 A 完全一致，但输入编码不同，不声称字节相同。
+- 非当前画面的 3D 渲染、投影绘制和重复原视频播放暂停；原视频保留，不重编码。
+
 
 ## EgoFound3R 原始复现报告
 
