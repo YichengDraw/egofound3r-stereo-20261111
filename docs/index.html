@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a25">
   <meta name="description" content="EgoFound3R 复现实验：同步 RGB、手部重建、场景点云与可交互三维对比。">
   <title>EgoFound3R · 复现对比</title>
-  <link rel="stylesheet" href="style.css?v=method-colors-1">
+  <link rel="stylesheet" href="style.css?v=cross-method-1">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -40,7 +40,9 @@
       <div class="display-group"><label class="small-label">手部颜色 <select id="color-mode"><option value="hand">左右手</option><option value="contact">接触概率</option><option value="visibility">可见概率</option></select></label><label class="check"><input id="linked" type="checkbox" checked>联动视角</label><button id="reset-camera" class="small-button">重置视角</button></div>
     </section>
     <section id="video-switcher" class="video-switcher" aria-label="视频切换入口"></section>
+    <a class="cross-method-jump" href="#cross-method-comparison">查看三方法横向比较表 ↓</a>
     <section id="comparison" class="comparison" aria-label="同步可视化对比"></section>
+    <section id="cross-method-comparison" class="summary-panel cross-method-comparison" aria-label="三方法横向比较"></section>
     <section id="legacy-materials" class="summary-panel legacy-materials"></section>
     <section class="suite-summary"><div class="section-title"><h2>全部样本 · 同口径独立评价</h2><span>双 RGB 与单目补充分组统计</span></div><div id="suite-metrics" class="table-scroll"></div></section>
     <section class="bottom-grid">
@@ -66,7 +68,7 @@
     </article>
   </template>
   <noscript><p class="notice">请启用 JavaScript，以查看同步视频和可拖动的三维结果。</p></noscript>
-  <script type="module" src="app.js?v=method-colors-1"></script>
+  <script type="module" src="app.js?v=cross-method-1"></script>
 </body>
 </html>
 

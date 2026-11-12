@@ -123,3 +123,13 @@ GT 3D 评分使用全部有效标注；网页 2D 投影只显示正深度的关�
 精确匹配四段：DexYCB box / banana 仅相机 A 836212060125，Aria 1976 / 3209 为 214-1 RGB。源帧号和时间戳逐项相同，按解剖侧匹配的 GT 最大差异小于 0.000001 m（昨日 JSON 取整精度）。相机 B 和其他七段没有昨日结果，不补造。来源固定提交 b5da99d28417351a1d1814ffceddcb7a882c326c，JSON 下载在浏览器中验证 SHA-256。原指标分母保留，没有重新评分或混合汇总。
 
 当右侧已有同相机 GT 卡片时，左卡下方不再重复 GT 投影，只居中显示预测；未另列 GT 的相机仍可在自己的卡片右下方查看对应真值。
+
+## 三方法统一横向对比（2026-11-12）
+
+新增 Base16 比较表，读取既有 HaWoR、EgoFound3R、HGGT 输出重新评分，不执行模型推理，不替换原 21 点评测。Base16 保留腕部与每指三个非指尖关节，避开原生 21 点与数据集网格指尖标记的定义差异；所有方法在同一 16 点上计算 Raw/RR/PA，PA 重新拟合正尺度、无反射 Sim(3)。
+
+仅匹配 DexYCB box/banana 的相机 A（836212060125）以及 Aria 1976/3209 的 RGB（214-1），共446源帧、746个完整GT手帧。统一排除 Ego官方缺失填补和 HaWoR明确时序补全后，严格覆盖为 HaWoR715、Ego565、HGGT715。三方法共同误差集为565手帧，全部来自两段Aria；两段Dex相机A没有Ego严格预测，误差为null，不混入旧两方法分数。覆盖率与PCK50保留全部746手帧/11936关节分母；缺失不删除。加速度使用GT原始时间戳及555个共同连续三帧组，不跨片段。
+
+HGGT原生相机结果与旧有标定平移适配结果分开注明；无GT拟合。全部视频、预测、GT与旧指标原样保留。此为四个开发示例的共同口径检查，不是官方基准，也不保证训练集独立。
+
+可复核输出：`docs/cross-method-comparison.json`（源文件SHA256、共同手帧、分母及完整定义）与CSV。评分脚本：`python scripts/build_cross_method_comparison.py --legacy-root <HGGT-repository>`；HGGT来源固定为 b5da99d28417351a1d1814ffceddcb7a882c326c，Ego缓存来源为 b2ffc2c894d5132958e8670a15b1dacefb6446c8。测试：`HGGT_SOURCE=<HGGT-repository> python tests/test_cross_method_comparison.py`。独立双精度实现核验全部共同误差与PCK命中数一致。

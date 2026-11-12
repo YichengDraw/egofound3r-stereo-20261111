@@ -48,6 +48,42 @@ function renderVideoSwitcher(){
   }
   host.append(choices);updateVideoSwitcher();
 }
+function renderCrossMethodComparison(){
+  const host=$('cross-method-comparison'),report=state.crossMethodReport;host.replaceChildren();
+  const heading=node('div','cross-method-heading');heading.append(node('h2','','HaWoR · EgoFound3R · HGGT 横向对比'));
+  const control=node('label','cross-method-scope');control.append(document.createTextNode('评价范围 '));const select=node('select');select.id='cross-method-scope';select.setAttribute('aria-label','三方法比较范围');control.append(select);heading.append(control);host.append(heading);
+  if(!report){host.append(node('p','error-inline','统一比较表暂未加载；原视频与原有指标仍可使用。'));return;}
+  const scopes=[report.aggregate,...report.samples];for(const scope of scopes){const o=node('option','',scope.label+(scope.id==='all'?'':` · ${scope.view==='cam_a'?'相机 A':'RGB'}`));o.value=scope.id;select.append(o);}select.value=state.crossScope||'all';select.addEventListener('change',()=>{state.crossScope=select.value;renderCrossMethodComparison();});
+  const scope=scopes.find(x=>x.id===select.value)||report.aggregate,methods=['hawor','egofound3r','hggt'];
+  host.append(node('p','cross-method-intro','统一 Base16：腕部 + 每根手指 3 个非指尖关节，共 16 点。采用相同源帧、相机和解剖左右手，排除各方法已标记的填补。原有 21 点评测不变。'));
+  const chips=node('div','cross-method-chips');for(const text of [`${scope.rgb_frames} 源视频帧`,`${scope.gt_hand_frames} GT 手帧`,`${scope.common_hand_frames} 三方共同有效手帧`,`${scope.common_acceleration_triplets} 共同三帧组`])chips.append(node('span','chip',text));host.append(chips);
+  let note=scope.id==='all'?'误差使用 565 个共同有效手帧，实际全部来自两段 Aria。两段 DexYCB 的对应相机没有 EgoFound3R 严格有效预测，因此共同误差不计算；它们仍计入全 GT 覆盖率与 PCK50 分母。':scope.common_hand_frames?`本表误差只比较相同的 ${scope.common_hand_frames} 个共同有效手帧。覆盖率与 PCK50 使用本片段全部 ${scope.gt_hand_frames} 个 GT 手帧，缺失预测不从分母删除。`:'本片段三方共同有效手帧为 0：EgoFound3R 在该相机没有严格有效预测。误差显示不可评价，覆盖率与全 GT PCK50 仍可计算。';
+  host.append(node('p','cross-method-notice',note));
+  const table=node('table','cross-method-table');table.setAttribute('aria-label','三方法统一 Base16 比较表');const thead=node('thead'),tr=node('tr');tr.append(node('th','','统一指标'));for(const key of methods)tr.append(node('th','',scope.methods[key].label));thead.append(tr);table.append(thead);const body=node('tbody');
+  const rows=[
+    {label:'严格有效覆盖率 ↑',type:'coverage'},
+    {label:'排除的已标注填补手帧',key:'excluded_fill_hand_frames',digits:0},
+    {label:'绝对关节误差 · mm ↓',key:'mpjpe16_mm',adapted:'adapted_mpjpe16_mm'},
+    {label:'去腕关节误差 · mm ↓',key:'rr_mpjpe16_mm'},
+    {label:'PA 对齐关节误差 · mm ↓',key:'pa_mpjpe16_mm'},
+    {label:'手腕位置误差 · mm ↓',key:'wrist_error_mm',adapted:'adapted_wrist_error_mm'},
+    {label:'去腕加速度误差 · m/s² ↓',key:'rr_acceleration16_error_m_s2'},
+    {label:'PCK50 · 全 GT ↑',key:'pck50_all_gt',percent:true,adapted:'adapted_pck50_all_gt'},
+    {label:'含填补的可显示覆盖（不评分）',type:'display'}
+  ];
+  for(const spec of rows){const row=node('tr'),label=node('th','',spec.label);label.scope='row';row.append(label);for(const method of methods){const d=scope.methods[method],td=node('td');if(spec.type==='coverage'||spec.type==='display'){const n=spec.type==='coverage'?d.strict_hand_frames:d.displayable_hand_frames;td.append(node('strong','',fmt(100*n/d.gt_hand_frames)+'%'),node('small','',`${n} / ${d.gt_hand_frames} 手帧`));}else{const value=d[spec.key];td.append(node('strong',value==null?'metric-missing':'',value==null?'— 不可评价':fmt(value*(spec.percent?100:1),spec.digits??2)+(spec.percent?'%':'')));if(spec.adapted&&method==='hggt'&&d[spec.adapted]!=null)td.append(node('small','adapted-metric','仅平移适配：'+fmt(d[spec.adapted]*(spec.percent?100:1))+(spec.percent?'%':'')));}row.append(td);}body.append(row);}table.append(body);const wrap=node('div','table-scroll');wrap.append(table);host.append(wrap);
+  host.append(node('p','cross-method-footnote','HGGT 主数值为原生相机输出；“仅平移适配”是昨日已有的标定适配结果，不使用 GT 拟合。PA 仅用于对应的对齐误差列；绝对误差与 PCK 不做对齐。此处不比较世界轨迹，也不是官方基准成绩。'));
+  const details=node('details','cross-method-details'),summary=node('summary','','查看四段覆盖、共同分母与评测说明');details.append(summary);const coverage=node('table'),head=node('tr');for(const t of ['片段 / 相机','GT 手帧','HaWoR 严格','EgoFound3R 严格','HGGT 严格','共同手帧'])head.append(node('th','',t));const ch=node('thead');ch.append(head);coverage.append(ch);const cb=node('tbody');for(const x of report.samples){const row=node('tr');for(const text of [x.label+(x.view==='cam_a'?' · A':' · RGB'),x.gt_hand_frames,...methods.map(k=>x.methods[k].strict_hand_frames),x.common_hand_frames])row.append(node('td','',String(text)));cb.append(row);}coverage.append(cb);const cw=node('div','table-scroll');cw.append(coverage);details.append(cw);
+  const explanations=[
+    '严格有效：排除 EgoFound3R 官方 missing-fill 和 HaWoR 标记的时序补全。HaWoR 原表包含补全，因此其原覆盖率与本表严格覆盖率不同。未标注手槽的填补不计入这里的填补量。',
+    '关节误差对 16 点取平均，汇总按共同手帧数加权；PA 在同一 16 点上重新拟合正尺度、无反射的相似变换，不沿用旧 21 点拟合。',
+    'PCK50 使用每个方法自己的严格有效预测，距离 GT 不超过 50 mm 记命中；分母为全部 GT 的 16 个关节，缺失和填补记未命中。',
+    '加速度使用共同连续三帧和 GT/reference 原始时间戳，不使用网页近似 30 FPS 时钟，也不跨片段相连。',
+    '同源范围只有箱子、香蕉的相机 A（836212060125）及 Aria 1976、3209 的 RGB（214-1）；其他七段与相机 B 没有三方对应结果。各模型原生检测、裁剪、标定近似和时序处理保留。',
+    '只读取已有预测重评分，无模型重跑。原视频、几何、GT 和原指标未改；Base16 避免了旧表五个指尖定义不同的问题，不能与原 21 点数值直接等同。样本为开发示例，不保证训练集独立。'
+  ];for(const text of explanations)details.append(node('p','',text));host.append(details);
+  const downloads=node('div','downloads');for(const [label,path] of [['统一指标 JSON','cross-method-comparison.json'],['统一指标 CSV','cross-method-comparison.csv'],['可复核评分脚本','https://github.com/YichengDraw/egofound3r-stereo-20261111/blob/main/scripts/build_cross_method_comparison.py']]){const a=node('a','',label);a.href=urlFor(path);a.target='_blank';a.rel='noopener';downloads.append(a);}host.append(downloads);
+}
 function renderLegacyMaterials(){
   const target=$('legacy-materials'),legacy=state.legacyManifest,entry=legacy?.samples.find(x=>x.id===state.sequence?.id);target.replaceChildren();
   const title=node('div','section-title');title.append(node('h2','','HGGT × HaWoR · 昨日原始材料'));target.append(title);
@@ -641,7 +677,7 @@ async function selectSequence(id){
   state.sequence=state.manifest.sequences.find(s=>s.id===id);if(!state.sequence)return;
   const seq=state.sequence;$('sequence').value=id;const frames=Math.max(1,seq.frames||1);seq.frames=frames;$('scrubber').max=frames-1;$('frame-number').max=frames-1;setText($('duration-label'),`${fmt(frameTime(frames-1))} s`);
   $('sequence-meta').replaceChildren();for(const t of [seq.dataset,`${frames} 帧`,`${seq.fps||30} fps`,seq.input_label||''])if(t)$('sequence-meta').append(node('span','chip',t));
-  renderDescription();renderMetrics();renderLegacyMaterials();notice(seq.notice||state.manifest.notice||'');$('load-status').classList.remove('error');setText($('load-status'),'正在读取片段资源…');
+  renderDescription();renderMetrics();renderLegacyMaterials();renderCrossMethodComparison();notice(seq.notice||state.manifest.notice||'');$('load-status').classList.remove('error');setText($('load-status'),'正在读取片段资源…');
   renderPanels();setFrame(0);saveQuery();
 }
 function renderPanels(){
@@ -675,6 +711,7 @@ async function main(){
     const manifestURL=new URL('manifest.json',document.baseURI);manifestURL.search=new URL(import.meta.url).search;
     state.legacyManifest=await fetchJSON(urlFor('legacy-hggt.json'));
     state.manifest=await fetchJSON(manifestURL.href);const man=state.manifest;
+    try{state.crossMethodReport=await fetchJSON(urlFor('cross-method-comparison.json'));}catch(error){console.warn('统一比较表读取失败',error);}
     if(man.suite_summary){
       const table=node('table'),head=node('tr');
       for(const title of ['数据 / 输入','RGB 帧','有效手帧 / GT 手帧','覆盖率','绝对 MPJPE mm','去腕 MPJPE mm','PA MPJPE mm','PCK50 · 全 GT'])head.append(node('th','',title));
