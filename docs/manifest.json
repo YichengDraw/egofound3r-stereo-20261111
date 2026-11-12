@@ -1,12 +1,12 @@
 {
   "schema_version": "egofound3r.viewer.v1",
-  "title": "EgoFound3R · 官方实跑 / 已知 K",
-  "subtitle": "11 段 · 13 路 RGB · 2,080 帧 · 双 RGB 独立推理 + 单目补充",
+  "title": "HGGT · HaWoR · EgoFound3R | 三方法复现对比",
+  "subtitle": "三方法匹配材料：4 段 / 446 帧 · EgoFound3R 扩展结果：11 段 / 13 路 RGB / 2,080 帧",
   "status": "complete",
   "generated_at": "2026-11-11T11:23:33.902172+00:00",
   "default_columns": 2,
-  "notice": "已完成 13/13 路官方推理与独立评价。有效覆盖率必须与误差一起读；默认隐藏官方填补，勾选后半透明显示。DexYCB 是两相机独立运行，Aria/HO3D 是单 RGB 补充。",
-  "provenance": "官方 clean 264f4df · 真实预测张量 · GT 仅评价 · 每路坐标独立",
+  "notice": "HGGT、HaWoR、EgoFound3R 的复现结果集中展示；用视频选项卡切换材料，用 3D 勾选叠加方法与 GT。三方法统一 Base16 比较表在下方，原有各方法评测单独保留。",
+  "provenance": "HGGT / HaWoR：2026-11-10 原始材料 · EgoFound3R：官方 clean 264f4df · 真实缓存结果 · GT 仅评价",
   "suite_summary": {
     "DexYCB": {
       "streams": 4,
@@ -77,87 +77,103 @@
   },
   "protocol": [
     {
-      "label": "模型输入",
+      "label": "三方法覆盖范围",
+      "value": "箱子、香蕉仅相机 A；Aria 1976、3209 为 RGB。其他七段及 Dex 相机 B 仅有 EgoFound3R 结果，不补造 HGGT / HaWoR。"
+    },
+    {
+      "label": "三方法评价",
+      "value": "相同源帧、相机和解剖手；统一 Base16，排除填补。误差按三方共同有效手帧，覆盖率及 PCK50 保留全部 GT 分母；与各自原 21 点表分开。"
+    },
+    {
+      "label": "HGGT / HaWoR 材料",
+      "value": "保留 2026-11-10 的原视频、几何与原指标。HGGT 原生和仅平移适配分开；HaWoR 保留原时序补全标记。GT 不参与模型推理或适配拟合。"
+    },
+    {
+      "label": "EgoFound3R · 模型输入",
       "value": "仅 RGB + 已知 K；GT 手/物体位姿、深度、外参不进入推理。"
     },
     {
-      "label": "双目边界",
+      "label": "EgoFound3R · 双目边界",
       "value": "两路单视频分别推理；未联合双目或几何融合。Dex 基线 0.631 m / 43.05°。"
     },
     {
-      "label": "K 的作用",
+      "label": "EgoFound3R · K 的作用",
       "value": "external K 用于手部 root/projection；场景 K 仍由网络预测。"
     },
     {
-      "label": "运行设置",
+      "label": "EgoFound3R · 运行设置",
       "value": "官方 2 s / overlap 0.5 s；H 10 FPS；G stride 5；R 含时间插值。"
     },
     {
-      "label": "有效与填补",
+      "label": "EgoFound3R · 有效与填补",
       "value": "严格有效 = 官方 valid ∧ finite ∧ ¬fill；填补单列，失败留在 PCK 分母。"
     },
     {
-      "label": "3D 与接触",
+      "label": "EgoFound3R · 3D 与接触",
       "value": "米制相机 / 独立预测世界系；接触色为模型概率。778 顶点由官方195点固定插值。"
     }
   ],
   "sources": [
     {
-      "label": "官方代码",
+      "label": "EgoFound3R 官方代码",
       "url": "https://github.com/MINT-SJTU/EgoFound3R"
     },
     {
-      "label": "复现仓库",
+      "label": "当前复现仓库",
       "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111"
     },
     {
-      "label": "原始预测",
+      "label": "EgoFound3R 原始预测",
       "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/tag/reproduction-20261111"
+    },
+    {
+      "label": "HGGT / HaWoR 原始材料",
+      "url": "https://yichengdraw.github.io/hggt-hawor-singleview-20261110/"
     }
   ],
   "downloads": [
     {
-      "label": "复现报告",
+      "label": "EgoFound3R · 复现报告",
       "url": "downloads/README.md"
     },
     {
-      "label": "评价协议",
+      "label": "EgoFound3R · 评价协议",
       "url": "downloads/PROTOCOL.md"
     },
     {
-      "label": "全量指标 JSON",
+      "label": "EgoFound3R · 全量指标 JSON",
       "url": "downloads/suite_metrics.json"
     },
     {
-      "label": "指标 CSV",
+      "label": "EgoFound3R · 指标 CSV",
       "url": "downloads/metrics.csv"
     },
     {
-      "label": "运行命令 / 日志索引",
+      "label": "EgoFound3R · 运行命令 / 日志索引",
       "url": "downloads/inference_runs.json"
     },
     {
-      "label": "数据校验",
+      "label": "EgoFound3R · 数据校验",
       "url": "downloads/expanded_data_validation.json"
     },
     {
-      "label": "左右手核验",
+      "label": "EgoFound3R · 左右手核验",
       "url": "downloads/anatomical_slot_audit.jpg"
     },
     {
-      "label": "逐帧左右手 CSV",
+      "label": "EgoFound3R · 逐帧左右手 CSV",
       "url": "downloads/per_frame_hand_scores.csv"
     },
     {
-      "label": "逐帧左右手 JSON",
+      "label": "EgoFound3R · 逐帧左右手 JSON",
       "url": "downloads/per_frame_hand_scores.json"
     },
     {
-      "label": "在线交互验收",
+      "label": "EgoFound3R · 在线交互验收",
       "url": "downloads/browser_acceptance.json"
     },
     {
-      "label": "发布验收凭据",
+      "label": "EgoFound3R · 发布验收凭据",
       "url": "downloads/publication_receipt.json"
     }
   ],
@@ -322,7 +338,7 @@
       ],
       "input_label": "双 RGB · 两路独立 · 已知 K",
       "description": "dataset 30 FPS; identical source frame IDs across two RGB cameras",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：cam_b 平移 RMSE 6.54 mm，平均旋转误差 0.49°。只对齐首个有效相机坐标，不拟合尺度。",
         "相机轨迹诊断：cam_a 平移 RMSE 6.06 mm，平均旋转误差 0.31°。只对齐首个有效相机坐标，不拟合尺度。",
@@ -512,35 +528,35 @@
       ],
       "downloads": [
         {
-          "label": "相机 A 官方 overlay",
+          "label": "EgoFound3R · 相机 A 官方 overlay",
           "url": "data/dexycb_box/cam_a/overlay.mp4"
         },
         {
-          "label": "相机 A 四模式视频",
+          "label": "EgoFound3R · 相机 A 四模式视频",
           "url": "data/dexycb_box/cam_a/overlay_multimode.mp4"
         },
         {
-          "label": "相机 A 完整指标",
+          "label": "EgoFound3R · 相机 A 完整指标",
           "url": "downloads/dexycb_box__cam_a_metrics.json"
         },
         {
-          "label": "相机 A 原始张量归档",
+          "label": "EgoFound3R · 相机 A 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_a.tar.gz"
         },
         {
-          "label": "相机 B 官方 overlay",
+          "label": "EgoFound3R · 相机 B 官方 overlay",
           "url": "data/dexycb_box/cam_b/overlay.mp4"
         },
         {
-          "label": "相机 B 四模式视频",
+          "label": "EgoFound3R · 相机 B 四模式视频",
           "url": "data/dexycb_box/cam_b/overlay_multimode.mp4"
         },
         {
-          "label": "相机 B 完整指标",
+          "label": "EgoFound3R · 相机 B 完整指标",
           "url": "downloads/dexycb_box__cam_b_metrics.json"
         },
         {
-          "label": "相机 B 原始张量归档",
+          "label": "EgoFound3R · 相机 B 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_box__cam_b.tar.gz"
         }
       ]
@@ -701,7 +717,7 @@
       ],
       "input_label": "双 RGB · 两路独立 · 已知 K",
       "description": "dataset 30 FPS; identical source frame IDs across two RGB cameras",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：cam_b 平移 RMSE 2.11 mm，平均旋转误差 0.11°。只对齐首个有效相机坐标，不拟合尺度。",
         "相机轨迹诊断：cam_a 平移 RMSE 2.38 mm，平均旋转误差 0.30°。只对齐首个有效相机坐标，不拟合尺度。",
@@ -891,35 +907,35 @@
       ],
       "downloads": [
         {
-          "label": "相机 A 官方 overlay",
+          "label": "EgoFound3R · 相机 A 官方 overlay",
           "url": "data/dexycb_banana/cam_a/overlay.mp4"
         },
         {
-          "label": "相机 A 四模式视频",
+          "label": "EgoFound3R · 相机 A 四模式视频",
           "url": "data/dexycb_banana/cam_a/overlay_multimode.mp4"
         },
         {
-          "label": "相机 A 完整指标",
+          "label": "EgoFound3R · 相机 A 完整指标",
           "url": "downloads/dexycb_banana__cam_a_metrics.json"
         },
         {
-          "label": "相机 A 原始张量归档",
+          "label": "EgoFound3R · 相机 A 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_a.tar.gz"
         },
         {
-          "label": "相机 B 官方 overlay",
+          "label": "EgoFound3R · 相机 B 官方 overlay",
           "url": "data/dexycb_banana/cam_b/overlay.mp4"
         },
         {
-          "label": "相机 B 四模式视频",
+          "label": "EgoFound3R · 相机 B 四模式视频",
           "url": "data/dexycb_banana/cam_b/overlay_multimode.mp4"
         },
         {
-          "label": "相机 B 完整指标",
+          "label": "EgoFound3R · 相机 B 完整指标",
           "url": "downloads/dexycb_banana__cam_b_metrics.json"
         },
         {
-          "label": "相机 B 原始张量归档",
+          "label": "EgoFound3R · 相机 B 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/dexycb_banana__cam_b.tar.gz"
         }
       ]
@@ -1236,7 +1252,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 42.52 mm，平均旋转误差 3.66°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -1337,19 +1353,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_1976/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_1976/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_1976__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_1976__rgb.tar.gz"
         }
       ]
@@ -1646,7 +1662,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 45.76 mm，平均旋转误差 4.17°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -1747,19 +1763,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_2022/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_2022/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_2022__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_2022__rgb.tar.gz"
         }
       ]
@@ -2076,7 +2092,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 30.12 mm，平均旋转误差 4.36°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -2177,19 +2193,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_3070/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_3070/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_3070__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3070__rgb.tar.gz"
         }
       ]
@@ -2506,7 +2522,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 39.12 mm，平均旋转误差 3.94°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -2607,19 +2623,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_3209/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_3209/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_3209__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3209__rgb.tar.gz"
         }
       ]
@@ -2936,7 +2952,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 320.30 mm，平均旋转误差 22.56°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -3037,19 +3053,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_3302/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_3302/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_3302__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3302__rgb.tar.gz"
         }
       ],
@@ -3367,7 +3383,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "HOT3D clip_util.convert_to_pinhole_camera + hand_tracking_toolkit.dataset.warp_image; clockwise 90°; OpenCV INTER_AREA resize 1408 to 768",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "相机轨迹诊断：rgb 平移 RMSE 5.09 mm，平均旋转误差 0.68°。只对齐首个有效相机坐标，不拟合尺度。",
         "Original hardware timestamps retained; official video uses nominal 30 FPS; no reordered or duplicated frames",
@@ -3468,19 +3484,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/aria_3353/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/aria_3353/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/aria_3353__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/aria_3353__rgb.tar.gz"
         }
       ]
@@ -4095,7 +4111,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "original 640x480 RGB; no crop or spatial resize; H264 CRF16 encoding",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
@@ -4201,19 +4217,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/ho3d_mc1/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/ho3d_mc1/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/ho3d_mc1__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_mc1__rgb.tar.gz"
         }
       ]
@@ -4828,7 +4844,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "original 640x480 RGB; no crop or spatial resize; H264 CRF16 encoding",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
@@ -4934,19 +4950,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/ho3d_smu1/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/ho3d_smu1/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/ho3d_smu1__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_smu1__rgb.tar.gz"
         }
       ]
@@ -5563,7 +5579,7 @@
       ],
       "input_label": "单 RGB 补充 · 已知 K",
       "description": "original 640x480 RGB; no crop or spatial resize; H264 CRF16 encoding",
-      "metric_scope": "仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
+      "metric_scope": "EgoFound3R 原 21 点评价。仅已标注解剖手；有效/GT 手帧与误差同时报告；— 表示无可评分预测。",
       "notes": [
         "Source acquisition FPS is not established in cached provenance. Ordered sampled frames are supplied at an explicitly assumed 10 FPS; do not interpret time derivatives as physical motion.",
         "GT 参考是独立真实标注，不是预测。世界坐标列为本次推理的独立世界系；联动视角不做几何配准。",
@@ -5669,19 +5685,19 @@
       ],
       "downloads": [
         {
-          "label": "RGB 官方 overlay",
+          "label": "EgoFound3R · RGB 官方 overlay",
           "url": "data/ho3d_sm2/rgb/overlay.mp4"
         },
         {
-          "label": "RGB 四模式视频",
+          "label": "EgoFound3R · RGB 四模式视频",
           "url": "data/ho3d_sm2/rgb/overlay_multimode.mp4"
         },
         {
-          "label": "RGB 完整指标",
+          "label": "EgoFound3R · RGB 完整指标",
           "url": "downloads/ho3d_sm2__rgb_metrics.json"
         },
         {
-          "label": "RGB 原始张量归档",
+          "label": "EgoFound3R · RGB 原始张量归档",
           "url": "https://github.com/YichengDraw/egofound3r-stereo-20261111/releases/download/reproduction-20261111/ho3d_sm2__rgb.tar.gz"
         }
       ]

@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#111a25">
-  <meta name="description" content="EgoFound3R 复现实验：同步 RGB、手部重建、场景点云与可交互三维对比。">
-  <title>EgoFound3R · 复现对比</title>
-  <link rel="stylesheet" href="style.css?v=cross-method-1">
+  <meta name="description" content="HGGT、HaWoR、EgoFound3R 三方法复现对比：同步视频、可交互三维与统一 Base16 评测。四段同源匹配材料，另保留 EgoFound3R 十一段扩展结果；缺失结果明确标注。">
+  <title>HGGT · HaWoR · EgoFound3R | 三方法复现对比</title>
+  <link rel="stylesheet" href="style.css?v=three-method-identity-1">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
   <header class="header">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">E3</span><div><div class="title-row"><h1 id="page-title">EgoFound3R <span>复现对比</span></h1><span id="run-state" hidden></span></div><p id="page-subtitle">同步 RGB · 已知内参 · 手与场景三维重建</p></div></div>
+    <div class="brand"><span class="brand-mark" aria-hidden="true">3D</span><div><div class="title-row"><h1 id="page-title">HGGT · HaWoR · EgoFound3R | 三方法复现对比</h1><span id="run-state" hidden></span></div><p id="page-subtitle">三方法匹配材料 · 同步视频 · 可交互三维 · 统一 Base16 评价</p></div></div>
     <nav id="source-links" aria-label="论文、代码与结果来源"></nav>
   </header>
   <main>
@@ -19,13 +19,14 @@
       <label class="sequence-select"><span>数据片段</span><select id="sequence" aria-label="选择数据片段"><option>正在读取结果…</option></select></label>
       <div id="sequence-meta" class="sequence-meta"></div>
       <label class="compact-select"><span>布局</span><select id="columns" aria-label="对比列数"><option value="2">双列对比</option><option value="3">三列对比</option></select></label>
-      <button id="details-button" class="text-button" aria-expanded="false" aria-controls="protocol">输入与复现说明 <span aria-hidden="true">⌄</span></button>
+      <button id="details-button" class="text-button" aria-expanded="false" aria-controls="protocol">方法范围与复现说明 <span aria-hidden="true">⌄</span></button>
     </section>
     <section id="protocol" class="protocol" hidden>
       <div id="protocol-items" class="protocol-grid"></div>
       <div id="sequence-description" class="explanation"></div>
     </section>
     <div id="notice" class="notice" role="status" hidden></div>
+    <div id="comparison-availability" class="comparison-availability" role="status" aria-label="当前片段三方法覆盖"></div>
     <section class="playback-bar" aria-label="同步播放控制">
       <button id="play" class="primary-button" aria-label="播放" title="播放 / 暂停（空格）"><span id="play-icon">▶</span><span id="play-text">播放</span></button>
       <button id="previous" class="icon-button" aria-label="上一帧" title="上一帧（左箭头）">‹</button>
@@ -36,18 +37,18 @@
       <label class="check"><input id="loop" type="checkbox" checked>循环</label>
     </section>
     <section class="display-bar" aria-label="可视化选项">
-      <div class="display-group"><label class="check"><input id="overlay" type="checkbox" checked>2D 关节</label><label class="check"><input id="scene" type="checkbox" checked>场景点云</label><label class="check"><input id="hands" type="checkbox" checked>手部网格</label><label class="check"><input id="joints" type="checkbox" checked>3D 骨架</label><label class="check" title="半透明显示官方填补；不会计入有效覆盖率"><input id="filled" type="checkbox">显示填补</label><label class="check"><input id="trajectory" type="checkbox">有效腕轨迹</label><label class="check"><input id="wireframe" type="checkbox">线框</label></div>
-      <div class="display-group"><label class="small-label">手部颜色 <select id="color-mode"><option value="hand">左右手</option><option value="contact">接触概率</option><option value="visibility">可见概率</option></select></label><label class="check"><input id="linked" type="checkbox" checked>联动视角</label><button id="reset-camera" class="small-button">重置视角</button></div>
+      <div class="display-group"><label class="check"><input id="overlay" type="checkbox" checked>2D 关节</label><label class="check"><input id="scene" type="checkbox" checked>场景点云</label><label class="check"><input id="hands" type="checkbox" checked>手部网格</label><label class="check"><input id="joints" type="checkbox" checked>3D 骨架</label><label class="check" title="半透明显示 EgoFound3R 官方填补；不会计入严格有效覆盖率"><input id="filled" type="checkbox">显示填补</label><label class="check"><input id="trajectory" type="checkbox">有效腕轨迹</label><label class="check"><input id="wireframe" type="checkbox">线框</label></div>
+      <div class="display-group"><label class="small-label">本列手部颜色 <select id="color-mode"><option value="hand">左右手</option><option value="contact">接触概率</option><option value="visibility">可见概率</option></select></label><label class="check"><input id="linked" type="checkbox" checked>联动视角</label><button id="reset-camera" class="small-button">重置视角</button></div>
     </section>
     <section id="video-switcher" class="video-switcher" aria-label="视频切换入口"></section>
     <a class="cross-method-jump" href="#cross-method-comparison">查看三方法横向比较表 ↓</a>
     <section id="comparison" class="comparison" aria-label="同步可视化对比"></section>
     <section id="cross-method-comparison" class="summary-panel cross-method-comparison" aria-label="三方法横向比较"></section>
     <section id="legacy-materials" class="summary-panel legacy-materials"></section>
-    <section class="suite-summary"><div class="section-title"><h2>全部样本 · 同口径独立评价</h2><span>双 RGB 与单目补充分组统计</span></div><div id="suite-metrics" class="table-scroll"></div></section>
+    <section class="suite-summary"><div class="section-title"><h2>EgoFound3R · 全部样本原始评价</h2><span>原 21 点口径 · 双 RGB 与单目分组</span></div><div id="suite-metrics" class="table-scroll"></div></section>
     <section class="bottom-grid">
-      <div class="summary-panel"><div class="section-title"><h2>本片段指标 · 排除填补</h2><span id="metric-scope">读取真实评估结果</span></div><div id="metrics" class="table-scroll"><p class="empty-inline">尚未加载评估结果。</p></div></div>
-      <div class="summary-panel"><div class="section-title"><h2>结果与说明</h2></div><div id="result-notes" class="result-notes"></div><div id="downloads" class="downloads"></div></div>
+      <div class="summary-panel"><div class="section-title"><h2>EgoFound3R · 本片段原始指标</h2><span id="metric-scope">读取真实评估结果</span></div><div id="metrics" class="table-scroll"><p class="empty-inline">尚未加载评估结果。</p></div></div>
+      <div class="summary-panel"><div class="section-title"><h2>EgoFound3R · 结果与原始下载</h2></div><div id="result-notes" class="result-notes"></div><div id="downloads" class="downloads"></div></div>
     </section>
     <footer><span>拖动旋转 · 滚轮缩放 · 右键平移</span><span id="footer-provenance">仅展示已导出的真实推理结果</span><span id="load-status" role="status"></span></footer>
   </main>
@@ -60,7 +61,7 @@
       <div class="scene-panel"><div class="webgl-host"></div><div class="pane-label"><span>可交互 3D</span><span class="coordinate-label"></span></div><div class="scene-message">正在加载几何结果…</div><div class="scene-legend"><span><i class="dot left"></i>左手</span><span><i class="dot right"></i>右手</span><span class="heat-legend" hidden><i></i><span>低 → 高</span></span></div><button class="fit-camera" title="将手部居中" aria-label="将手部居中">⌖</button><div class="frame-state"></div></div>
       <div class="method-checks" aria-label="选择3D展示方法"></div><div class="comparison-scope"></div>
       <div class="projection-row">
-        <div class="projection-pane projection-pred"><canvas aria-label="预测手投影到同帧 RGB"></canvas><div class="pane-label"><span class="projection-title">预测手网格投影 · 原始几何</span><span class="projection-frame"></span></div><div class="projection-status"></div></div>
+        <div class="projection-pane projection-pred"><canvas aria-label="预测手投影到同帧 RGB"></canvas><div class="pane-label"><span class="projection-title">EgoFound3R 网格投影 · 原始几何</span><span class="projection-frame"></span></div><div class="projection-status"></div></div>
         <div class="projection-pane projection-gt"><canvas aria-label="同相机 GT 投影到同帧 RGB"></canvas><div class="pane-label"><span>GT 骨架投影 · 同相机</span><span class="projection-frame"></span></div><div class="projection-status"></div></div>
       </div>
       <div class="frame-metrics"></div>
@@ -68,7 +69,7 @@
     </article>
   </template>
   <noscript><p class="notice">请启用 JavaScript，以查看同步视频和可拖动的三维结果。</p></noscript>
-  <script type="module" src="app.js?v=cross-method-1"></script>
+  <script type="module" src="app.js?v=three-method-identity-1"></script>
 </body>
 </html>
 
